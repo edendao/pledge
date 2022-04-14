@@ -1,10 +1,10 @@
 // from: https://gist.github.com/Bjvanminnen/595d9fef3b1320d1f94632f8c2d323ef
-const { edit, getPaths } = require("@rescripts/utilities");
-const webpack = require("webpack");
+const { edit, getPaths } = require("@rescripts/utilities")
+const webpack = require("webpack")
 
 const predicate = (valueToTest) => {
-  return valueToTest.oneOf;
-};
+  return valueToTest.oneOf
+}
 
 const transform = (match) => ({
   ...match,
@@ -18,13 +18,13 @@ const transform = (match) => ({
     },
     ...match.oneOf.slice(-1),
   ],
-});
+})
 
 function rescriptGlslifyPlugin() {
   return (config) => {
-    const matchingPaths = getPaths(predicate, config);
-    return edit(transform, matchingPaths, config);
-  };
+    const matchingPaths = getPaths(predicate, config)
+    return edit(transform, matchingPaths, config)
+  }
 }
 
 module.exports = [
@@ -53,6 +53,6 @@ module.exports = [
           Buffer: ["buffer", "Buffer"],
         }),
       ],
-    };
+    }
   },
-];
+]

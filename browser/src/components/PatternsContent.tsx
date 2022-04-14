@@ -1,24 +1,26 @@
-import React, { useContext } from "react";
-import { ContributionsContext } from "src/helpers/contexts/ContributionsContext";
-import { Contribution, Pattern } from "src/types/common/server-api";
-import { Principles } from "../types";
-import ContributionsCarousel from "./ContributionsCarousel";
-import "./PatternsContent.css";
-import PatternSection from "./PatternSection";
-import SectionDivider from "./SectionDivider";
+import "./PatternsContent.css"
+
+import React, { useContext } from "react"
+import { ContributionsContext } from "src/helpers/contexts/ContributionsContext"
+import { Contribution, Pattern } from "src/types/common/server-api"
+
+import { Principles } from "../types"
+import ContributionsCarousel from "./ContributionsCarousel"
+import PatternSection from "./PatternSection"
+import SectionDivider from "./SectionDivider"
 
 function getContributionsByPattern(
   contributions: Contribution[],
-  pattern: Pattern
+  pattern: Pattern,
 ) {
   const filteredContributions = contributions.filter(
-    (c) => c.pattern === pattern
-  );
-  return filteredContributions;
+    (c) => c.pattern === pattern,
+  )
+  return filteredContributions
 }
 
 export default function PatternsContent() {
-  const { contributions } = useContext(ContributionsContext);
+  const { contributions } = useContext(ContributionsContext)
 
   return (
     <div className="container w-full md:max-w-7xl mx-auto mt-8">
@@ -51,7 +53,7 @@ export default function PatternsContent() {
           solution={solution}
           contributions={getContributionsByPattern(
             contributions,
-            pattern as Pattern
+            pattern as Pattern,
           )}
           defaultExpanded={index === 0}
         />
@@ -60,5 +62,5 @@ export default function PatternsContent() {
         <SectionDivider />
       </div>
     </div>
-  );
+  )
 }

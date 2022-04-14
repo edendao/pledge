@@ -1,63 +1,64 @@
-import { Ref, useContext, useEffect, useRef, useState } from "react";
-import EssayContent from "../components/EssayContent";
-import PatternsContent from "../components/PatternsContent";
-import Hero from "../components/Hero";
-import { ContributionSection } from "../components/ContributionSection";
-import { SignatureContent } from "../components/SignatureContent";
-import { NavLink } from "react-router-dom";
-import { Author } from "src/types/common/server-api";
-import React from "react";
-import { getUsers } from "src/helpers/api";
-import useGsap from "src/hook/useGsap";
-import { StatsContext } from "src/helpers/contexts/StatsContext";
-import getMockSignatures, { UseMock } from "src/utils/mock";
+import { Ref, useContext, useEffect, useRef, useState } from "react"
+import React from "react"
+import { NavLink } from "react-router-dom"
+import { getUsers } from "src/helpers/api"
+import { StatsContext } from "src/helpers/contexts/StatsContext"
+import useGsap from "src/hook/useGsap"
+import { Author } from "src/types/common/server-api"
+import getMockSignatures, { UseMock } from "src/utils/mock"
+
+import { ContributionSection } from "../components/ContributionSection"
+import EssayContent from "../components/EssayContent"
+import Hero from "../components/Hero"
+import PatternsContent from "../components/PatternsContent"
+import { SignatureContent } from "../components/SignatureContent"
 
 export interface SignaturesContextInfo {
-  signatures: Author[];
-  fetchSignatures(newSignature?: Author): void;
+  signatures: Author[]
+  fetchSignatures(newSignature?: Author): void
 }
 
 export const SignaturesContext = React.createContext<SignaturesContextInfo>({
   signatures: [],
   fetchSignatures: () => {},
-});
+})
 
 function SignaturesProvider({ children }) {
-  const [authors, setAuthors] = useState<Author[]>([]);
+  const [authors, setAuthors] = useState<Author[]>([])
   useEffect(async () => {
-    await fetchSignatures();
-  }, []);
+    await fetchSignatures()
+  }, [])
 
   async function fetchSignatures(newSignature?: Author) {
-    let users: Author[];
+    let users: Author[]
     if (UseMock) {
-      users = getMockSignatures();
+      users = getMockSignatures()
     } else {
-      users = await getUsers();
+      users = await getUsers()
     }
-    setAuthors([...(newSignature ? [newSignature] : []), ...users]);
+    setAuthors([...(newSignature ? [newSignature] : []), ...users])
   }
 
   const signaturesContext = {
     signatures: authors,
     fetchSignatures,
-  };
+  }
 
   return (
     <SignaturesContext.Provider value={signaturesContext}>
       {children}
     </SignaturesContext.Provider>
-  );
+  )
 }
 
 export function Main() {
-  const gsap = useGsap();
+  const gsap = useGsap()
 
-  const essayContentRef = useRef<any>();
-  const patternsContentRef = useRef<any>();
+  const essayContentRef = useRef<any>()
+  const patternsContentRef = useRef<any>()
 
-  const { stats } = useContext(StatsContext);
-  const fixedOpacity = 0.05;
+  const { stats } = useContext(StatsContext)
+  const fixedOpacity = 0.05
 
   useEffect(() => {
     gsap.fromTo(
@@ -71,9 +72,9 @@ export function Main() {
           trigger: "#contributionSection",
           scrub: true,
         },
-      }
-    );
-  }, []);
+      },
+    )
+  }, [])
 
   useEffect(() => {
     gsap.fromTo(
@@ -89,9 +90,9 @@ export function Main() {
           end: " top top",
           scrub: true,
         },
-      }
-    );
-  }, []);
+      },
+    )
+  }, [])
 
   useEffect(() => {
     gsap.fromTo(
@@ -107,9 +108,9 @@ export function Main() {
           end: "top top",
           scrub: true,
         },
-      }
-    );
-  }, []);
+      },
+    )
+  }, [])
 
   return (
     <>
@@ -154,5 +155,5 @@ export function Main() {
         </div>
       </SignaturesProvider>
     </>
-  );
+  )
 }

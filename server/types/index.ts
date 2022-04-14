@@ -1,8 +1,9 @@
-import { PrismaClient } from "@prisma/client";
-import { ArweaveClient } from "ar-wrapper";
+import { PrismaClient } from "@prisma/client"
+import { ArweaveClient } from "ar-wrapper"
+
 export interface Services {
-  prisma: PrismaClient;
-  arweave: ArweaveClient;
+  prisma: PrismaClient
+  arweave: ArweaveClient
 }
 
 export enum DocType {
@@ -11,7 +12,7 @@ export enum DocType {
 }
 
 export interface ArweaveSignatureTags {
-  docType: DocType;
-  essayTransactionId: string;
-  walletId: string;
+  docType: DocType
+  essayTransactionId: string
+  walletId: string
 }

@@ -1,4 +1,4 @@
-import "./DevelopmentBanner.css";
+import "./DevelopmentBanner.css"
 
 export function DevelopmentBanner() {
   return (
@@ -30,5 +30,5 @@ export function DevelopmentBanner() {
         </p>
       </div>
     </>
-  );
+  )
 }

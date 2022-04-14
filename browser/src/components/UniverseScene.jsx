@@ -1,13 +1,14 @@
-import { OrbitControls, Stars } from "@react-three/drei";
-import Blobs from "./Blobs";
-import { useEffect } from "react";
-import { useThree } from "@react-three/fiber";
-import useGsap from "../hook/useGsap";
-import BlobsPostProcessing from "./BlobsPostProcessing";
+import { OrbitControls, Stars } from "@react-three/drei"
+import { useThree } from "@react-three/fiber"
+import { useEffect } from "react"
+
+import useGsap from "../hook/useGsap"
+import Blobs from "./Blobs"
+import BlobsPostProcessing from "./BlobsPostProcessing"
 
 export default function UniverseScene() {
-  const { camera } = useThree();
-  const gsap = useGsap();
+  const { camera } = useThree()
+  const gsap = useGsap()
 
   useEffect(() => {
     gsap.fromTo(
@@ -20,9 +21,9 @@ export default function UniverseScene() {
         scrollTrigger: {
           trigger: "#contributionSection",
         },
-      }
-    );
-  }, []);
+      },
+    )
+  }, [])
 
   useEffect(() => {
     gsap.fromTo(
@@ -38,10 +39,10 @@ export default function UniverseScene() {
           end: "top top",
           scrub: true,
         },
-      }
-    );
+      },
+    )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   return (
     <>
@@ -70,5 +71,5 @@ export default function UniverseScene() {
       <Blobs />
       <Stars radius={100} depth={50} count={1500} factor={4} />
     </>
-  );
+  )
 }

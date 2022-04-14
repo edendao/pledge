@@ -1,36 +1,37 @@
-import { useContext, useState } from "react";
-import { Author, SignatureLimit } from "src/types/common/server-api";
-import dayjs from "dayjs";
-import "./SignatureContent.css";
-import { Checkmark } from "./core/Checkmark";
-import { SignaturesContext } from "src/pages/Main";
-import { ButtonClass } from "src/types/styles";
+import "./SignatureContent.css"
+
+import dayjs from "dayjs"
+import { useContext, useState } from "react"
+import { SignaturesContext } from "src/pages/Main"
+import { Author, SignatureLimit } from "src/types/common/server-api"
+import { ButtonClass } from "src/types/styles"
+
+import { Checkmark } from "./core/Checkmark"
 
 function truncateWallet(address: string) {
-  return address.slice(0, 6) + "..." + address.slice(-4);
+  return address.slice(0, 6) + "..." + address.slice(-4)
 }
 
 // function truncateName(name: string) {
 //   return name.length > 15 ? name.slice(0, 12) + "..." : name;
 // }
 
-const SignaturePageSize = 50;
+const SignaturePageSize = 50
 
 function getTwitterDisplay(
   { twitterVerified, twitterUsername }: Author,
-  { hideUsername }: { hideUsername?: boolean } = {}
+  { hideUsername }: { hideUsername?: boolean } = {},
 ) {
-  const twitterUrl =
-    twitterUsername && `https://twitter.com/${twitterUsername}`;
+  const twitterUrl = twitterUsername && `https://twitter.com/${twitterUsername}`
 
   if (!twitterUrl) {
-    return;
+    return
   }
 
   return (
     <button
       onClick={() => {
-        window.open(twitterUrl, "_blank");
+        window.open(twitterUrl, "_blank")
       }}
       className="twitterName flex items-center justify-center"
     >
@@ -43,30 +44,30 @@ function getTwitterDisplay(
         </span>
       )}
     </button>
-  );
+  )
 }
 
 export function getTextDisplayForAuthor(
   { name, walletId }: Author,
-  shouldTruncate?: boolean
+  shouldTruncate?: boolean,
 ): React.ReactNode {
-  const walletAddr = shouldTruncate ? truncateWallet(walletId) : walletId;
-  return name || walletAddr;
+  const walletAddr = shouldTruncate ? truncateWallet(walletId) : walletId
+  return name || walletAddr
 }
 
 // TODO: get ENS?
 export function getDisplayForAuthor(
   author: Author,
   shouldTruncate?: boolean,
-  inline?: boolean
+  inline?: boolean,
 ): React.ReactNode {
-  const { twitterVerified, twitterUsername, walletId } = author;
-  const nameDisplay = getTextDisplayForAuthor(author, shouldTruncate);
+  const { twitterVerified, twitterUsername, walletId } = author
+  const nameDisplay = getTextDisplayForAuthor(author, shouldTruncate)
   const twitterUrl =
     twitterUsername &&
     twitterVerified &&
-    `https://twitter.com/${twitterUsername}`;
-  const etherscanUrl = `https://etherscan.io/address/${walletId}`;
+    `https://twitter.com/${twitterUsername}`
+  const etherscanUrl = `https://etherscan.io/address/${walletId}`
 
   return (
     <div className={`authorWrapper ${inline ? "!inline-flex" : ""}`}>
@@ -74,8 +75,8 @@ export function getDisplayForAuthor(
         role="button"
         className="authorButton"
         onClick={(e) => {
-          window.open(twitterUrl || etherscanUrl, "_blank");
-          e.stopPropagation();
+          window.open(twitterUrl || etherscanUrl, "_blank")
+          e.stopPropagation()
         }}
       >
         {nameDisplay}
@@ -93,23 +94,23 @@ export function getDisplayForAuthor(
         </span>
       )}
     </div>
-  );
+  )
 }
 
 export function getMinuteTimeOfDayDateDisplay(date: dayjs.Dayjs): string {
-  const localHour = date.local().hour();
+  const localHour = date.local().hour()
   return date.format(
     `MMM D, YYYY [on minute] m ${
       localHour >= 6 && localHour < 18 ? "[in the day] ☀️" : "[in the night] 🌙"
-    }`
-  );
+    }`,
+  )
 }
 
 export function Signature({ author }: { author: Author }) {
-  const { createdAt, name, walletId } = author;
-  const nameDisplay = name || walletId;
-  const date = dayjs(createdAt, { utc: true });
-  const dateDisplay = getMinuteTimeOfDayDateDisplay(date);
+  const { createdAt, name, walletId } = author
+  const nameDisplay = name || walletId
+  const date = dayjs(createdAt, { utc: true })
+  const dateDisplay = getMinuteTimeOfDayDateDisplay(date)
 
   // TODO: add location
 
@@ -128,26 +129,26 @@ export function Signature({ author }: { author: Author }) {
         </span>
       </div>
     </div>
-  );
+  )
 }
 
 export function SignatureContent() {
-  const { signatures } = useContext(SignaturesContext);
+  const { signatures } = useContext(SignaturesContext)
 
   const [numSignaturesToRender, setNumSignaturesToRender] =
-    useState(SignaturePageSize);
+    useState(SignaturePageSize)
 
-  const signaturesToRender = signatures.slice(0, numSignaturesToRender);
+  const signaturesToRender = signatures.slice(0, numSignaturesToRender)
 
   function onSeeMore() {
-    const newNumSignaturesToRender = numSignaturesToRender + SignaturePageSize;
+    const newNumSignaturesToRender = numSignaturesToRender + SignaturePageSize
     if (newNumSignaturesToRender > SignatureLimit) {
       // TODO: fetch more from remote
       // fetchSignatures(SignaturesLimit);
     }
     setNumSignaturesToRender(
-      Math.min(newNumSignaturesToRender, signatures.length)
-    );
+      Math.min(newNumSignaturesToRender, signatures.length),
+    )
   }
 
   return (
@@ -164,5 +165,5 @@ export function SignatureContent() {
         </div>
       )}
     </div>
-  );
+  )
 }

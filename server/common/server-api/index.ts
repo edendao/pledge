@@ -39,80 +39,80 @@ export const PatternToDisplay: Record<Pattern, string> = {
   [Pattern.EngagementAndAttention]: "Engagement and Attention",
   [Pattern.Commons]: "Commons",
   [Pattern.MaintenanceAndCare]: "Maintenance and Care",
-};
+}
 
 export interface Author {
-  walletId: string;
-  twitterVerified: boolean;
-  signature: string;
-  name?: string;
-  twitterUsername?: string;
-  createdAt: Date;
-  disagrees: boolean;
+  walletId: string
+  twitterVerified: boolean
+  signature: string
+  name?: string
+  twitterUsername?: string
+  createdAt: Date
+  disagrees: boolean
 }
 
 export interface Contribution {
-  id: number;
-  author: Author;
+  id: number
+  author: Author
   // This should be the full text response, formatted as markdown.
-  response: string;
-  prompt: Prompt;
-  pattern: Pattern;
-  createdAt: Date;
+  response: string
+  prompt: Prompt
+  pattern: Pattern
+  createdAt: Date
 }
 
 export interface AddContributionRequest {
-  walletId: string;
+  walletId: string
   // This should be the full text response, formatted as markdown.
-  response: string;
-  prompt: Prompt;
-  pattern: Pattern;
+  response: string
+  prompt: Prompt
+  pattern: Pattern
 }
 
-export type AddContributionResponse = number;
+export type AddContributionResponse = number
 
 export interface AddUserRequest {
-  walletId: string;
-  signature: string;
-  name?: string;
-  twitterUsername?: string;
-  essayTransactionId: string;
-  disagrees: boolean;
+  walletId: string
+  signature: string
+  name?: string
+  twitterUsername?: string
+  essayTransactionId: string
+  disagrees: boolean
 }
 
-export type AddUserResponse = Author;
+export type AddUserResponse = Author
 
 export interface GetUserRequest {
-  id: string;
+  id: string
 }
 
 export interface GetUsersRequest {
-  offset?: number;
+  offset?: number
 }
 
 export interface GetContributionsRequest {
-  offset?: number;
-  contributionId?: number;
+  offset?: number
+  contributionId?: number
 }
 
 export interface GetContributionRequest {
-  id: number;
+  id: number
 }
 
 export interface VerifyTwitterRequest {
-  walletId: string;
-  twitterUsername: string;
-  signature: string;
+  walletId: string
+  twitterUsername: string
+  signature: string
 }
 
 export interface GetStatsResponse {
-  authorsTotal: number;
-  contributionsTotal: number;
+  authorsTotal: number
+  contributionsTotal: number
 }
 
 export const TweetTemplate =
-  "verifying for @verses_xyz — to a pluriverse, a world where many worlds may fit\n\nhttps://pluriverse.world\n\nsig:";
+  "verifying for @verses_xyz — to a pluriverse, a world where many worlds may fit\n\nhttps://pluriverse.world\n\nsig:"
 
-export const ArweaveEssayDocumentName = "PluriverseEssay";
-export const ContributionLimit = 500;
-export const SignatureLimit = 500;
+export const ArweaveEssayDocumentName = "PluriverseEssay"
+export const ContributionLimit = 500
+export const SignatureLimit = 500

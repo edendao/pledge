@@ -1,8 +1,10 @@
-import useToggle from "src/hook/useToggle";
-import { Contribution, Pattern } from "src/types/common/server-api";
-import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
-import ContributionsCarousel from "./ContributionsCarousel";
-import "./PatternSection.css";
+import "./PatternSection.css"
+
+import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai"
+import useToggle from "src/hook/useToggle"
+import { Contribution, Pattern } from "src/types/common/server-api"
+
+import ContributionsCarousel from "./ContributionsCarousel"
 
 export default function PatternSection({
   index,
@@ -13,15 +15,15 @@ export default function PatternSection({
   pattern,
   defaultExpanded = false,
 }: {
-  index: number;
-  title: string;
-  problem?: string;
-  solution?: string;
-  pattern: Pattern;
-  contributions: Contribution[];
-  defaultExpanded?: boolean;
+  index: number
+  title: string
+  problem?: string
+  solution?: string
+  pattern: Pattern
+  contributions: Contribution[]
+  defaultExpanded?: boolean
 }) {
-  const [expanded, toggle] = useToggle(defaultExpanded);
+  const [expanded, toggle] = useToggle(defaultExpanded)
 
   return (
     <div
@@ -90,5 +92,5 @@ export default function PatternSection({
         </div>
       )}
     </div>
-  );
+  )
 }

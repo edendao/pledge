@@ -1,58 +1,57 @@
-import React, { useState } from "react";
-import { ContributionCard } from "src/components/ContributionCard";
-import { Contribution } from "src/types/common/server-api";
-import Modal from "react-modal";
-import dayjs from "dayjs";
-import { IoMdClose } from "react-icons/io";
-
+import dayjs from "dayjs"
+import React, { useState } from "react"
+import { IoMdClose } from "react-icons/io"
+import Modal from "react-modal"
+import { ContributionCard } from "src/components/ContributionCard"
 import {
-  getMinuteTimeOfDayDateDisplay,
   getDisplayForAuthor,
-} from "src/components/SignatureContent";
+  getMinuteTimeOfDayDateDisplay,
+} from "src/components/SignatureContent"
+import { Contribution } from "src/types/common/server-api"
 
 export interface ModalContextInfo {
   openContributionModal: (
     contribution: Contribution,
-    previousUrl?: string
-  ) => void;
-  closeContributionModal: () => void;
-  openContributionId: number | undefined;
+    previousUrl?: string,
+  ) => void
+  closeContributionModal: () => void
+  openContributionId: number | undefined
 }
 
 export const ModalContext = React.createContext<ModalContextInfo>({
   openContributionModal: () => {},
   openContributionId: undefined,
   closeContributionModal: () => {},
-});
+})
 
 export function ModalProvider({ children }) {
   const [contributionModalOpen, setContributionModalOpen] =
-    useState<boolean>(false);
+    useState<boolean>(false)
   const [contribution, setContribution] = useState<Contribution | undefined>(
-    undefined
-  );
-  const [prevUrl, setPrevUrl] = useState<string | undefined>(undefined);
+    undefined,
+  )
+  const [prevUrl, setPrevUrl] = useState<string | undefined>(undefined)
 
   const openContributionModal = (
     contribution: Contribution,
-    previousUrl?: string
+    previousUrl?: string,
   ) => {
-    setContribution(contribution);
-    setContributionModalOpen(true);
+    setContribution(contribution)
+    setContributionModalOpen(true)
     if (previousUrl) {
-      setPrevUrl(previousUrl);
-      window.history.replaceState({}, "", `/contributions/${contribution.id}`);
+      setPrevUrl(previousUrl)
+      window.history.replaceState({}, "", `/contributions/${contribution.id}`)
     }
-  };
+  }
 
   const closeContributionModal = () => {
-    setContributionModalOpen(false);
-    setContribution(undefined);
+    setContributionModalOpen(false)
+    setContribution(undefined)
     if (prevUrl) {
-      window.history.replaceState({}, "", prevUrl);
-      setPrevUrl(undefined);
+      window.history.replaceState({}, "", prevUrl)
+      setPrevUrl(undefined)
     }
-  };
+  }
 
   function getContributionModalContent(highlightedContribution: Contribution) {
     return (
@@ -68,7 +67,7 @@ export function ModalProvider({ children }) {
         <p className="pt-0 my-2 text-lg">
           On{" "}
           {getMinuteTimeOfDayDateDisplay(
-            dayjs(highlightedContribution.createdAt, { utc: true })
+            dayjs(highlightedContribution.createdAt, { utc: true }),
           )}
           ,{" "}
           <b>
@@ -83,14 +82,14 @@ export function ModalProvider({ children }) {
           className={`mx-auto `}
         />
       </div>
-    );
+    )
   }
 
   const modalContext = {
     openContributionModal,
     openContributionId: contribution?.id,
     closeContributionModal,
-  };
+  }
   return (
     <ModalContext.Provider value={modalContext}>
       {children}
@@ -105,5 +104,5 @@ export function ModalProvider({ children }) {
         {contribution && getContributionModalContent(contribution)}
       </Modal>
     </ModalContext.Provider>
-  );
+  )
 }

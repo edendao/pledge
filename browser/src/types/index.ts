@@ -1,4 +1,4 @@
-import { Pattern, PatternToDisplay, Prompt } from "../types/common/server-api";
+import { Pattern, PatternToDisplay, Prompt } from "../types/common/server-api"
 
 export enum TraitType {
   Prompt,
@@ -6,41 +6,41 @@ export enum TraitType {
 }
 
 interface TraitTypeValue {
-  [TraitType.Prompt]: string;
-  [TraitType.Pattern]: string;
+  [TraitType.Prompt]: string
+  [TraitType.Pattern]: string
 }
 
 export interface ContributionAttribute<T extends TraitType> {
-  trait_type: T;
-  value: TraitTypeValue[T];
+  trait_type: T
+  value: TraitTypeValue[T]
 }
 
 export interface ContributionMetadata {
-  name: string;
-  description: string;
-  animation_url: string;
-  external_url: string;
-  background_color: string;
-  attributes: ContributionAttribute<TraitType>[];
+  name: string
+  description: string
+  animation_url: string
+  external_url: string
+  background_color: string
+  attributes: ContributionAttribute<TraitType>[]
 }
 
 export function getPatternPlaceholder(
   pattern: Pattern,
-  prompt: Prompt
+  prompt: Prompt,
 ): string {
   if (prompt === Prompt.FreeForm) {
-    return "";
+    return ""
   }
 
-  let placeholder = PatternToDisplay[pattern];
+  let placeholder = PatternToDisplay[pattern]
   switch (pattern) {
     case Pattern.Pluriverse:
     case Pattern.Commons:
-      placeholder = `the ${pattern}`;
+      placeholder = `the ${pattern}`
   }
   return [Prompt.LooksLike].includes(prompt)
     ? placeholder[0].toUpperCase() + placeholder.slice(1)
-    : placeholder;
+    : placeholder
 }
 
 export const Principles: Record<
@@ -87,10 +87,10 @@ export const Principles: Record<
     problem: `Building the pathways for connected worlds and enabling the proliferation of difference is not enough. These pathways and alternative worlds will fall into disrepair or co-optation without the necessary work of deep maintenance and care, and the responsibility that goes along with this ethos.`,
     solution: `We must not only build the new, but sustain it; we must not only push for progress, but protect it. The work of maintenance and care is practical work: the work of keeping codebases updated, feedback incorporated, and communities informed. This ethic  also, importantly, must extend to the non-technical realm—with the institutions, resourcing support, and space necessary to enable maintenance and repair.`,
   },
-};
+}
 
 export interface Principle {
-  title: string;
-  problem: string;
-  solution: string;
+  title: string
+  problem: string
+  solution: string
 }

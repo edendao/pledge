@@ -1,8 +1,8 @@
-import { NavLink } from "react-router-dom";
-import { BiPlanet } from "react-icons/bi";
-import { FiBook } from "react-icons/fi";
-import { BsQuestionLg } from "react-icons/bs";
-import { TiPencil } from "react-icons/ti";
+import { BiPlanet } from "react-icons/bi"
+import { BsQuestionLg } from "react-icons/bs"
+import { FiBook } from "react-icons/fi"
+import { TiPencil } from "react-icons/ti"
+import { NavLink } from "react-router-dom"
 
 export function ContributeButton() {
   return (
@@ -19,7 +19,7 @@ export function ContributeButton() {
         </span>
       </button>
     </a>
-  );
+  )
 }
 
 export function Navbar() {
@@ -94,5 +94,5 @@ export function Navbar() {
         </div>
       </div>
     </nav>
-  );
+  )
 }

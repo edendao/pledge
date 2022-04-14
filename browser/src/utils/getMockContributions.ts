@@ -1,5 +1,6 @@
-import { Contribution, Pattern } from "src/types/common/server-api";
-import { MockSignatures } from "./mock";
+import { Contribution, Pattern } from "src/types/common/server-api"
+
+import { MockSignatures } from "./mock"
 
 const mockContributionCommon = {
   response:
@@ -7,31 +8,31 @@ const mockContributionCommon = {
   prompt: "LooksLike",
   pattern: "Interoperability",
   createdAt: "2022-01-09T23:32:14.174Z",
-};
+}
 
 export default function getMockContributions() {
-  const mockContributions: Contribution[] = [];
+  const mockContributions: Contribution[] = []
 
-  for (let i = 0; i < 12; i++) {
+  for (let id = 0; id < 12; id++) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     mockContributions.push({
       ...mockContributionCommon,
-      id: i,
-      author: MockSignatures[i % MockSignatures.length],
-    });
+      id,
+      author: MockSignatures[id % MockSignatures.length],
+    })
   }
 
-  for (let i = 13; i < 24; i++) {
+  for (let id = 13; id < 24; id++) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     mockContributions.push({
       ...mockContributionCommon,
+      id,
+      author: MockSignatures[id % MockSignatures.length],
       pattern: Pattern.Agency,
-      id: i,
-      author: MockSignatures[i % MockSignatures.length],
-    });
+    })
   }
 
-  return mockContributions;
+  return mockContributions
 }

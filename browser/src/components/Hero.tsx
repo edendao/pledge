@@ -1,4 +1,4 @@
-import "./Hero.css";
+import "./Hero.css"
 
 export default function Hero() {
   return (
@@ -23,5 +23,5 @@ export default function Hero() {
         </span>
       </div>
     </div>
-  );
+  )
 }

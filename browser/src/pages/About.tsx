@@ -1,20 +1,21 @@
-import { useContext } from "react";
-import { ContributionCard } from "src/components/ContributionCard";
-import { ContributionsContext } from "src/helpers/contexts/ContributionsContext";
-import { Contribution } from "src/types/common/server-api";
-import Footnote from "../components/Footnote";
+import { useContext } from "react"
+import { ContributionCard } from "src/components/ContributionCard"
+import { ContributionsContext } from "src/helpers/contexts/ContributionsContext"
+import { Contribution } from "src/types/common/server-api"
+
+import Footnote from "../components/Footnote"
 
 // TODO: fill this in.
 const CoreStewardContributionIds = [
   213, 19, 206, 209, 24, 216, 36, 28, 174, 88, 220, 34, 35, 47, 49, 125, 73, 87,
   80,
-];
+]
 
 export function About() {
-  const { contributions } = useContext(ContributionsContext);
+  const { contributions } = useContext(ContributionsContext)
   const stewardContributions: Contribution[] = CoreStewardContributionIds.map(
-    (cId) => contributions.find((c) => c.id === cId)
-  ).filter((c): c is Contribution => c !== undefined);
+    cId => contributions.find(c => c.id === cId),
+  ).filter((c): c is Contribution => c !== undefined)
 
   return (
     <div>
@@ -499,10 +500,10 @@ export function About() {
         </div>
       </div>
       <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 justify-center mx-auto max-w-max gap-6 mt-2 mb-8">
-        {stewardContributions.map((contribution) => (
+        {stewardContributions.map(contribution => (
           <ContributionCard contribution={contribution} key={contribution.id} />
         ))}
       </div>
     </div>
-  );
+  )
 }

@@ -1,83 +1,83 @@
-import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react"
+import { Helmet } from "react-helmet"
+import { useParams } from "react-router-dom"
 import {
   ContributionCard,
   getFullContributionResponse,
-} from "src/components/ContributionCard";
-import { getTextDisplayForAuthor } from "src/components/SignatureContent";
-import { Contribution, ContributionLimit } from "src/types/common/server-api";
-import { ButtonClass } from "src/types/styles";
-import { Helmet } from "react-helmet";
-import { ContributionsContext } from "src/helpers/contexts/ContributionsContext";
-import { ModalContext } from "src/helpers/contexts/ModalContext";
+} from "src/components/ContributionCard"
+import { getTextDisplayForAuthor } from "src/components/SignatureContent"
+import { ContributionsContext } from "src/helpers/contexts/ContributionsContext"
+import { ModalContext } from "src/helpers/contexts/ModalContext"
+import { Contribution, ContributionLimit } from "src/types/common/server-api"
+import { ButtonClass } from "src/types/styles"
 
-const ContributionsPageLimit = 50;
-const RandomFloor = 100;
+const ContributionsPageLimit = 50
+const RandomFloor = 100
 
 function safeGet<T, V>(map: Map<T, V>, key: T, defaultValue: V): V {
-  return map.has(key) ? (map.get(key) as V) : defaultValue;
+  return map.has(key) ? (map.get(key) as V) : defaultValue
 }
 
 export function ContributionsPage() {
-  const { contributionId } = useParams();
+  const { contributionId } = useParams()
   const highlightedContributionId = contributionId
     ? Number(contributionId)
-    : undefined;
+    : undefined
 
-  const { contributions, fetchContribution } = useContext(ContributionsContext);
+  const { contributions, fetchContribution } = useContext(ContributionsContext)
 
   const [contributionRandomOrderMapping, setContributionRandomOrderMapping] =
-    useState<Map<number, number>>(new Map());
+    useState<Map<number, number>>(new Map())
 
   const { openContributionModal, closeContributionModal } =
-    useContext(ModalContext);
+    useContext(ModalContext)
 
   const [numContributionsToRender, setNumContributionsToRender] = useState(
-    ContributionsPageLimit
-  );
+    ContributionsPageLimit,
+  )
 
   function onSeeMore() {
     const newNumContributionsToRender =
-      numContributionsToRender + ContributionsPageLimit;
+      numContributionsToRender + ContributionsPageLimit
     if (newNumContributionsToRender > ContributionLimit) {
       // TODO: fetch more from remote
       // fetchContributions(ContributionsLimit);
     }
     setNumContributionsToRender(
-      Math.min(newNumContributionsToRender, contributions.length)
-    );
+      Math.min(newNumContributionsToRender, contributions.length),
+    )
   }
 
   async function tryOpenContributionModal(highlightedId: number) {
-    const highlightedContribution = await fetchContribution(highlightedId);
-    openContributionModal(highlightedContribution, "/contributions");
+    const highlightedContribution = await fetchContribution(highlightedId)
+    openContributionModal(highlightedContribution, "/contributions")
   }
 
   useEffect(() => {
     if (!highlightedContributionId) {
-      return;
+      return
     }
 
-    void tryOpenContributionModal(highlightedContributionId);
-    return () => closeContributionModal();
-  }, [highlightedContributionId]);
+    void tryOpenContributionModal(highlightedContributionId)
+    return () => closeContributionModal()
+  }, [highlightedContributionId])
 
   const sortedContributions = !contributionRandomOrderMapping.size
     ? contributions
     : contributions.sort(
         (a, b) =>
           safeGet(contributionRandomOrderMapping, a.id, 0.5 * RandomFloor) -
-          safeGet(contributionRandomOrderMapping, b.id, 0.5 * RandomFloor)
-      );
+          safeGet(contributionRandomOrderMapping, b.id, 0.5 * RandomFloor),
+      )
 
   const contributionsToShow = sortedContributions.slice(
     0,
-    numContributionsToRender
-  );
+    numContributionsToRender,
+  )
 
   function getMetaTags() {
-    const title = "Contributions to the Digital Pluriverse";
-    const description = "Contributions from the community to the pluriverse.";
+    const title = "Contributions to the Digital Pluriverse"
+    const description = "Contributions from the community to the pluriverse."
     return (
       <Helmet>
         <title>{title}</title>
@@ -88,13 +88,13 @@ export function ContributionsPage() {
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
       </Helmet>
-    );
+    )
   }
 
   function getMetaTagsForHighlightedContribution(contribution: Contribution) {
-    const fullResponse = getFullContributionResponse(contribution);
-    const { author } = contribution;
-    const authorDisplay = getTextDisplayForAuthor(author, true);
+    const fullResponse = getFullContributionResponse(contribution)
+    const { author } = contribution
+    const authorDisplay = getTextDisplayForAuthor(author, true)
 
     const maybeTwitterCreatorTag =
       author.twitterVerified && author.twitterUsername ? (
@@ -102,9 +102,9 @@ export function ContributionsPage() {
           name="twitter:creator"
           content={`@${contribution.author.twitterUsername}`}
         />
-      ) : null;
+      ) : null
 
-    const title = `Contribution to the Digital Pluriverse by ${authorDisplay}`;
+    const title = `Contribution to the Digital Pluriverse by ${authorDisplay}`
     return (
       <Helmet>
         <title>{title}</title>
@@ -118,22 +118,22 @@ export function ContributionsPage() {
         <meta name="twitter:description" content={fullResponse} />
         {maybeTwitterCreatorTag}
       </Helmet>
-    );
+    )
   }
 
   function shuffleContributions() {
-    const newMapping = new Map();
+    const newMapping = new Map()
     for (const contribution of contributions) {
-      newMapping.set(contribution.id, Math.random() * RandomFloor);
+      newMapping.set(contribution.id, Math.random() * RandomFloor)
     }
-    setContributionRandomOrderMapping(newMapping);
+    setContributionRandomOrderMapping(newMapping)
   }
 
-  console.log(contributionsToShow);
+  console.log(contributionsToShow)
 
   const highlightedContribution =
     highlightedContributionId &&
-    contributions.find((c) => c.id === highlightedContributionId);
+    contributions.find(c => c.id === highlightedContributionId)
 
   return (
     <div className="px-8 pb-20">
@@ -171,7 +171,7 @@ export function ContributionsPage() {
         </div>
       </div>
       <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 sm:grid-cols-1 justify-center mx-auto max-w-max gap-6">
-        {contributionsToShow.map((contribution) => (
+        {contributionsToShow.map(contribution => (
           <ContributionCard contribution={contribution} key={contribution.id} />
         ))}
       </div>
@@ -184,5 +184,5 @@ export function ContributionsPage() {
       )}
       {/* TODO: add floating button to scroll back to top? */}
     </div>
-  );
+  )
 }

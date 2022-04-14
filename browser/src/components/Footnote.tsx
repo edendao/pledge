@@ -1,7 +1,7 @@
-import * as React from "react";
-import useToggle from "src/hook/useToggle";
-import useOnClickOutside from "src/hook/useOnClickOutside";
-import { IoMdClose } from "react-icons/io";
+import * as React from "react"
+import { IoMdClose } from "react-icons/io"
+import useOnClickOutside from "src/hook/useOnClickOutside"
+import useToggle from "src/hook/useToggle"
 
 export default function Footnote({
   children,
@@ -9,19 +9,19 @@ export default function Footnote({
   left,
   topOffset,
 }: {
-  children: any;
-  data: any;
-  left?: boolean;
-  topOffset?: number;
+  children: any
+  data: any
+  left?: boolean
+  topOffset?: number
 }) {
-  const [expanded, toggle] = useToggle();
-  const ref = React.useRef(null);
+  const [expanded, toggle] = useToggle()
+  const ref = React.useRef(null)
 
   useOnClickOutside(ref, () => {
     if (expanded) {
-      toggle();
+      toggle()
     }
-  });
+  })
 
   return (
     <span
@@ -52,5 +52,5 @@ export default function Footnote({
         </div>
       )}
     </span>
-  );
+  )
 }

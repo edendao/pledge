@@ -1,65 +1,66 @@
-import express from "express";
-import cors from "cors";
+import { PrismaClient } from "@prisma/client"
+import { ArweaveClient } from "ar-wrapper"
+import cors from "cors"
+import dotenv from "dotenv"
+import express from "express"
 
-import dotenv from "dotenv";
-dotenv.config();
+import { addContribution } from "./api-handlers/add_contribution"
+import { addUser } from "./api-handlers/add_user"
+import { getContribution } from "./api-handlers/get_contribution"
+import { getContributions } from "./api-handlers/get_contributions"
+import { getStats } from "./api-handlers/get_stats"
+import { getUser } from "./api-handlers/get_user"
+import { getUsers } from "./api-handlers/get_users"
+import { verify } from "./api-handlers/twitter-verify"
 
-import { PrismaClient } from "@prisma/client";
-import { addContribution } from "./api-handlers/add_contribution";
-import { getContributions } from "./api-handlers/get_contributions";
-import { getContribution } from "./api-handlers/get_contribution";
-import { verify } from "./api-handlers/twitter-verify";
-import { addUser } from "./api-handlers/add_user";
-import { getUser } from "./api-handlers/get_user";
-import { getUsers } from "./api-handlers/get_users";
-import { getStats } from "./api-handlers/get_stats";
-import { ArweaveClient } from "ar-wrapper";
+dotenv.config()
+
 // import contributions from "./api/contributions";
 
-const app = express();
-app.use(express.json());
+const app = express()
+app.use(express.json())
 
 const corsOptions = {
   origin: process.env.ORIGIN || "http://localhost:3000",
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
-const port = process.env.PORT || 3001;
+}
+const port = process.env.PORT || 3001
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
-const address = process.env.ARWEAVE_ADDRESS;
-const keyfile = process.env.ARWEAVE_KEY;
-const arweave = new ArweaveClient(address, keyfile);
-const services = { prisma, arweave };
+const address = process.env.ARWEAVE_ADDRESS
+const keyfile = process.env.ARWEAVE_KEY
+const arweave = new ArweaveClient(address, keyfile)
+const services = { prisma, arweave }
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+  res.send("Hello World!")
+})
 
-app.use(cors(corsOptions));
+app.use(cors(corsOptions))
 // app.use("/api/contributions", contributions)
 
-const usersRouter = express.Router();
-usersRouter.post("/", addUser(services));
-usersRouter.get("/", getUsers(services));
-usersRouter.get("/:id", getUser(services));
-app.use("/users", usersRouter);
+const usersRouter = express.Router()
+usersRouter.post("/", addUser(services))
+usersRouter.get("/", getUsers(services))
+usersRouter.get("/:id", getUser(services))
+app.use("/users", usersRouter)
 
-const contributionsRouter = express.Router();
-contributionsRouter.get("/", getContributions(services));
-contributionsRouter.get("/:id", getContribution(services));
-contributionsRouter.post("/", addContribution(services));
-app.use("/contributions", contributionsRouter);
+const contributionsRouter = express.Router()
+contributionsRouter.get("/", getContributions(services))
+contributionsRouter.get("/:id", getContribution(services))
+contributionsRouter.post("/", addContribution(services))
+app.use("/contributions", contributionsRouter)
 
-const twitterRouter = express.Router();
-twitterRouter.post("/verify", verify(services));
-app.use("/twitter", twitterRouter);
+const twitterRouter = express.Router()
+twitterRouter.post("/verify", verify(services))
+app.use("/twitter", twitterRouter)
 
-app.get("/stats", getStats(services));
+app.get("/stats", getStats(services))
 
 app.listen(port, () => {
-  return console.log(`Express is listening at http://localhost:${port}`);
-});
+  return console.log(`Express is listening at http://localhost:${port}`)
+})
 
 // This is used for vercel serverless. currently we are using a serverful express though.
 // export default { app, services };

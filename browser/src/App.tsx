@@ -1,19 +1,20 @@
-import { Canvas } from "@react-three/fiber";
-import UniverseScene from "./components/UniverseScene";
-import { DevelopmentBanner } from "./components/DevelopmentBanner";
-import { Routes, Route } from "react-router-dom";
-import { About } from "./pages/About";
-import { ContributionsPage } from "./pages/ContributionsPage";
-import { Navbar } from "./components/Navbar";
-import { Main } from "./pages/Main";
-import { UserProvider } from "./helpers/user";
-import { ArweaveProvider } from "./helpers/contexts/ArweaveContext";
-import { ModalProvider } from "./helpers/contexts/ModalContext";
-import { ContributionsProvider } from "./helpers/contexts/ContributionsContext";
-import BlobContributionsScissorCanvasRendererWithContributions from "./components/BlobContributionsScissorCanvasRendererWithContributions";
-import { StatsProvider } from "./helpers/contexts/StatsContext";
-import { LoadingIndicator } from "./components/core/LoadingIndicator";
-import { Suspense } from "react";
+import { Canvas } from "@react-three/fiber"
+import { Suspense } from "react"
+import { Route, Routes } from "react-router-dom"
+
+import BlobContributionsScissorCanvasRendererWithContributions from "./components/BlobContributionsScissorCanvasRendererWithContributions"
+import { LoadingIndicator } from "./components/core/LoadingIndicator"
+import { DevelopmentBanner } from "./components/DevelopmentBanner"
+import { Navbar } from "./components/Navbar"
+import UniverseScene from "./components/UniverseScene"
+import { ArweaveProvider } from "./helpers/contexts/ArweaveContext"
+import { ContributionsProvider } from "./helpers/contexts/ContributionsContext"
+import { ModalProvider } from "./helpers/contexts/ModalContext"
+import { StatsProvider } from "./helpers/contexts/StatsContext"
+import { UserProvider } from "./helpers/user"
+import { About } from "./pages/About"
+import { ContributionsPage } from "./pages/ContributionsPage"
+import { Main } from "./pages/Main"
 
 function App() {
   return (
@@ -75,7 +76,7 @@ function App() {
       </Routes>
       <div className="universe-gradient" />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
