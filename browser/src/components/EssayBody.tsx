@@ -1,6 +1,6 @@
-import "./EssayBody.css";
-import Footnote from "./Footnote";
-import SectionDivider from "./SectionDivider";
+import "./EssayBody.css"
+import Footnote from "./Footnote"
+import SectionDivider from "./SectionDivider"
 
 export function EssayBody() {
   return (
@@ -730,5 +730,5 @@ export function EssayBody() {
         instantiations of a shared pluriversal vision.
       </p>
     </>
-  );
+  )
 }

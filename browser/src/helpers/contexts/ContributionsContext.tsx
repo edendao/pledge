@@ -7,15 +7,15 @@ import { getContribution, getContributions } from "../api"
 
 interface ContributionsContextInfo {
   contributions: Contribution[]
-  fetchContributions(): void
-  fetchContribution(id: number): Promise<Contribution>
+  fetchContributions(): Promise<void>
+  fetchContribution(id: number): Promise<Contribution | null>
 }
 
 export const ContributionsContext =
   React.createContext<ContributionsContextInfo>({
     contributions: [],
-    fetchContributions: () => {},
-    fetchContribution: () => Promise.resolve(undefined),
+    fetchContributions: () => Promise.resolve(undefined),
+    fetchContribution: () => Promise.resolve(null),
   })
 
 export function ContributionsProvider({ children }) {
@@ -23,7 +23,7 @@ export function ContributionsProvider({ children }) {
   const contributionIdsSet = useRef(new Set<number>())
 
   useEffect(() => {
-    void fetchContributions()
+    fetchContributions()
   }, [])
 
   async function fetchContributions(highlightedContributionId?: number) {

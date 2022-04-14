@@ -1,52 +1,50 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Pattern, Prompt } from "../types/common/server-api";
-import Blob, { SizeChoice } from "./Blob";
-import { randomEuler } from "./Blobs";
+import React, { useEffect, useMemo, useState } from "react"
+import { Pattern, Prompt } from "../types/common/server-api"
+import Blob, { SizeChoice } from "./Blob"
+import { randomEuler } from "./Blobs"
 
 async function sha256(message: string) {
   // encode as UTF-8
-  const msgBuffer = new TextEncoder().encode(message);
+  const msgBuffer = new TextEncoder().encode(message)
 
   // hash the message
-  const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer)
 
   // convert ArrayBuffer to Array
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
 
   // convert bytes to hex string
-  const hashHex = hashArray
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-  return hashHex;
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("")
+  return hashHex
 }
 
 function toHex(str: string) {
   return str
     .split("")
     .map((_, i) => str.charCodeAt(i).toString(16))
-    .join("");
+    .join("")
 }
 
 function getMessageChunk(
   message: string,
   idx: number,
   val_start: number,
-  range: number
+  range: number,
 ) {
   if (!message) {
-    return 0.5 * val_start;
+    return 0.5 * val_start
   }
-  const sub = message.substring(idx * 8, idx * 8 + 8);
-  const eightCount = sub.split("8").length;
-  const float = parseInt(sub, 16) / 0xffffffff;
-  return float * range * eightCount + val_start;
+  const sub = message.substring(idx * 8, idx * 8 + 8)
+  const eightCount = sub.split("8").length
+  const float = parseInt(sub, 16) / 0xffffffff
+  return float * range * eightCount + val_start
 }
 
-const PromptDensityStart = 0.35;
-const PromptDensityIncrement = 0.4;
-const PromptAlphaStart = 0.75;
-const PromptAlphaIncrement = 0.07;
-const PatternColorIncrement = 0.1;
+const PromptDensityStart = 0.35
+const PromptDensityIncrement = 0.4
+const PromptAlphaStart = 0.75
+const PromptAlphaIncrement = 0.07
+const PatternColorIncrement = 0.1
 
 export function BlobSingle({
   walletId,
@@ -55,29 +53,29 @@ export function BlobSingle({
   prompt,
   lowRes,
 }: {
-  walletId: string;
-  pattern: string;
-  response: string;
-  prompt: string;
-  lowRes?: boolean;
+  walletId: string
+  pattern: string
+  response: string
+  prompt: string
+  lowRes?: boolean
 }): React.ReactElement {
   // 64 chars long sha256 str
-  const contrib = `${walletId}: ${response}`;
-  const rotation = useMemo(() => randomEuler(), []);
+  const contrib = `${walletId}: ${response}`
+  const rotation = useMemo(() => randomEuler(), [])
 
-  const [message, setMessage] = useState<undefined | string>();
+  const [message, setMessage] = useState<undefined | string>()
 
   useEffect(() => {
     const handler = setTimeout(async () => {
-      const hash = await sha256(`0x${toHex(contrib)}`);
-      setMessage(hash);
-    }, 0);
+      const hash = await sha256(`0x${toHex(contrib)}`)
+      setMessage(hash)
+    }, 0)
 
     return () => {
       // teardown
-      clearTimeout(handler);
-    };
-  }, [contrib]);
+      clearTimeout(handler)
+    }
+  }, [contrib])
 
   return (
     <>
@@ -112,5 +110,5 @@ export function BlobSingle({
         offset={getMessageChunk(message, 3, 0, 2 * Math.PI)}
       />
     </>
-  );
+  )
 }

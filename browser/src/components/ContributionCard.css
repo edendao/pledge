@@ -19,8 +19,8 @@
 
 .full.full {
   width: 100%;
-  min-height:360px;
-  max-width:none;
+  min-height: 360px;
+  max-width: none;
 }
 
 /* remove bg when its in a modal. */
@@ -101,7 +101,7 @@
   font-size: var(--font-size-small) !important;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-left: .25rem;
+  margin-left: 0.25rem;
 }
 
 /**
@@ -172,5 +172,5 @@
 }
 
 .authorButton:hover {
-  opacity: .85;
+  opacity: 0.85;
 }

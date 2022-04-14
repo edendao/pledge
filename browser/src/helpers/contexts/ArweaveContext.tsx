@@ -3,19 +3,19 @@ import React, { useEffect, useState } from "react"
 import { ArweaveEssayTransaction, fetchLatestArweaveEssay } from "../api"
 
 export interface ArweaveContextInfo {
-  latestEssayInfo?: ArweaveEssayTransaction
+  latestEssayInfo: ArweaveEssayTransaction | null
 }
 
 export const ArweaveContext = React.createContext<ArweaveContextInfo>({
-  latestEssayInfo: undefined,
+  latestEssayInfo: null,
 })
 
 export function ArweaveProvider({ children }) {
-  const [essayTransaction, setEssayTransaction] = useState<
-    ArweaveEssayTransaction | undefined
-  >(undefined)
+  const [essayTransaction, setEssayTransaction] =
+    useState<ArweaveEssayTransaction | null>(null)
+
   useEffect(() => {
-    fetchLatestArweaveEssay().then(res => setEssayTransaction(res))
+    fetchLatestArweaveEssay().then(setEssayTransaction)
   }, [])
 
   const arweaveContext = { latestEssayInfo: essayTransaction }

@@ -1,18 +1,18 @@
-import * as THREE from "three";
-import { MeshProps, useFrame } from "@react-three/fiber";
-import { useRef } from "react";
-import Blob, { SizeChoice } from "./Blob";
+import * as THREE from "three"
+import { MeshProps, useFrame } from "@react-three/fiber"
+import { useRef } from "react"
+import Blob, { SizeChoice } from "./Blob"
 
 export interface BlobFloatingProps {
-  random: number;
-  size: number;
-  speed: number;
-  color: number;
-  density: number;
-  strength: number;
-  alpha?: number;
-  offset: number;
-  meshProps?: MeshProps;
+  random: number
+  size: number
+  speed: number
+  color: number
+  density: number
+  strength: number
+  alpha?: number
+  offset: number
+  meshProps?: MeshProps
 }
 
 export default function BlobFloating({
@@ -26,7 +26,7 @@ export default function BlobFloating({
   offset,
   meshProps,
 }: BlobFloatingProps) {
-  const ref = useRef<THREE.Group>();
+  const ref = useRef<THREE.Group>()
 
   // move blobs to the left
   // const gsap = useGsap();
@@ -49,24 +49,24 @@ export default function BlobFloating({
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
 
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime() + random * 10000;
+  useFrame(state => {
+    const t = state.clock.getElapsedTime() + random * 10000
 
     if (ref.current) {
       ref.current.rotation.set(
         Math.cos(t / 4) / 2,
         Math.sin(t / 4) / 2,
-        Math.cos(t / 1.5) / 2
-      );
+        Math.cos(t / 1.5) / 2,
+      )
 
-      ref.current.position.y = Math.sin(t / 1.5) / 2;
+      ref.current.position.y = Math.sin(t / 1.5) / 2
 
       ref.current.scale.x =
         ref.current.scale.y =
         ref.current.scale.z =
-          THREE.MathUtils.lerp(ref.current.scale.z, 1, 0.1);
+          THREE.MathUtils.lerp(ref.current.scale.z, 1, 0.1)
     }
-  });
+  })
 
   return (
     <group ref={ref}>
@@ -81,5 +81,5 @@ export default function BlobFloating({
         meshProps={meshProps}
       />
     </group>
-  );
+  )
 }

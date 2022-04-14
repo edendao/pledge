@@ -1,16 +1,16 @@
-import { useMemo, useRef } from "react";
-import fragmentShader from "../shaders/fragment.glsl";
-import vertexShader from "../shaders/vertex.glsl";
-import { MeshProps } from "@react-three/fiber";
-import { IcosahedronGeometry } from "three";
+import { useMemo, useRef } from "react"
+import fragmentShader from "../shaders/fragment.glsl"
+import vertexShader from "../shaders/vertex.glsl"
+import { MeshProps } from "@react-three/fiber"
+import { IcosahedronGeometry } from "three"
 
 interface ShaderProps {
-  speed: number;
-  color: number;
-  density: number;
-  strength: number;
-  alpha?: number;
-  offset: number;
+  speed: number
+  color: number
+  density: number
+  strength: number
+  alpha?: number
+  offset: number
 }
 
 export enum SizeChoice {
@@ -21,27 +21,27 @@ export enum SizeChoice {
 const BlobSizes: Record<SizeChoice, number> = {
   [SizeChoice.Small]: 0.8,
   [SizeChoice.Medium]: 5,
-};
+}
 
 const IcosahedronGeos: Record<string, IcosahedronGeometry> = Object.fromEntries(
   Object.entries(BlobSizes).map(([sizeChoice, size]) => [
     sizeChoice as SizeChoice,
     new IcosahedronGeometry(size, 8),
-  ])
-);
+  ]),
+)
 
 const LowResIcosahedronGeos: Record<string, IcosahedronGeometry> =
   Object.fromEntries(
     Object.entries(BlobSizes).map(([sizeChoice, size]) => [
       sizeChoice as SizeChoice,
       new IcosahedronGeometry(size, 1),
-    ])
-  );
+    ]),
+  )
 
 interface BlobProps extends ShaderProps {
-  sizeType: SizeChoice;
-  lowRes?: boolean;
-  meshProps?: MeshProps;
+  sizeType: SizeChoice
+  lowRes?: boolean
+  meshProps?: MeshProps
 }
 
 export function BlobShaderMaterial({
@@ -52,7 +52,7 @@ export function BlobShaderMaterial({
   alpha = 1.0,
   offset,
 }: ShaderProps) {
-  const ref = useRef();
+  const ref = useRef()
   const data = useMemo(() => {
     return {
       uniforms: {
@@ -74,8 +74,8 @@ export function BlobShaderMaterial({
       },
       fragmentShader,
       vertexShader,
-    };
-  }, [color, speed, density, strength, offset, alpha]);
+    }
+  }, [color, speed, density, strength, offset, alpha])
 
   return (
     <shaderMaterial
@@ -85,7 +85,7 @@ export function BlobShaderMaterial({
       {...data}
       precision="lowp"
     />
-  );
+  )
 }
 
 export default function Blob({
@@ -103,5 +103,5 @@ export default function Blob({
     >
       <BlobShaderMaterial {...shaderProps} />
     </mesh>
-  );
+  )
 }

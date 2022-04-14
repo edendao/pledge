@@ -13,9 +13,7 @@ function getContributionsByPattern(
   contributions: Contribution[],
   pattern: Pattern,
 ) {
-  const filteredContributions = contributions.filter(
-    (c) => c.pattern === pattern,
-  )
+  const filteredContributions = contributions.filter(c => c.pattern === pattern)
   return filteredContributions
 }
 

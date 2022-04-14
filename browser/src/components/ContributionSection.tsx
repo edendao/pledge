@@ -1,6 +1,21 @@
-import "./ContributionSection.css";
-import { useCallback, useContext, useState } from "react";
-import { descriptionText } from "../classNameConstants";
+import "./ContributionSection.css"
+
+import dayjs from "dayjs"
+import { useCallback, useContext, useState } from "react"
+import React from "react"
+import { BiErrorCircle } from "react-icons/bi"
+import { MdArrowBack, MdArrowForward } from "react-icons/md"
+import { Link } from "react-router-dom"
+import { addContribution, addUser, verifyTwitter } from "src/helpers/api"
+import { getUser } from "src/helpers/api"
+import { ArweaveContext } from "src/helpers/contexts/ArweaveContext"
+import { ContributionsContext } from "src/helpers/contexts/ContributionsContext"
+import { getArweaveLink, getContributionLink } from "src/helpers/contributions"
+import { UserContext } from "src/helpers/user"
+import { SignaturesContext } from "src/pages/Main"
+import { ButtonClass } from "src/types/styles"
+
+import { descriptionText } from "../classNameConstants"
 import {
   Author,
   Contribution,
@@ -8,36 +23,23 @@ import {
   PatternToDisplay,
   Prompt,
   TweetTemplate,
-} from "../types/common/server-api";
-import { Dropdown, DropdownItem } from "./core/Dropdown";
-import { addContribution, addUser, verifyTwitter } from "src/helpers/api";
-import { AutoGrowInput } from "./core/AutoGrowInput";
-import React from "react";
-import { ButtonClass } from "src/types/styles";
-import { ConnectWalletButton } from "./core/WalletButton";
+} from "../types/common/server-api"
 import {
   ContributionCard,
   CopyLink,
   getFullContributionResponse,
-} from "./ContributionCard";
-import { getUser } from "src/helpers/api";
-import { Link } from "react-router-dom";
+} from "./ContributionCard"
+import ContributionsCarousel from "./ContributionsCarousel"
+import { AsyncButton } from "./core/AsyncButton"
+import { AutoGrowInput } from "./core/AutoGrowInput"
+import { Checkmark } from "./core/Checkmark"
+import { Dropdown, DropdownItem } from "./core/Dropdown"
+import { LoadingIndicator } from "./core/LoadingIndicator"
+import { ConnectWalletButton } from "./core/WalletButton"
 import {
   getDisplayForAuthor,
   getMinuteTimeOfDayDateDisplay,
-} from "./SignatureContent";
-import { LoadingIndicator } from "./core/LoadingIndicator";
-import { Checkmark } from "./core/Checkmark";
-import ContributionsCarousel from "./ContributionsCarousel";
-import { SignaturesContext } from "src/pages/Main";
-import { ContributionsContext } from "src/helpers/contexts/ContributionsContext";
-import { getArweaveLink, getContributionLink } from "src/helpers/contributions";
-import { UserContext } from "src/helpers/user";
-import { AsyncButton } from "./core/AsyncButton";
-import dayjs from "dayjs";
-import { ArweaveContext } from "src/helpers/contexts/ArweaveContext";
-import { MdArrowBack, MdArrowForward } from "react-icons/md";
-import { BiErrorCircle } from "react-icons/bi";
+} from "./SignatureContent"
 
 enum Page {
   TermsOfUse = "TermsOfUse",
@@ -51,52 +53,52 @@ const PageNames: { [key in Page]: string } = {
   [Page.TwitterVerify]: "Verification",
   [Page.Contribute]: "Contribution",
   [Page.Share]: "Sharing",
-};
+}
 
 function getAgreementToSign(
   isDisagreeing: boolean,
-  transactionId: string
+  transactionId: string,
 ): string {
-  const date = getMinuteTimeOfDayDateDisplay(dayjs());
+  const date = getMinuteTimeOfDayDateDisplay(dayjs())
   const PluriverseAgreement = `I have read and agree to the principles of the pluriverse, and I acknowledge that the entire responsibility / liability as to the realization of the pluriverse lies with all of us.
 
 I want to help build the pluriverse together.
 
-I am signing the document on ${date}, which lives on the permaweb on Arweave tx:${transactionId}`;
+I am signing the document on ${date}, which lives on the permaweb on Arweave tx:${transactionId}`
   const PluriverseDissent = `I have read and understand the pluriverse, but disagree. Plural worlds are made possible when each of us consistently prepares space for disagreement and dissent. 
 
 This considered refusal is a signed gift which guarantees that I will continue to attend to reality as I see it, while acknowledging that even disobedience is a kind of participation. I will use my divergent perspective to inspire curious and creative work and strive to keep surprising others with courageous choices.
 
-I am signing the document on ${date}, which lives on the permaweb on Arweave tx:${transactionId}`;
+I am signing the document on ${date}, which lives on the permaweb on Arweave tx:${transactionId}`
 
-  return isDisagreeing ? PluriverseDissent : PluriverseAgreement;
+  return isDisagreeing ? PluriverseDissent : PluriverseAgreement
 }
 
-const ResponseCharacterLimit = 900;
-export const Placeholder = "...";
+const ResponseCharacterLimit = 900
+export const Placeholder = "..."
 export const replaceJSX = (
   str: string,
   replacement: { [x: string]: any; pattern?: JSX.Element },
   {
     includePlaceholder = true,
     ignoreCase = false,
-  }: { includePlaceholder?: boolean; ignoreCase?: boolean } = {}
+  }: { includePlaceholder?: boolean; ignoreCase?: boolean } = {},
 ): React.ReactNode => {
-  const result: any[] = [];
-  const keys = Object.keys(replacement);
+  const result: any[] = []
+  const keys = Object.keys(replacement)
   const getRegExp = () => {
-    const regexp: any[] = [];
-    keys.forEach((key) => regexp.push(includePlaceholder ? `{${key}}` : key));
-    return new RegExp(regexp.join("|"), ignoreCase ? "ig" : "g");
-  };
+    const regexp: any[] = []
+    keys.forEach(key => regexp.push(includePlaceholder ? `{${key}}` : key))
+    return new RegExp(regexp.join("|"), ignoreCase ? "ig" : "g")
+  }
   str.split(getRegExp()).forEach((item, i) => {
     result.push(
       item,
-      <React.Fragment key={i}>{replacement[keys[i]]}</React.Fragment>
-    );
-  });
-  return result;
-};
+      <React.Fragment key={i}>{replacement[keys[i]]}</React.Fragment>,
+    )
+  })
+  return result
+}
 
 export const replaceAllJSX = (
   str: string,
@@ -105,28 +107,28 @@ export const replaceAllJSX = (
   {
     includePlaceholder = true,
     ignoreCase = false,
-  }: { includePlaceholder?: boolean; ignoreCase?: boolean } = {}
+  }: { includePlaceholder?: boolean; ignoreCase?: boolean } = {},
 ): React.ReactNode => {
-  const result: any[] = [];
+  const result: any[] = []
   const getRegExp = () => {
     return new RegExp(
       includePlaceholder ? `{${replacementStr}}` : replacementStr,
-      ignoreCase ? "ig" : "g"
-    );
-  };
-  const results = str.split(getRegExp());
+      ignoreCase ? "ig" : "g",
+    )
+  }
+  const results = str.split(getRegExp())
   if (results.length === 1) {
-    return results[0];
+    return results[0]
   }
   results.forEach((item, i) => {
     if (i === results.length - 1) {
-      result.push(item);
+      result.push(item)
     } else {
-      result.push(item, <React.Fragment key={i}>{pattern}</React.Fragment>);
+      result.push(item, <React.Fragment key={i}>{pattern}</React.Fragment>)
     }
-  });
-  return result;
-};
+  })
+  return result
+}
 
 // TODO: need to handle replacing with JSX but also providing match...
 // export const replaceJSXWithMatch = (
@@ -179,28 +181,28 @@ export const PromptDescriptions: Record<Prompt, string> = {
   [Prompt.WeNeed]: `We need {${Placeholder}} because`,
   [Prompt.Example]: `An example of {${Placeholder}} is`,
   [Prompt.FreeForm]: ``,
-};
+}
 
 const PromptDescriptionsToDisplay: Record<Prompt, string> = Object.entries(
-  PromptDescriptions
+  PromptDescriptions,
 ).reduce<Record<Prompt, string>>((acc, [prompt, placeholder]) => {
   switch (prompt) {
     case Prompt.FreeForm:
-      acc[prompt] = Placeholder + " (free form)";
-      break;
+      acc[prompt] = Placeholder + " (free form)"
+      break
 
     case Prompt.LooksLike:
     case Prompt.WeNeed:
     case Prompt.Example:
-      acc[prompt] = placeholder.replaceAll(/\{|\}/g, "");
-      break;
+      acc[prompt] = placeholder.replaceAll(/\{|\}/g, "")
+      break
   }
 
-  return acc;
-}, {} as Record<Prompt, string>);
+  return acc
+}, {} as Record<Prompt, string>)
 
 function getTweetIntentLink(text: string): string {
-  return `https://twitter.com/intent/tweet?text=${encodeURI(text)}`;
+  return `https://twitter.com/intent/tweet?text=${encodeURI(text)}`
 }
 
 function PreviewCard({
@@ -209,10 +211,10 @@ function PreviewCard({
   prompt,
   pattern,
 }: {
-  author: Author;
-  response?: string;
-  prompt: Prompt;
-  pattern: Pattern;
+  author: Author
+  response?: string
+  prompt: Prompt
+  pattern: Pattern
 }) {
   const contribution: Contribution = {
     author,
@@ -220,30 +222,30 @@ function PreviewCard({
     prompt,
     pattern,
     createdAt: new Date(),
-  };
+  }
   return (
     <ContributionCard
       contribution={contribution}
       className={`preview-card !w-auto mx-auto md:ml-auto md:!w-full`}
     />
-  );
+  )
 }
 
 interface TermsOfUseProps {
-  user?: Author;
-  handleErr(err: Error): void;
+  user?: Author
+  handleErr(err: Error): void
   onSubmitWallet({
     name,
     twitterUsername,
     isDisagreeing,
   }?: {
-    name?: string;
-    twitterUsername?: string;
-    isDisagreeing?: boolean;
-  }): Promise<void>;
-  onSuccess(): void;
-  onContinue(): void;
-  nextPage?: Page;
+    name?: string
+    twitterUsername?: string
+    isDisagreeing?: boolean
+  }): Promise<void>
+  onSuccess(): void
+  onContinue(): void
+  nextPage?: Page
 }
 
 function getUserLabel(user: Author, text: string) {
@@ -251,7 +253,7 @@ function getUserLabel(user: Author, text: string) {
     <div className="ml-auto">
       {text} <b>{getDisplayForAuthor(user, true, true)}</b>
     </div>
-  );
+  )
 }
 
 function TermsOfUse({
@@ -262,11 +264,11 @@ function TermsOfUse({
   onSuccess,
   nextPage,
 }: TermsOfUseProps) {
-  const [name, setName] = useState<string | undefined>(undefined);
-  const { currentUserWalletAddress } = useContext(UserContext);
-  const { latestEssayInfo } = useContext(ArweaveContext);
-  const { version, transactionId = "" } = latestEssayInfo || {};
-  const arweaveDocLink = transactionId ? getArweaveLink(transactionId) : "";
+  const [name, setName] = useState<string | undefined>(undefined)
+  const { currentUserWalletAddress } = useContext(UserContext)
+  const { latestEssayInfo } = useContext(ArweaveContext)
+  const { version, transactionId = "" } = latestEssayInfo || {}
+  const arweaveDocLink = transactionId ? getArweaveLink(transactionId) : ""
 
   return (
     <div className="terms">
@@ -275,7 +277,7 @@ function TermsOfUse({
         {(user || currentUserWalletAddress) &&
           getUserLabel(
             user || { walletId: currentUserWalletAddress },
-            "signing as"
+            "signing as",
           )}
       </div>
       <p className="text-xl">
@@ -332,7 +334,7 @@ function TermsOfUse({
               <label className="text-lg pr-2">Your name: </label>
               <input
                 value={name}
-                onChange={(evt) => setName(evt.target.value)}
+                onChange={evt => setName(evt.target.value)}
                 placeholder="verses"
                 maxLength={60}
               />
@@ -356,47 +358,43 @@ function TermsOfUse({
         )}
       </div>
     </div>
-  );
+  )
 }
 
 export function ContributionSection() {
-  const [page, setPage] = useState(Page.TermsOfUse);
+  const [page, setPage] = useState(Page.TermsOfUse)
   const {
     currentUser,
     setCurrentUser,
     signAndValidate,
     currentUserWalletAddress,
-  } = useContext(UserContext);
-  const { latestEssayInfo } = useContext(ArweaveContext);
-  const { version, transactionId = "" } = latestEssayInfo || {};
-  const { fetchSignatures } = useContext(SignaturesContext);
-  const { fetchContribution, contributions } = useContext(ContributionsContext);
+  } = useContext(UserContext)
+  const { latestEssayInfo } = useContext(ArweaveContext)
+  const { version, transactionId = "" } = latestEssayInfo || {}
+  const { fetchSignatures } = useContext(SignaturesContext)
+  const { fetchContribution, contributions } = useContext(ContributionsContext)
 
   // TODO: add unmount effect to have "alert unsaved changes" if response is filled in and on contribution page
 
-  const [selectedPrompt, setSelectedPrompt] = useState<Prompt>(
-    Prompt.LooksLike
-  );
+  const [selectedPrompt, setSelectedPrompt] = useState<Prompt>(Prompt.LooksLike)
   const [selectedPattern, setSelectedPattern] = useState<Pattern>(
-    Pattern.Pluriverse
-  );
+    Pattern.Pluriverse,
+  )
   const [twitterUsername, setTwitterUsername] = useState<string | undefined>(
-    undefined
-  );
-  const [response, setResponse] = useState<string | undefined>(undefined);
+    undefined,
+  )
+  const [response, setResponse] = useState<string | undefined>(undefined)
 
-  const PromptItems: DropdownItem[] = Object.keys(Prompt).map((promptKey) => ({
+  const PromptItems: DropdownItem[] = Object.keys(Prompt).map(promptKey => ({
     name: PromptDescriptions[Prompt[promptKey as keyof typeof Prompt]],
     displayName: PromptDescriptionsToDisplay[promptKey as keyof typeof Prompt],
     onClick: () => setSelectedPrompt(promptKey as unknown as Prompt),
-  }));
-  const PatternItems: DropdownItem[] = Object.keys(Pattern).map(
-    (patternKey) => ({
-      name: Pattern[patternKey as keyof typeof Pattern] as string,
-      displayName: PatternToDisplay[patternKey as keyof typeof Pattern],
-      onClick: () => setSelectedPattern(patternKey as Pattern),
-    })
-  );
+  }))
+  const PatternItems: DropdownItem[] = Object.keys(Pattern).map(patternKey => ({
+    name: Pattern[patternKey as keyof typeof Pattern] as string,
+    displayName: PatternToDisplay[patternKey as keyof typeof Pattern],
+    onClick: () => setSelectedPattern(patternKey as Pattern),
+  }))
 
   const promptSelect = (
     <label className="block">
@@ -408,14 +406,14 @@ export function ContributionSection() {
           selectedPrompt
             ? PromptDescriptionsToDisplay[selectedPrompt].replace(
                 "...",
-                PatternToDisplay[selectedPattern]
+                PatternToDisplay[selectedPattern],
               )
             : undefined
         }
         className="patternSelect w-full"
       />
     </label>
-  );
+  )
   const patternSelect = (
     <label className="block">
       <p className="text-xl pt-0">Pattern</p>
@@ -425,67 +423,67 @@ export function ContributionSection() {
         className="patternSelect w-full"
       />
     </label>
-  );
+  )
 
-  let promptStarter: React.ReactNode = "";
-  let promptStarterUneditable = "";
+  let promptStarter: React.ReactNode = ""
+  let promptStarterUneditable = ""
   if (selectedPrompt) {
-    promptStarter = PromptDescriptions[selectedPrompt];
-    promptStarterUneditable = PromptDescriptions[selectedPrompt];
+    promptStarter = PromptDescriptions[selectedPrompt]
+    promptStarterUneditable = PromptDescriptions[selectedPrompt]
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     promptStarter = replaceJSX(promptStarter, {
       [Placeholder]: patternSelect,
-    });
+    })
     promptStarterUneditable = promptStarterUneditable.replace(
       `{${Placeholder}}`,
-      selectedPattern
-    );
+      selectedPattern,
+    )
   }
 
-  const [error, setError] = useState<string | undefined>();
+  const [error, setError] = useState<string | undefined>()
   const handleErr = (err: Error) => {
-    setError(err.message);
-  };
-  const [isLoading, setIsLoading] = useState(false);
+    setError(err.message)
+  }
+  const [isLoading, setIsLoading] = useState(false)
   const [selectedContribution, setSelectedContribution] = useState<
     Contribution | undefined
-  >(undefined);
+  >(undefined)
 
   async function updateContribution(id: number) {
-    const contribution = await fetchContribution(id);
-    setSelectedContribution(contribution);
+    const contribution = await fetchContribution(id)
+    setSelectedContribution(contribution)
   }
 
   async function onSaveContribution() {
     if (!selectedPrompt || !selectedPattern || !response) {
-      return;
+      return
     }
 
-    setIsLoading(true);
+    setIsLoading(true)
     try {
       await signAndValidate(
         getFullContributionResponse({
           response,
           prompt: selectedPrompt,
           pattern: selectedPattern,
-        } as any)
-      );
+        } as any),
+      )
       const newContributionId = await addContribution({
         prompt: selectedPrompt,
         pattern: selectedPattern,
         response,
         walletId: currentUser!.walletId,
-      });
+      })
       // TODO: eliminate this and just return th actual contribution data with the response above.
-      await updateContribution(newContributionId);
-      setResponse(undefined);
-      setPage(Page.Share);
-      setError(undefined);
+      await updateContribution(newContributionId)
+      setResponse(undefined)
+      setPage(Page.Share)
+      setError(undefined)
     } catch (err) {
-      handleErr(err as Error);
+      handleErr(err as Error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
 
@@ -495,27 +493,27 @@ export function ContributionSection() {
     name,
     isDisagreeing = false,
   }: {
-    name?: string;
-    isDisagreeing?: boolean;
+    name?: string
+    isDisagreeing?: boolean
   } = {}) {
     if (!currentUserWalletAddress) {
-      throw new Error("Submitting signature without connected wallet.");
+      throw new Error("Submitting signature without connected wallet.")
     }
 
     // Validate user
-    let userToUpdate: Author | undefined = currentUser;
+    let userToUpdate: Author | undefined = currentUser
     if (!userToUpdate) {
       userToUpdate = await getUser({
         id: currentUserWalletAddress,
-      });
+      })
     }
     // TODO: upsert user if the data does not match.
-    let signature: string | undefined = userToUpdate?.signature;
+    let signature: string | undefined = userToUpdate?.signature
 
     if (!userToUpdate) {
       signature = await signAndValidate(
-        getAgreementToSign(isDisagreeing, transactionId)
-      );
+        getAgreementToSign(isDisagreeing, transactionId),
+      )
       // add user after successful
       userToUpdate = await addUser({
         walletId: currentUserWalletAddress,
@@ -523,34 +521,34 @@ export function ContributionSection() {
         signature,
         essayTransactionId: transactionId,
         disagrees: isDisagreeing,
-      });
+      })
     }
 
     // finish
-    setError(undefined);
-    setCurrentUser(userToUpdate);
-    navigateFromTerms(userToUpdate);
+    setError(undefined)
+    setCurrentUser(userToUpdate)
+    navigateFromTerms(userToUpdate)
     // trigger signatures to refetch
-    fetchSignatures(userToUpdate);
+    fetchSignatures(userToUpdate)
   }
 
   const navigateFromTerms = useCallback(
     (user: Author | undefined = currentUser) => {
       // if twitter username is populated and not verified, redirect to verify flow.
-      const nextPage: Page = getNextPage();
-      setPage(nextPage);
+      const nextPage: Page = getNextPage()
+      setPage(nextPage)
     },
-    [currentUser]
-  );
+    [currentUser],
+  )
 
   function onClickTweetProof() {
-    const tweetText = `${TweetTemplate}${currentUser!.signature}`;
-    window.open(getTweetIntentLink(tweetText), "_blank");
+    const tweetText = `${TweetTemplate}${currentUser!.signature}`
+    window.open(getTweetIntentLink(tweetText), "_blank")
   }
 
   function isResponseValid() {
     if (!response || !response.trim().length) {
-      return false;
+      return false
     }
 
     return (
@@ -558,37 +556,37 @@ export function ContributionSection() {
       response
         .toLocaleLowerCase()
         .includes(PatternToDisplay[selectedPattern].toLocaleLowerCase())
-    );
+    )
   }
 
   async function onClickVerifyTwitter() {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
       if (!currentUser?.twitterVerified) {
         if (!twitterUsername) {
-          throw new Error("Twitter username is not set.");
+          throw new Error("Twitter username is not set.")
         }
 
         await verifyTwitter({
           walletId: currentUser!.walletId,
           twitterUsername,
           signature: currentUser!.signature,
-        });
+        })
         setCurrentUser({
           ...currentUser!,
           twitterUsername,
           twitterVerified: true,
-        });
+        })
       }
-      setError(undefined);
+      setError(undefined)
       // switch page after showing success
       setTimeout(() => {
-        setPage(Page.Contribute);
-      }, 750);
+        setPage(Page.Contribute)
+      }, 750)
     } catch (err) {
-      handleErr(err as Error);
+      handleErr(err as Error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
 
@@ -604,7 +602,7 @@ export function ContributionSection() {
             onSuccess={() => setError(undefined)}
             nextPage={getNextPage()}
           />
-        );
+        )
 
       case Page.TwitterVerify:
         return (
@@ -630,7 +628,7 @@ export function ContributionSection() {
                   <div className="ml-auto pl-1">
                     <input
                       value={twitterUsername}
-                      onChange={(evt) =>
+                      onChange={evt =>
                         setTwitterUsername(evt.target.value.replaceAll("@", ""))
                       }
                       placeholder="verses_xyz"
@@ -693,7 +691,7 @@ export function ContributionSection() {
               </ol>
             </div>
           </div>
-        );
+        )
 
       case Page.Contribute:
         return (
@@ -760,7 +758,7 @@ export function ContributionSection() {
               )}
             </div>
           </div>
-        );
+        )
 
       case Page.Share: {
         return (
@@ -784,11 +782,11 @@ export function ContributionSection() {
               </p>
             </div>
           </div>
-        );
+        )
       }
 
       default:
-        throw Error("unreachable");
+        throw Error("unreachable")
     }
   }
 
@@ -796,37 +794,37 @@ export function ContributionSection() {
     switch (page) {
       case Page.Contribute: {
         const filteredContributions = contributions.filter(
-          (c) => c.pattern === selectedPattern && c.prompt === selectedPrompt
-        );
+          c => c.pattern === selectedPattern && c.prompt === selectedPrompt,
+        )
         return (
           <div className="contributionsPreview">
             <ContributionsCarousel contributions={filteredContributions} />
           </div>
-        );
+        )
       }
 
       case Page.TermsOfUse:
       case Page.TwitterVerify:
       case Page.Share:
       default:
-        return null;
+        return null
     }
   }
 
   const maybeFilteredPages = Object.values(Page).filter(
-    (p) =>
+    p =>
       !currentUser ||
       !currentUser.twitterUsername ||
       (currentUser &&
         currentUser.twitterUsername &&
         !currentUser.twitterVerified) ||
-      p !== Page.TwitterVerify
-  );
+      p !== Page.TwitterVerify,
+  )
 
   function renderPageProgress() {
     return (
       <div className="pageProgressContainer mb-8">
-        {maybeFilteredPages.map((p) => (
+        {maybeFilteredPages.map(p => (
           <div
             key={p}
             className={`pageProgress ${
@@ -835,35 +833,35 @@ export function ContributionSection() {
           />
         ))}
       </div>
-    );
+    )
   }
 
   function getPreviousPage() {
-    const pageIndex = maybeFilteredPages.indexOf(page);
+    const pageIndex = maybeFilteredPages.indexOf(page)
     return pageIndex - 1 >= 0
       ? (maybeFilteredPages[pageIndex - 1] as Page)
-      : undefined;
+      : undefined
   }
 
   function getNextPage() {
-    const pageIndex = maybeFilteredPages.indexOf(page);
+    const pageIndex = maybeFilteredPages.indexOf(page)
     return pageIndex + 1 < maybeFilteredPages.length
       ? (maybeFilteredPages[pageIndex + 1] as Page)
-      : undefined;
+      : undefined
   }
 
   function renderPageNavigation() {
     if (page === Page.TermsOfUse) {
-      return;
+      return
     }
 
-    const previousPage = getPreviousPage();
-    const nextPage = page === Page.Contribute ? undefined : getNextPage();
-    let contributionLink;
-    let contributionShareText: string | undefined;
+    const previousPage = getPreviousPage()
+    const nextPage = page === Page.Contribute ? undefined : getNextPage()
+    let contributionLink
+    let contributionShareText: string | undefined
     if (selectedContribution) {
-      contributionLink = getContributionLink(selectedContribution!);
-      contributionShareText = `My contribution to the pluriverse, a world where many worlds may fit\n\n${contributionLink}`;
+      contributionLink = getContributionLink(selectedContribution!)
+      contributionShareText = `My contribution to the pluriverse, a world where many worlds may fit\n\n${contributionLink}`
     }
 
     return (
@@ -899,10 +897,7 @@ export function ContributionSection() {
               // className="twitter-share-button"
               className={ButtonClass("glass-button-cta mt-2 md:mt-0")}
               onClick={() => {
-                window.open(
-                  getTweetIntentLink(contributionShareText),
-                  "_blank"
-                );
+                window.open(getTweetIntentLink(contributionShareText), "_blank")
               }}
             >
               Share on Twitter
@@ -910,7 +905,7 @@ export function ContributionSection() {
           )}
         </div>
       )
-    );
+    )
   }
 
   return (
@@ -927,5 +922,5 @@ export function ContributionSection() {
       </div>
       {renderPageExtra()}
     </>
-  );
+  )
 }

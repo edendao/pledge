@@ -1,36 +1,38 @@
+import "./ContributionCard.css"
+
+import { OrbitControls } from "@react-three/drei/core/OrbitControls"
+import { Canvas } from "@react-three/fiber"
+import dayjs from "dayjs"
+import { Suspense, useContext, useState } from "react"
+import { BiCheck, BiLink } from "react-icons/bi"
+import { BlobSingle } from "src/components/BlobSingle"
+import { ModalContext } from "src/helpers/contexts/ModalContext"
+import { getContributionLink } from "src/helpers/contributions"
+import { getPatternPlaceholder } from "src/types"
 import {
   Contribution,
   PatternToDisplay,
   Prompt,
-} from "src/types/common/server-api";
-import dayjs from "dayjs";
-import { BlobSingle } from "src/components/BlobSingle";
-import "./ContributionCard.css";
+} from "src/types/common/server-api"
+
+import BlobSingleScissorWindow from "./BlobSingleScissorWindow"
+import BlobsPostProcessing from "./BlobsPostProcessing"
 import {
   Placeholder,
   PromptDescriptions,
   replaceAllJSX,
   replaceJSX,
-} from "./ContributionSection";
-import { getPatternPlaceholder } from "src/types";
-import { getDisplayForAuthor } from "./SignatureContent";
-import BlobSingleScissorWindow from "./BlobSingleScissorWindow";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei/core/OrbitControls";
-import { BiLink, BiCheck } from "react-icons/bi";
-import { getContributionLink } from "src/helpers/contributions";
-import { Suspense, useContext, useState } from "react";
-import { ModalContext } from "src/helpers/contexts/ModalContext";
-import { LoadingIndicator } from "./core/LoadingIndicator";
-import BlobsPostProcessing from "./BlobsPostProcessing";
+} from "./ContributionSection"
+import { LoadingIndicator } from "./core/LoadingIndicator"
+import { getDisplayForAuthor } from "./SignatureContent"
 
 interface Props {
-  contribution: Contribution;
-  hideHeader?: boolean;
-  isCompact?: boolean;
-  className?: string;
-  renderCanvas?: boolean;
-  full?: boolean;
+  contribution: Contribution
+  hideHeader?: boolean
+  isCompact?: boolean
+  className?: string
+  renderCanvas?: boolean
+  full?: boolean
 }
 
 export function getFullContributionResponse({
@@ -41,11 +43,11 @@ export function getFullContributionResponse({
   return (
     PromptDescriptions[prompt].replace(
       `{${Placeholder}}`,
-      getPatternPlaceholder(pattern, prompt)
+      getPatternPlaceholder(pattern, prompt),
     ) +
     " " +
     response
-  );
+  )
 }
 
 export function getContributionCardResponse({
@@ -54,7 +56,7 @@ export function getContributionCardResponse({
   pattern,
 }: Contribution) {
   if (!response) {
-    return response;
+    return response
   }
 
   switch (prompt) {
@@ -68,53 +70,51 @@ export function getContributionCardResponse({
           })}{" "}
           {response}
         </>
-      );
+      )
     // TODO: this doesn't replace with the right case from before.
     case Prompt.FreeForm:
       return replaceAllJSX(
         response,
         PatternToDisplay[pattern],
         <b>{PatternToDisplay[pattern]}</b>,
-        { ignoreCase: true, includePlaceholder: false }
-      );
+        { ignoreCase: true, includePlaceholder: false },
+      )
   }
 }
 
 export function CopyLink({ content }: { content: string }) {
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState(false)
 
   return (
     <button
       className="link"
-      onClick={(e) => {
-        e.stopPropagation();
-        navigator.clipboard.writeText(content);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 3000);
+      onClick={e => {
+        e.stopPropagation()
+        navigator.clipboard.writeText(content)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 3000)
       }}
     >
       Copy Link
       {copied ? <BiCheck color="#34eb61" /> : <BiLink />}
     </button>
-  );
+  )
 }
 
 export function ContributionCard({
   contribution,
   hideHeader = true,
-  isCompact = false,
   className = "",
   renderCanvas,
   full,
 }: Props) {
-  const { author, response, prompt, pattern, createdAt, id } = contribution;
+  const { author, response, prompt, pattern, createdAt, id } = contribution
 
-  const authorDisplay = getDisplayForAuthor(author, true);
-  const date = dayjs(createdAt, { utc: true });
-  const dateDisplay = date.format("MMM, YYYY");
-  const contributionLink = getContributionLink(contribution);
-  const { openContributionModal, openContributionId } =
-    useContext(ModalContext);
+  const authorDisplay = getDisplayForAuthor(author, true)
+  const date = dayjs(createdAt, { utc: true })
+  const dateDisplay = date.format("MMM, YYYY")
+  const contributionLink = getContributionLink(contribution)
+  const { openContributionModal, openContributionId } = useContext(ModalContext)
 
   return (
     <div
@@ -159,7 +159,7 @@ export function ContributionCard({
           cursor: "pointer",
         }}
         className="absolute"
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
         {id === undefined || renderCanvas ? (
           <Suspense fallback={<LoadingIndicator />}>
@@ -187,5 +187,5 @@ export function ContributionCard({
         )}
       </div>
     </div>
-  );
+  )
 }

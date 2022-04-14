@@ -1,11 +1,11 @@
-import { InputHTMLAttributes } from "react";
-import "./AutoGrowInput.css";
+import { InputHTMLAttributes } from "react"
+import "./AutoGrowInput.css"
 
 interface Props {
-  value?: string;
-  onChange: (value: string) => void;
-  className?: string;
-  extraProps?: InputHTMLAttributes<HTMLTextAreaElement>;
+  value?: string
+  onChange: (value: string) => void
+  className?: string
+  extraProps?: InputHTMLAttributes<HTMLTextAreaElement>
 }
 
 export function AutoGrowInput({
@@ -53,12 +53,12 @@ export function AutoGrowInput({
         style={{ minHeight: "150px" }}
         // placeholder="Enter your response to the prompt..."
         value={value}
-        onChange={(event) => onChange(event.target.value)}
+        onChange={event => onChange(event.target.value)}
       />
     </div>
 
     // <span contentEditable="true" role="textbox" className="contenteditableSpan">
     //   {!value ? extraProps?.placeholder : ""}
     // </span>
-  );
+  )
 }

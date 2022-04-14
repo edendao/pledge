@@ -1,14 +1,14 @@
-import { ButtonClass } from "src/types/styles";
-import { ButtonHTMLAttributes, useContext, useState } from "react";
-import { UserContext } from "src/helpers/user";
+import { ButtonClass } from "src/types/styles"
+import { ButtonHTMLAttributes, useContext, useState } from "react"
+import { UserContext } from "src/helpers/user"
 
 interface BaseProps {
-  children?: React.ReactNode;
-  onError: (error: Error) => void;
+  children?: React.ReactNode
+  onError: (error: Error) => void
 }
 
 type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "onError"> &
-  BaseProps;
+  BaseProps
 
 // TODO: convert to AsyncButton
 export function ConnectWalletButton({
@@ -17,18 +17,18 @@ export function ConnectWalletButton({
   className,
   ...buttonProps
 }: Props) {
-  const [loading, setLoading] = useState<boolean>(false);
-  const { connectWallet } = useContext(UserContext);
+  const [loading, setLoading] = useState<boolean>(false)
+  const { connectWallet } = useContext(UserContext)
 
   async function onClickConnectWallet() {
-    setLoading(true);
+    setLoading(true)
     try {
-      await connectWallet();
+      await connectWallet()
     } catch (err: unknown) {
-      console.log(err);
-      onError(err as Error);
+      console.log(err)
+      onError(err as Error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -44,5 +44,5 @@ export function ConnectWalletButton({
     >
       {loading ? "Connecting..." : children}
     </button>
-  );
+  )
 }

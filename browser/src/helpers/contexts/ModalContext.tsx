@@ -79,7 +79,7 @@ export function ModalProvider({ children }) {
           contribution={highlightedContribution}
           renderCanvas
           full
-          className={`mx-auto `}
+          className="mx-auto"
         />
       </div>
     )

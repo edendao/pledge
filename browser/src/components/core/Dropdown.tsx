@@ -1,22 +1,22 @@
-import { Menu, Transition } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/solid";
-import { Fragment } from "react";
+import { Menu, Transition } from "@headlessui/react"
+import { ChevronDownIcon } from "@heroicons/react/solid"
+import { Fragment } from "react"
 
 export interface DropdownItem {
-  name: string;
-  displayName?: string;
-  onClick: () => void;
+  name: string
+  displayName?: string
+  onClick: () => void
 }
 
 interface Props {
-  items: DropdownItem[];
-  selectedItemName?: string;
-  defaultOption?: string;
-  className?: string;
+  items: DropdownItem[]
+  selectedItemName?: string
+  defaultOption?: string
+  className?: string
 }
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(" ")
 }
 
 export function Dropdown({
@@ -51,7 +51,7 @@ export function Dropdown({
       >
         <Menu.Items className="z-10 origin-top-right absolute right-0 mt-2 w-46 rounded-md dropdown">
           <div className="py-1">
-            {items.map((item) => (
+            {items.map(item => (
               <Menu.Item key={item.name}>
                 {({ active }) => (
                   <button
@@ -67,5 +67,5 @@ export function Dropdown({
         </Menu.Items>
       </Transition>
     </Menu>
-  );
+  )
 }

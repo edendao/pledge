@@ -6,8 +6,8 @@ import {
   HueSaturation,
   Noise,
   Vignette,
-} from "@react-three/postprocessing";
-import { Resizer } from "postprocessing";
+} from "@react-three/postprocessing"
+import { Resizer } from "postprocessing"
 
 export default function BlobsPostProcessing({ includeBloom = true }) {
   return (
@@ -36,5 +36,5 @@ export default function BlobsPostProcessing({ includeBloom = true }) {
       />
       <Noise opacity={0.01} />
     </EffectComposer>
-  );
+  )
 }

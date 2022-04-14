@@ -74,7 +74,7 @@ export function getDisplayForAuthor(
       <span
         role="button"
         className="authorButton"
-        onClick={(e) => {
+        onClick={e => {
           window.open(twitterUrl || etherscanUrl, "_blank")
           e.stopPropagation()
         }}
@@ -154,7 +154,7 @@ export function SignatureContent() {
   return (
     <div className="signatureContainer mt-16 flex flex-col gap-2">
       <h2 className="text-4xl font-bold mb-2 text-center">Signatures</h2>
-      {signaturesToRender.map((author) => (
+      {signaturesToRender.map(author => (
         <Signature key={author.walletId} author={author} />
       ))}
       {numSignaturesToRender < signatures.length && (
