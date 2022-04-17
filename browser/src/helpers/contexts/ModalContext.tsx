@@ -58,7 +58,7 @@ export function ModalProvider({ children }) {
       <div>
         <div className="flex flex-row w-full justify-between items-center">
           <h2 className="font-bold text-2xl">
-            Pluriverse Contribution #{highlightedContribution.id}
+            Eden Dao Contribution #{highlightedContribution.id}
           </h2>
           <button onClick={closeContributionModal}>
             <IoMdClose color="var(--foreground-default)" />

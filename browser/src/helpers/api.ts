@@ -33,10 +33,10 @@ const ApiUrl =
     ? process.env.REACT_APP_API_URL
     : "http://localhost:3001"
 
-async function makeRequest(
+async function makeRequest<T>(
   url: string,
   { method, body }: { method: string; body?: object },
-): Promise<any> {
+): Promise<T> {
   const response = await fetch(url, {
     // redirect: "follow", // manual, *follow, error
     mode: "cors", // no-cors, *cors, same-origin
@@ -80,17 +80,15 @@ export async function getContribution({
 }
 
 export async function getContributions({
-  offset,
-  contributionId,
+  offset = 0,
+  contributionId = 0,
 }: GetContributionsRequest): Promise<Contribution[]> {
   const response = await makeRequest(
     withQueryParams(`${ApiUrl}/contributions`, {
-      offset: offset ? String(offset) : offset,
-      contributionId: contributionId ? String(contributionId) : contributionId,
+      offset: `${offset}`,
+      contributionId: `${contributionId}`,
     }),
-    {
-      method: "GET",
-    },
+    { method: "GET" },
   )
   return response as Contribution[]
 }
@@ -104,16 +102,12 @@ export async function getUser({
   return response as Author | undefined
 }
 
-export async function getUsers({ offset }: GetUsersRequest = {}): Promise<
+export async function getUsers({ offset = 0 }: GetUsersRequest = {}): Promise<
   Author[]
 > {
   const response = await makeRequest(
-    withQueryParams(`${ApiUrl}/users`, {
-      offset: offset ? String(offset) : offset,
-    }),
-    {
-      method: "GET",
-    },
+    withQueryParams(`${ApiUrl}/users`, { offset: `${offset}` }),
+    { method: "GET" },
   )
   return response as Author[]
 }

@@ -37,7 +37,7 @@ export function Navbar() {
                 <span className="pr-3 pt-1">
                   <FiBook />
                 </span>
-                Pluriverse
+                Eden Dao
               </span>
               <span className="md:hidden">
                 <FiBook />

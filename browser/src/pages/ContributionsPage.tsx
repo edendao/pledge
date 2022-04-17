@@ -49,8 +49,10 @@ export function ContributionsPage() {
   }
 
   async function tryOpenContributionModal(highlightedId: number) {
-    const highlightedContribution = await fetchContribution(highlightedId)
-    openContributionModal(highlightedContribution, "/contributions")
+    const c = await fetchContribution(highlightedId)
+    if (c) {
+      openContributionModal(c, "/contributions")
+    }
   }
 
   useEffect(() => {
@@ -76,7 +78,7 @@ export function ContributionsPage() {
   )
 
   function getMetaTags() {
-    const title = "Contributions to the Digital Pluriverse"
+    const title = "Contributions to the Eden Dao"
     const description = "Contributions from the community to the pluriverse."
     return (
       <Helmet>
@@ -104,7 +106,7 @@ export function ContributionsPage() {
         />
       ) : null
 
-    const title = `Contribution to the Digital Pluriverse by ${authorDisplay}`
+    const title = `Contribution to the Eden Dao by ${authorDisplay}`
     return (
       <Helmet>
         <title>{title}</title>
@@ -143,20 +145,14 @@ export function ContributionsPage() {
       <div className="container md:max-w-3xl mx-auto pb-10">
         <div className="mb-10">
           <h2 className="font-title text-3xl pt-16 font-bold pb-3">
-            Contributions to "A Pattern Language for the Pluriverse"
+            Contributions to "Eden Dao Pledge"
           </h2>
           <p>
-            Contributions to this pattern language were given by various
-            individuals and organizations that have gathered around this
-            artifact. These seed set of contributions represent the plurality of
-            the web.
+            Contributions were given by various individuals and organizations
+            that have gathered around this artifact. These seed set of
+            contributions represent the plurality of perspectives of a
+            regenerative renaissance.
           </p>
-          <p>
-            We welcome contributions of all kinds, but offer suggestions as to
-            the types of contributions we think would be{" "}
-            <a href="https://pluriverse.world/about">especially meaningful</a>.
-          </p>
-          {/* TODO: maybe put patterns here? */}
         </div>
         <div className="text-center">
           {/* TODO: add fun animation on click, maybe make all the cards bounce */}

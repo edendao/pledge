@@ -1,8 +1,9 @@
+import { MeshProps } from "@react-three/fiber"
 import { useMemo, useRef } from "react"
+import { IcosahedronGeometry } from "three"
+
 import fragmentShader from "../shaders/fragment.glsl"
 import vertexShader from "../shaders/vertex.glsl"
-import { MeshProps } from "@react-three/fiber"
-import { IcosahedronGeometry } from "three"
 
 interface ShaderProps {
   speed: number
@@ -53,29 +54,30 @@ export function BlobShaderMaterial({
   offset,
 }: ShaderProps) {
   const ref = useRef()
-  const data = useMemo(() => {
-    return {
+  const data = useMemo(
+    () => ({
       uniforms: {
         uTime: { value: 0 },
-        uHue: { value: color },
+        uHue: { value: 0.85 + color / 5 },
         uSpeed: { value: speed },
-        uNoiseDensity: { value: density },
-        uNoiseStrength: { value: strength },
+        uNoiseDensity: { value: 0.9 },
+        uNoiseStrength: { value: 0.06 },
         uOffset: { value: offset },
         uFreq: { value: 3 },
-        uAmp: { value: 6 },
+        uAmp: { value: 4 },
         red: { value: 0 },
         green: { value: 0 },
         blue: { value: 0 },
-        uAlpha: { value: alpha },
+        uAlpha: { value: 1 },
       },
       defines: {
         PI: Math.PI,
       },
       fragmentShader,
       vertexShader,
-    }
-  }, [color, speed, density, strength, offset, alpha])
+    }),
+    [color, speed, density, strength, offset, alpha],
+  )
 
   return (
     <shaderMaterial

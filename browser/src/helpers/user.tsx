@@ -54,11 +54,9 @@ export function UserProvider({ children }) {
   const [currentUser, setCurrentUser] = useState<Author | undefined>()
 
   async function fetchUserFromWalletAddress(): Promise<void> {
-    const addr = await getWalletAddress()
-    if (addr) {
-      const newUser = await getUser({
-        id: addr,
-      })
+    const address = await getWalletAddress()
+    if (address) {
+      const newUser = await getUser({ id: address })
       setCurrentUser(newUser)
       setCurrentUserWalletAddress(newUser?.walletId)
     }
@@ -102,19 +100,18 @@ export function UserProvider({ children }) {
     return signature
   }
 
-  useEffect(async () => {
-    try {
-      if (provider) {
-        const addr = await getWalletAddress()
-        await fetchUserFromWalletAddress()
-        // this needs to be after the fetch from user to handle when we've connected
-        // our wallet but user doesn't exist (to override the null wallet id from user db)
-        setCurrentUserWalletAddress(addr)
-      } else {
-        setCurrentUser(undefined)
-      }
-      // eslint-disable-next-line no-empty
-    } catch {}
+  useEffect(() => {
+    if (provider) {
+      getWalletAddress()
+        .then(address =>
+          fetchUserFromWalletAddress().then(() => {
+            setCurrentUserWalletAddress(address)
+          }),
+        )
+        .catch(() => {
+          setCurrentUserWalletAddress(undefined)
+        })
+    }
   }, [provider])
 
   const userContext = {

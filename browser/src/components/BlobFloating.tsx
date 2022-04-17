@@ -1,6 +1,7 @@
-import * as THREE from "three"
 import { MeshProps, useFrame } from "@react-three/fiber"
 import { useRef } from "react"
+import * as THREE from "three"
+
 import Blob, { SizeChoice } from "./Blob"
 
 export interface BlobFloatingProps {
@@ -27,27 +28,6 @@ export default function BlobFloating({
   meshProps,
 }: BlobFloatingProps) {
   const ref = useRef<THREE.Group>()
-
-  // move blobs to the left
-  // const gsap = useGsap();
-  // useEffect(() => {
-  //   gsap.fromTo(
-  //     ref.current.position,
-  //     {
-  //       z: 0,
-  //     },
-  //     {
-  //       z: 40,
-  //       scrollTrigger: {
-  //         trigger: "#essay-content",
-  //         start: 0,
-  //         end: " top top",
-  //         scrub: true,
-  //       },
-  //     }
-  //   );
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
 
   useFrame(state => {
     const t = state.clock.getElapsedTime() + random * 10000

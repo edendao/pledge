@@ -34,9 +34,8 @@ export function getPatternPlaceholder(
 
   let placeholder = PatternToDisplay[pattern]
   switch (pattern) {
-    case Pattern.Pluriverse:
     case Pattern.Commons:
-      placeholder = `the ${pattern}`
+      placeholder = `The ${pattern}`
   }
   return [Prompt.LooksLike].includes(prompt)
     ? placeholder[0].toUpperCase() + placeholder.slice(1)
@@ -44,7 +43,7 @@ export function getPatternPlaceholder(
 }
 
 export const Principles: Record<
-  Exclude<Pattern, Pattern.Pluriverse>,
+  Exclude<Pattern, Pattern.EdenDao>,
   Principle
 > = {
   [Pattern.Interoperability]: {
@@ -79,7 +78,7 @@ export const Principles: Record<
   },
   [Pattern.Commons]: {
     title: PatternToDisplay[Pattern.Commons],
-    problem: `Digital space is becoming privatized. The processes of commons enclosure that produced private property for the few and destitution for the many is repeating. We must build forms of social organization that transcend the binary between the market and the state. The current system gives us few options, caught as we are between the  surveillance state and surveillance capitalism. `,
+    problem: `space is becoming privatized. The processes of commons enclosure that produced private property for the few and destitution for the many is repeating. We must build forms of social organization that transcend the binary between the market and the state. The current system gives us few options, caught as we are between the  surveillance state and surveillance capitalism. `,
     solution: `We must reclaim the commons, and steward shared digital space with shared responsibility. Governing a resource like a commons means ensuring sustainable use; allowing for the maximum amount of shared benefit while preserving the resource for the future. Through commoning, the walled digital gardens of the metaverse will give way to the open community gardens of the pluriverse.`,
   },
   [Pattern.MaintenanceAndCare]: {

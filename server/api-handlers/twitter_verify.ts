@@ -1,11 +1,10 @@
 // POST /verify/:handle
 // must include signature in json body
 
-import { Prisma } from "@prisma/client"
 import { RequestHandler } from "express"
 import Twitter from "twitter"
 
-import { TweetTemplate, VerifyTwitterRequest } from "../common/server-api"
+import { VerifyTwitterRequest } from "../common/server-api"
 import { Services } from "../types"
 
 const client = new Twitter({
@@ -45,13 +44,12 @@ export function verify({ prisma }: Services): RequestHandler {
         return
       }
 
-      // otherwise, verify (check 100 most recent tweets)
       client.get(
         "statuses/user_timeline",
         {
           screen_name: twitterUsername,
           include_rts: false,
-          count: 100,
+          count: 25,
           tweet_mode: "extended",
         },
         async (error, tweets) => {
@@ -87,13 +85,8 @@ export function verify({ prisma }: Services): RequestHandler {
           res.status(400).json({ error: "No matching Tweets found" })
         },
       )
-    } catch (err) {
-      console.log(err)
-      if (err instanceof Prisma.PrismaClientValidationError) {
-        res.status(400).json({ error: `Received invalid data. ${err.message}` })
-        return
-      }
-      res.status(400).json({ error: err.message })
+    } catch (error) {
+      res.status(400).json({ error: error.message })
     }
   }
 }

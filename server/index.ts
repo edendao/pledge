@@ -11,7 +11,7 @@ import { getContributions } from "./api-handlers/get_contributions"
 import { getStats } from "./api-handlers/get_stats"
 import { getUser } from "./api-handlers/get_user"
 import { getUsers } from "./api-handlers/get_users"
-import { verify } from "./api-handlers/twitter-verify"
+import { verify } from "./api-handlers/twitter_verify"
 
 dotenv.config()
 
@@ -33,12 +33,7 @@ const keyfile = process.env.ARWEAVE_KEY
 const arweave = new ArweaveClient(address, keyfile)
 const services = { prisma, arweave }
 
-app.get("/", (req, res) => {
-  res.send("Hello World!")
-})
-
 app.use(cors(corsOptions))
-// app.use("/api/contributions", contributions)
 
 const usersRouter = express.Router()
 usersRouter.post("/", addUser(services))
@@ -61,6 +56,3 @@ app.get("/stats", getStats(services))
 app.listen(port, () => {
   return console.log(`Express is listening at http://localhost:${port}`)
 })
-
-// This is used for vercel serverless. currently we are using a serverful express though.
-// export default { app, services };

@@ -3,7 +3,7 @@ import "./SignatureContent.css"
 import dayjs from "dayjs"
 import { useContext, useState } from "react"
 import { SignaturesContext } from "src/pages/Main"
-import { Author, SignatureLimit } from "src/types/common/server-api"
+import { Author } from "src/types/common/server-api"
 import { ButtonClass } from "src/types/styles"
 
 import { Checkmark } from "./core/Checkmark"
@@ -18,10 +18,7 @@ function truncateWallet(address: string) {
 
 const SignaturePageSize = 50
 
-function getTwitterDisplay(
-  { twitterVerified, twitterUsername }: Author,
-  { hideUsername }: { hideUsername?: boolean } = {},
-) {
+function getTwitterDisplay({ twitterVerified, twitterUsername }: Author) {
   const twitterUrl = twitterUsername && `https://twitter.com/${twitterUsername}`
 
   if (!twitterUrl) {
@@ -55,7 +52,6 @@ export function getTextDisplayForAuthor(
   return name || walletAddr
 }
 
-// TODO: get ENS?
 export function getDisplayForAuthor(
   author: Author,
   shouldTruncate?: boolean,
@@ -100,8 +96,8 @@ export function getDisplayForAuthor(
 export function getMinuteTimeOfDayDateDisplay(date: dayjs.Dayjs): string {
   const localHour = date.local().hour()
   return date.format(
-    `MMM D, YYYY [on minute] m ${
-      localHour >= 6 && localHour < 18 ? "[in the day] ☀️" : "[in the night] 🌙"
+    `MMM D, YYYY [at] h:mma ${
+      localHour >= 6 && localHour < 18 ? "[of the day] ☀️" : "[of the night] 🌙"
     }`,
   )
 }
@@ -111,8 +107,6 @@ export function Signature({ author }: { author: Author }) {
   const nameDisplay = name || walletId
   const date = dayjs(createdAt, { utc: true })
   const dateDisplay = getMinuteTimeOfDayDateDisplay(date)
-
-  // TODO: add location
 
   return (
     <div
@@ -142,10 +136,6 @@ export function SignatureContent() {
 
   function onSeeMore() {
     const newNumSignaturesToRender = numSignaturesToRender + SignaturePageSize
-    if (newNumSignaturesToRender > SignatureLimit) {
-      // TODO: fetch more from remote
-      // fetchSignatures(SignaturesLimit);
-    }
     setNumSignaturesToRender(
       Math.min(newNumSignaturesToRender, signatures.length),
     )

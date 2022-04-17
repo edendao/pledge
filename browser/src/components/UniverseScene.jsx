@@ -13,35 +13,19 @@ export default function UniverseScene() {
   useEffect(() => {
     gsap.fromTo(
       camera.position,
-      {
-        z: 5,
-      },
-      {
-        z: 15,
-        scrollTrigger: {
-          trigger: "#contributionSection",
-        },
-      },
+      { z: 5 },
+      { z: 15, scrollTrigger: { trigger: "#contributionSection" } },
     )
   }, [])
 
   useEffect(() => {
-    gsap.fromTo(
-      camera.position,
-      {
-        z: 20,
-      },
-      {
-        z: 5,
-        scrollTrigger: {
-          trigger: "#essay-content",
-          start: 0,
-          end: "top top",
-          scrub: true,
-        },
-      },
-    )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const scrollTrigger = {
+      trigger: "#essay-content",
+      start: 0,
+      end: "top top",
+      scrub: true,
+    }
+    gsap.fromTo(camera.position, { z: 20 }, { z: 5, scrollTrigger })
   }, [])
 
   return (

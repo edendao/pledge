@@ -18,7 +18,7 @@ export enum Prompt {
   FreeForm = "FreeForm",
 }
 export enum Pattern {
-  Pluriverse = "Pluriverse",
+  EdenDao = "EdenDao",
   Interoperability = "Interoperability",
   Agency = "Agency",
   Regeneration = "Regeneration",
@@ -30,7 +30,7 @@ export enum Pattern {
 }
 
 export const PatternToDisplay: Record<Pattern, string> = {
-  [Pattern.Pluriverse]: "Pluriverse",
+  [Pattern.EdenDao]: "Eden Dao",
   [Pattern.Interoperability]: "Interoperability",
   [Pattern.Agency]: "Agency",
   [Pattern.Regeneration]: "Regeneration",
@@ -110,9 +110,6 @@ export interface GetStatsResponse {
   contributionsTotal: number
 }
 
-export const TweetTemplate =
-  "verifying for @verses_xyz — to a pluriverse, a world where many worlds may fit\n\nhttps://pluriverse.world\n\nsig:"
-
-export const ArweaveEssayDocumentName = "PluriverseEssay"
+export const ArweaveEssayDocumentName = "EdenDaoEssay"
 export const ContributionLimit = 500
 export const SignatureLimit = 500

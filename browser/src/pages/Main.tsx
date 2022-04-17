@@ -25,8 +25,8 @@ export const SignaturesContext = React.createContext<SignaturesContextInfo>({
 
 function SignaturesProvider({ children }) {
   const [authors, setAuthors] = useState<Author[]>([])
-  useEffect(async () => {
-    await fetchSignatures()
+  useEffect(() => {
+    fetchSignatures()
   }, [])
 
   async function fetchSignatures(newSignature?: Author) {
@@ -129,7 +129,7 @@ export function Main() {
             <div className="mb-16 text-center mx-auto px-4">
               <p className="mb-4">
                 <b>{stats.authorsTotal}</b> members of the{" "}
-                <b className="shimmer">Pluriverse</b> community have signed, and{" "}
+                <b className="shimmer">Eden Dao</b> community have signed, and{" "}
                 <b>{stats.contributionsTotal}</b> contributions have been
                 submitted.
               </p>

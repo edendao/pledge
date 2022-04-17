@@ -20,7 +20,7 @@ enum Prompt {
 }
 
 enum Pattern {
-  Pluriverse
+  EdenDao
   Interoperability
   Agency
   Regeneration
@@ -49,9 +49,10 @@ model Contribution {
   id             Int      @id @default(autoincrement())
   response       String
   prompt         Prompt
-  pattern        Pattern  @default(Pluriverse)
+  pattern        Pattern  @default(EdenDao)
   createdAt      DateTime @default(now())
   authorWalletId String
   rank           Int      @default(0)
   author         User     @relation(fields: [authorWalletId], references: [id])
+  country        String
 }

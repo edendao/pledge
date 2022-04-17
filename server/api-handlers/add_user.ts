@@ -44,13 +44,15 @@ export function addUser({ prisma, arweave }: Services): RequestHandler {
       })
 
       res.json({ ...result, walletId: result.id } as AddUserResponse)
-    } catch (err) {
-      console.log(err)
-      if (err instanceof Prisma.PrismaClientValidationError) {
-        res.status(400).json({ error: `Received invalid data. ${err.message}` })
-        return
-      }
-      res.status(400).json({ error: err.message })
+    } catch (error) {
+      console.error(error)
+
+      const message =
+        error instanceof Prisma.PrismaClientValidationError
+          ? `Received invalid data: ${error.message}`
+          : error.message
+
+      res.status(400).json({ error: message })
     }
   }
 }

@@ -62,7 +62,6 @@ html,
 body,
 main,
 #root {
-  /* TODO: move this to a different component that only gets rendered once */
   counter-reset: footnote-content;
 
   margin: 0;
@@ -86,8 +85,8 @@ a {
 }
 
 p {
-  font-size: 1.25rem;
-  padding: var(--space-default) 0;
+  font-size: 1.5rem;
+  padding: calc(var(--space-default) * 2) 0;
   color: var(--foreground-dimmer);
 }
 
@@ -115,7 +114,7 @@ h3 {
 h1 + p::first-letter {
   float: left;
   font-size: 4rem;
-  line-height: 0.8;
+  line-height: 1.1;
   margin: 0 0.1em 0 0;
 }
 

@@ -10,7 +10,7 @@ import { addContribution, addUser, verifyTwitter } from "src/helpers/api"
 import { getUser } from "src/helpers/api"
 import { ArweaveContext } from "src/helpers/contexts/ArweaveContext"
 import { ContributionsContext } from "src/helpers/contexts/ContributionsContext"
-import { getArweaveLink, getContributionLink } from "src/helpers/contributions"
+import { getContributionLink } from "src/helpers/contributions"
 import { UserContext } from "src/helpers/user"
 import { SignaturesContext } from "src/pages/Main"
 import { ButtonClass } from "src/types/styles"
@@ -22,11 +22,9 @@ import {
   Pattern,
   PatternToDisplay,
   Prompt,
-  TweetTemplate,
 } from "../types/common/server-api"
 import {
   ContributionCard,
-  CopyLink,
   getFullContributionResponse,
 } from "./ContributionCard"
 import ContributionsCarousel from "./ContributionsCarousel"
@@ -60,18 +58,18 @@ function getAgreementToSign(
   transactionId: string,
 ): string {
   const date = getMinuteTimeOfDayDateDisplay(dayjs())
-  const PluriverseAgreement = `I have read and agree to the principles of the pluriverse, and I acknowledge that the entire responsibility / liability as to the realization of the pluriverse lies with all of us.
+  const EdenDaoAgreement = `I have read and agree to the principles of the pluriverse, and I acknowledge that the entire responsibility / liability as to the realization of the pluriverse lies with all of us.
 
 I want to help build the pluriverse together.
 
 I am signing the document on ${date}, which lives on the permaweb on Arweave tx:${transactionId}`
-  const PluriverseDissent = `I have read and understand the pluriverse, but disagree. Plural worlds are made possible when each of us consistently prepares space for disagreement and dissent. 
+  const EdenDaoDissent = `I have read and understand the pluriverse, but disagree. Plural worlds are made possible when each of us consistently prepares space for disagreement and dissent. 
 
 This considered refusal is a signed gift which guarantees that I will continue to attend to reality as I see it, while acknowledging that even disobedience is a kind of participation. I will use my divergent perspective to inspire curious and creative work and strive to keep surprising others with courageous choices.
 
 I am signing the document on ${date}, which lives on the permaweb on Arweave tx:${transactionId}`
 
-  return isDisagreeing ? PluriverseDissent : PluriverseAgreement
+  return isDisagreeing ? EdenDaoDissent : EdenDaoAgreement
 }
 
 const ResponseCharacterLimit = 900
@@ -109,7 +107,7 @@ export const replaceAllJSX = (
     ignoreCase = false,
   }: { includePlaceholder?: boolean; ignoreCase?: boolean } = {},
 ): React.ReactNode => {
-  const result: any[] = []
+  const result: React.ReactNode[] = []
   const getRegExp = () => {
     return new RegExp(
       includePlaceholder ? `{${replacementStr}}` : replacementStr,
@@ -217,16 +215,18 @@ function PreviewCard({
   pattern: Pattern
 }) {
   const contribution: Contribution = {
+    id: 0,
     author,
     response: response || "...",
     prompt,
     pattern,
     createdAt: new Date(),
   }
+
   return (
     <ContributionCard
       contribution={contribution}
-      className={`preview-card !w-auto mx-auto md:ml-auto md:!w-full`}
+      className="preview-card !w-auto mx-auto md:ml-auto md:!w-full"
     />
   )
 }
@@ -266,9 +266,6 @@ function TermsOfUse({
 }: TermsOfUseProps) {
   const [name, setName] = useState<string | undefined>(undefined)
   const { currentUserWalletAddress } = useContext(UserContext)
-  const { latestEssayInfo } = useContext(ArweaveContext)
-  const { version, transactionId = "" } = latestEssayInfo || {}
-  const arweaveDocLink = transactionId ? getArweaveLink(transactionId) : ""
 
   return (
     <div className="terms">
@@ -283,46 +280,31 @@ function TermsOfUse({
       <p className="text-xl">
         Please read the above essay ("
         <b>essay</b>") and patterns ("
-        <b>patterns</b>") carefully. Your signature is a recognition of the
-        ethic of the pluriverse, a belief in the potential of pluriversality,
-        and an acknowledgement that the responsibility as to the realization of
-        an evolving digital pluriverse lies with all of us.
-      </p>
-      {latestEssayInfo && (
-        <p className="text-xl">
-          Your signature will be associated with{" "}
-          <a href={arweaveDocLink}>version {version}</a> of the essay. The
-          patterns are manually input in the code and remain open and evolving.
-        </p>
-      )}
-      <p className="metaText">
-        <b>
-          There is not and will never be a financial token associated with
-          signing or contributing to this artifact.
-        </b>
+        <b>patterns</b>") carefully. Your signature is a recognition of the way
+        of Eden, a belief in the potential of a regenerative renaissance, and an
+        acknowledgement that the responsibility to the development of a
+        regenerative economy lies with all of us.
       </p>
       <p className="metaText">
         To sign, you need a compatible web3 wallet. Need help? Check out this{" "}
         <a
           target="_blank"
-          href="https://scribehow.com/shared/Sign_and_contribute_to_A_Pattern_Language_for_the_Pluriverse__8hyPAlzVR6-K2_AXEog6-w"
+          href="https://scribehow.com/shared/Sign_and_contribute_to_A_Pattern_Language_for_the_Eden Dao__8hyPAlzVR6-K2_AXEog6-w"
         >
           guide
         </a>
-        . If you would prefer not to, you can instead submit a signature via{" "}
-        <a href="https://forms.gle/2sUAMmQ9amQo8du4A">this form</a>.
+        .
       </p>
       <hr />
       <div className="text-center">
         <p className="text-xl py-1">
           <b>
-            "I want to help build the <b className="shimmer">pluriverse</b>{" "}
-            together"
+            "I want to help build the{" "}
+            <b className="shimmer">regenerative economy</b> together"
           </b>
         </p>
       </div>
 
-      {/* TODO: show the signature arweave link */}
       <div className="actionsContainer mb-4">
         {user?.signature ? (
           <button className={ButtonClass("wide")} onClick={onContinue}>
@@ -335,7 +317,7 @@ function TermsOfUse({
               <input
                 value={name}
                 onChange={evt => setName(evt.target.value)}
-                placeholder="verses"
+                placeholder=""
                 maxLength={60}
               />
             </div>
@@ -343,6 +325,7 @@ function TermsOfUse({
               onSubmit={() => onSubmitWallet({ name })}
               onError={handleErr}
               className="glass-button-cta"
+              disabled={!name?.trim().length}
             >
               Sign
             </AsyncButton>
@@ -370,7 +353,7 @@ export function ContributionSection() {
     currentUserWalletAddress,
   } = useContext(UserContext)
   const { latestEssayInfo } = useContext(ArweaveContext)
-  const { version, transactionId = "" } = latestEssayInfo || {}
+  const { transactionId = "" } = latestEssayInfo || {}
   const { fetchSignatures } = useContext(SignaturesContext)
   const { fetchContribution, contributions } = useContext(ContributionsContext)
 
@@ -378,7 +361,7 @@ export function ContributionSection() {
 
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt>(Prompt.LooksLike)
   const [selectedPattern, setSelectedPattern] = useState<Pattern>(
-    Pattern.Pluriverse,
+    Pattern.EdenDao,
   )
   const [twitterUsername, setTwitterUsername] = useState<string | undefined>(
     undefined,
@@ -451,8 +434,10 @@ export function ContributionSection() {
   >(undefined)
 
   async function updateContribution(id: number) {
-    const contribution = await fetchContribution(id)
-    setSelectedContribution(contribution)
+    const c = await fetchContribution(id)
+    if (c) {
+      setSelectedContribution(c)
+    }
   }
 
   async function onSaveContribution() {
@@ -508,7 +493,7 @@ export function ContributionSection() {
       })
     }
     // TODO: upsert user if the data does not match.
-    let signature: string | undefined = userToUpdate?.signature
+    let signature = userToUpdate?.signature
 
     if (!userToUpdate) {
       signature = await signAndValidate(
@@ -527,23 +512,24 @@ export function ContributionSection() {
     // finish
     setError(undefined)
     setCurrentUser(userToUpdate)
-    navigateFromTerms(userToUpdate)
+    navigateFromTerms()
     // trigger signatures to refetch
     fetchSignatures(userToUpdate)
   }
 
-  const navigateFromTerms = useCallback(
-    (user: Author | undefined = currentUser) => {
-      // if twitter username is populated and not verified, redirect to verify flow.
-      const nextPage: Page = getNextPage()
+  const navigateFromTerms = useCallback(() => {
+    // if twitter username is populated and not verified, redirect to verify flow.
+    const nextPage = getNextPage()
+    if (nextPage) {
       setPage(nextPage)
-    },
-    [currentUser],
-  )
+    }
+  }, [])
 
   function onClickTweetProof() {
-    const tweetText = `${TweetTemplate}${currentUser!.signature}`
-    window.open(getTweetIntentLink(tweetText), "_blank")
+    if (currentUser?.signature) {
+      const tweetText = `Announcing my support for the regenerative renaissance with @TheEdenDao\n\nsig:${currentUser.signature}`
+      window.open(getTweetIntentLink(tweetText), "_blank")
+    }
   }
 
   function isResponseValid() {
@@ -631,7 +617,7 @@ export function ContributionSection() {
                       onChange={evt =>
                         setTwitterUsername(evt.target.value.replaceAll("@", ""))
                       }
-                      placeholder="verses_xyz"
+                      placeholder="TheEdenDao"
                       maxLength={15}
                       style={{ maxWidth: "170px" }}
                     />
@@ -753,7 +739,7 @@ export function ContributionSection() {
               {/* TODO: fun loading animation */}
               {isLoading && (
                 <div className="loadingContainer">
-                  Creating Pluriverse... <LoadingIndicator />
+                  Creating Eden Dao... <LoadingIndicator />
                 </div>
               )}
             </div>
@@ -768,7 +754,7 @@ export function ContributionSection() {
               {currentUser && getUserLabel(currentUser, "sharing from")}
             </div>
             <p className="text-xl">
-              Thank you for contributing to the Pluriverse! Your contribution in
+              Thank you for contributing to the Eden Dao! Your contribution in
               all its glorious plurality is below:
             </p>
             <div className="flex items-center flex-col">
@@ -857,10 +843,11 @@ export function ContributionSection() {
 
     const previousPage = getPreviousPage()
     const nextPage = page === Page.Contribute ? undefined : getNextPage()
-    let contributionLink
+
+    let contributionLink: string | undefined
     let contributionShareText: string | undefined
     if (selectedContribution) {
-      contributionLink = getContributionLink(selectedContribution!)
+      contributionLink = getContributionLink(selectedContribution)
       contributionShareText = `My contribution to the pluriverse, a world where many worlds may fit\n\n${contributionLink}`
     }
 
@@ -889,7 +876,7 @@ export function ContributionSection() {
               className={ButtonClass("glass-button-cta mt-2 md:mt-0")}
               disabled={!isResponseValid()}
             >
-              Add to Pluriverse
+              Add to Eden Dao
             </button>
           )}
           {page === Page.Share && contributionLink && contributionShareText && (
@@ -897,7 +884,10 @@ export function ContributionSection() {
               // className="twitter-share-button"
               className={ButtonClass("glass-button-cta mt-2 md:mt-0")}
               onClick={() => {
-                window.open(getTweetIntentLink(contributionShareText), "_blank")
+                window.open(
+                  getTweetIntentLink(contributionShareText ?? ""),
+                  "_blank",
+                )
               }}
             >
               Share on Twitter

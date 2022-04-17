@@ -47,9 +47,9 @@ function App() {
         </UserProvider>
         <footer className="pt-2 pb-16 px-2 text-center">
           <span>
-            a drop from <a href="https://verses.xyz">Verses</a>, which is
-            supported with 💜 by <a href="https://gitcoin.co">Gitcoin</a> and{" "}
-            <a href="https://fil.org/">Filecoin Foundation</a>
+            a drop from <a href="https://twitter.com/TheEdenDao">Eden Dao</a>,
+            which is grateful to <a href="https://verses.xyz">Verses</a> for
+            their <a href="https://pluriverse.world">Pluriverse</a> 💜
           </span>
         </footer>
       </main>
@@ -72,7 +72,7 @@ function App() {
           }
         />
         <Route path="about" />
-        <Route path="contributions*" />
+        <Route path="contributions/*" />
       </Routes>
       <div className="universe-gradient" />
     </div>

@@ -1,6 +1,6 @@
 # Context
 
-This is the client-side code for the Pluriverse artifact that lives at https://pluriverse.world.
+This is the client-side code for the Eden Dao artifact that lives at https://pluriverse.world.
 
 # Setup
 
