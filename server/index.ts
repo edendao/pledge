@@ -24,6 +24,7 @@ const corsOptions = {
   origin: process.env.ORIGIN || "http://localhost:3000",
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
+const corsMiddleware = cors(corsOptions)
 const port = process.env.PORT || 3001
 
 const prisma = new PrismaClient()
@@ -36,22 +37,28 @@ const services = { prisma, arweave }
 app.use(cors(corsOptions))
 
 const usersRouter = express.Router()
-usersRouter.post("/", addUser(services))
-usersRouter.get("/", getUsers(services))
-usersRouter.get("/:id", getUser(services))
+usersRouter.options("/", corsMiddleware)
+usersRouter.post("/", corsMiddleware, addUser(services))
+usersRouter.get("/", corsMiddleware, getUsers(services))
+usersRouter.options("/:id", corsMiddleware)
+usersRouter.get("/:id", corsMiddleware, getUser(services))
 app.use("/users", usersRouter)
 
 const contributionsRouter = express.Router()
-contributionsRouter.get("/", getContributions(services))
-contributionsRouter.get("/:id", getContribution(services))
-contributionsRouter.post("/", addContribution(services))
+contributionsRouter.options("/", corsMiddleware)
+contributionsRouter.get("/", corsMiddleware, getContributions(services))
+contributionsRouter.options("/:id", corsMiddleware)
+contributionsRouter.get("/:id", corsMiddleware, getContribution(services))
+contributionsRouter.post("/", corsMiddleware, addContribution(services))
 app.use("/contributions", contributionsRouter)
 
 const twitterRouter = express.Router()
+twitterRouter.options("/verify", corsMiddleware)
 twitterRouter.post("/verify", verify(services))
 app.use("/twitter", twitterRouter)
 
-app.get("/stats", getStats(services))
+app.options("/stats", corsMiddleware)
+app.get("/stats", corsMiddleware, getStats(services))
 
 app.listen(port, () => {
   return console.log(`Express is listening at http://localhost:${port}`)
