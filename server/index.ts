@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 import { ArweaveClient } from "ar-wrapper"
-import cors from "cors"
+import corsMiddleware from "cors"
 import dotenv from "dotenv"
 import express from "express"
 
@@ -20,46 +20,45 @@ dotenv.config()
 const app = express()
 app.use(express.json())
 
-const corsOptions = {
+const cors = corsMiddleware({
   origin: process.env.ORIGIN || "http://localhost:3000",
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-}
-const corsMiddleware = cors(corsOptions)
+})
 const port = process.env.PORT || 3001
 
 const prisma = new PrismaClient()
-
-const address = process.env.ARWEAVE_ADDRESS
-const keyfile = process.env.ARWEAVE_KEY
-const arweave = new ArweaveClient(address, keyfile)
+const arweave = new ArweaveClient(
+  process.env.ARWEAVE_ADDRESS,
+  process.env.ARWEAVE_KEY,
+)
 const services = { prisma, arweave }
 
-app.use(cors(corsOptions))
+app.use(cors)
 
 const usersRouter = express.Router()
-usersRouter.options("/", corsMiddleware)
-usersRouter.post("/", corsMiddleware, addUser(services))
-usersRouter.get("/", corsMiddleware, getUsers(services))
-usersRouter.options("/:id", corsMiddleware)
-usersRouter.get("/:id", corsMiddleware, getUser(services))
+usersRouter.options("/", cors)
+usersRouter.post("/", cors, addUser(services))
+usersRouter.get("/", cors, getUsers(services))
+usersRouter.options("/:id", cors)
+usersRouter.get("/:id", cors, getUser(services))
 app.use("/users", usersRouter)
 
 const contributionsRouter = express.Router()
-contributionsRouter.options("/", corsMiddleware)
-contributionsRouter.get("/", corsMiddleware, getContributions(services))
-contributionsRouter.options("/:id", corsMiddleware)
-contributionsRouter.get("/:id", corsMiddleware, getContribution(services))
-contributionsRouter.post("/", corsMiddleware, addContribution(services))
+contributionsRouter.options("/", cors)
+contributionsRouter.get("/", cors, getContributions(services))
+contributionsRouter.options("/:id", cors)
+contributionsRouter.get("/:id", cors, getContribution(services))
+contributionsRouter.post("/", cors, addContribution(services))
 app.use("/contributions", contributionsRouter)
 
 const twitterRouter = express.Router()
-twitterRouter.options("/verify", corsMiddleware)
+twitterRouter.options("/verify", cors)
 twitterRouter.post("/verify", verify(services))
 app.use("/twitter", twitterRouter)
 
-app.options("/stats", corsMiddleware)
-app.get("/stats", corsMiddleware, getStats(services))
+app.options("/stats", cors)
+app.get("/stats", cors, getStats(services))
 
 app.listen(port, () => {
-  return console.log(`Express is listening at http://localhost:${port}`)
+  console.log(`Express is listening at ${port}`)
 })
