@@ -14,9 +14,9 @@ export function ArweaveProvider({ children }) {
   const [essayTransaction, setEssayTransaction] =
     useState<ArweaveEssayTransaction | null>(null)
 
-  useEffect(() => {
-    fetchLatestArweaveEssay().then(setEssayTransaction)
-  }, [])
+  // useEffect(() => {
+  //   fetchLatestArweaveEssay().then(setEssayTransaction)
+  // }, [])
 
   const arweaveContext = { latestEssayInfo: essayTransaction }
   return (

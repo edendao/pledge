@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import WalletConnectProvider from "@walletconnect/web3-provider"
 import { ethers } from "ethers"
 import { providers } from "ethers"

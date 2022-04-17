@@ -248,7 +248,7 @@ interface TermsOfUseProps {
   nextPage?: Page
 }
 
-function getUserLabel(user: Author, text: string) {
+function getUserLabel(user: Partial<Author>, text: string) {
   return (
     <div className="ml-auto">
       {text} <b>{getDisplayForAuthor(user, true, true)}</b>

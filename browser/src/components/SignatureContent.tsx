@@ -44,16 +44,13 @@ function getTwitterDisplay({ twitterVerified, twitterUsername }: Author) {
   )
 }
 
-export function getTextDisplayForAuthor(
-  { name, walletId }: Author,
+export const getTextDisplayForAuthor = (
+  { name, walletId }: Partial<Author>,
   shouldTruncate?: boolean,
-): React.ReactNode {
-  const walletAddr = shouldTruncate ? truncateWallet(walletId) : walletId
-  return name || walletAddr
-}
+) => name || (shouldTruncate ? truncateWallet(walletId as string) : walletId)
 
 export function getDisplayForAuthor(
-  author: Author,
+  author: Partial<Author>,
   shouldTruncate?: boolean,
   inline?: boolean,
 ): React.ReactNode {

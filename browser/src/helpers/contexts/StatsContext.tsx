@@ -14,13 +14,10 @@ export const StatsContext = React.createContext<StatsContextInfo>({
 export function StatsProvider({ children }) {
   const [stats, setStats] = useState<GetStatsResponse | undefined>(undefined)
   useEffect(() => {
-    getStats().then(res => setStats(res))
+    getStats().then(setStats)
   }, [])
 
-  const statsContext = { stats }
   return (
-    <StatsContext.Provider value={statsContext}>
-      {children}
-    </StatsContext.Provider>
+    <StatsContext.Provider value={{ stats }}>{children}</StatsContext.Provider>
   )
 }

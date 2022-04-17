@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import dayjs from "dayjs"
 import React, { useState } from "react"
 import { IoMdClose } from "react-icons/io"

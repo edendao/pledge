@@ -171,8 +171,6 @@ export async function fetchLatestArweaveEssay(): Promise<ArweaveEssayTransaction
       "Content-Type": "application/json",
       Accept: "application/json",
     },
-    // TODO: fill in the browser/src/components/EssayBody.tsx not hardcoded
-    // TODO: fill in owner address from environment variable
     body: JSON.stringify({
       query: `
       query {
@@ -199,16 +197,11 @@ export async function fetchLatestArweaveEssay(): Promise<ArweaveEssayTransaction
       `,
     }),
   })
-  const json = await req.json()
-  return (json.data.transactions.edges as Edge[])
-    .sort((a, b) => {
-      // we reverse sort edges if version is not defined to get latest version
-      return (
-        getVersionForArweaveTransaction(b) - getVersionForArweaveTransaction(a)
-      )
-    })
-    .map(e => ({
-      transactionId: e.node.id,
-      version: getVersionForArweaveTransaction(e),
-    }))[0]
+  const edges = (await req.json()).data.transactions.edges as Edge[]
+  const txns = edges.map(e => ({
+    transactionId: e.node.id,
+    version: getVersionForArweaveTransaction(e),
+  }))
+  // Latest transaction by version
+  return txns.sort((a, b) => b.version - a.version)[0]
 }
