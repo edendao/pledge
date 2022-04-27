@@ -129,7 +129,7 @@ export function ContributionSection() {
               <p className="text-2xl">
                 Somehow, amidst all the noise in the world,{" "}
                 <strong className="shimmer">
-                  {stats.authorsTotal} humans have come together
+                  {stats.contributionsTotal} voices have come together
                 </strong>{" "}
                 to co-create a beautiful future for this world. Come on in
                 &mdash; join us. The Eden Way is always walked in the company of
@@ -257,10 +257,16 @@ export function ContributionSection() {
                           findOrCreateAuthor(walletAddress, twitter).then(
                             setCurrentAuthor,
                           ),
-                        ]).then(() => {
-                          setStepLoading(s => ({ ...s, sign: false }))
-                          setStep("tweet")
-                        }, handleErr)
+                        ]).then(
+                          () => {
+                            setStepLoading(s => ({ ...s, sign: false }))
+                            setStep("tweet")
+                          },
+                          err => {
+                            setStep("sign")
+                            handleErr(err)
+                          },
+                        )
                       }}
                     >
                       {isStepLoading.sign
@@ -391,19 +397,21 @@ export function ContributionSection() {
         return (
           <div className="welcome">
             <div className="flex mb-6">
-              <h2 className="text-3xl font-bold">Thanks, new friend.</h2>
+              <h2 className="text-3xl font-bold shimmer">
+                Thanks, new friend.
+              </h2>
             </div>
             {stats && (
               <>
                 <p className="text-2xl">
-                  Your are now one of{" "}
+                  You have joined the choir of
                   <strong className="shimmer">
-                    {stats.authorsTotal} beautiful humans
+                    {stats.contributionsTotal} beautiful voices
                   </strong>{" "}
                   on the path towards regeneration.
                 </p>
-                <p className="text-2xl shimmer">
-                  And greenlisted for future drops.
+                <p className="text-2xl">
+                  And ✅ greenlisted for future drops 🌱.
                 </p>
               </>
             )}
