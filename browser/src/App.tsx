@@ -7,44 +7,27 @@ import { LoadingIndicator } from "./components/core/LoadingIndicator"
 import { DevelopmentBanner } from "./components/DevelopmentBanner"
 import { Navbar } from "./components/Navbar"
 import UniverseScene from "./components/UniverseScene"
-import { ArweaveProvider } from "./helpers/contexts/ArweaveContext"
+import { AuthorProvider } from "./helpers/author"
 import { ContributionsProvider } from "./helpers/contexts/ContributionsContext"
-import { ModalProvider } from "./helpers/contexts/ModalContext"
 import { StatsProvider } from "./helpers/contexts/StatsContext"
-import { UserProvider } from "./helpers/user"
-import { About } from "./pages/About"
-import { ContributionsPage } from "./pages/ContributionsPage"
 import { Main } from "./pages/Main"
 
-function App() {
+export default function App() {
   return (
     <div className="mainContainer">
       <main>
-        {/*<DevelopmentBanner />*/}
+        {/* <DevelopmentBanner /> */}
         <Navbar />
-        <UserProvider>
-          <ArweaveProvider>
-            <ContributionsProvider>
-              <BlobContributionsScissorCanvasRendererWithContributions />
-              <ModalProvider>
-                <StatsProvider>
-                  <Routes>
-                    <Route index={true} element={<Main />} />
-                    <Route path="about" element={<About />} />
-                    <Route
-                      path="contributions"
-                      element={<ContributionsPage />}
-                    />
-                    <Route
-                      path="contributions/:contributionId"
-                      element={<ContributionsPage />}
-                    />
-                  </Routes>
-                </StatsProvider>
-              </ModalProvider>
-            </ContributionsProvider>
-          </ArweaveProvider>
-        </UserProvider>
+        <AuthorProvider>
+          <ContributionsProvider>
+            <BlobContributionsScissorCanvasRendererWithContributions />
+            <StatsProvider>
+              <Routes>
+                <Route index={true} element={<Main />} />
+              </Routes>
+            </StatsProvider>
+          </ContributionsProvider>
+        </AuthorProvider>
         <footer className="pt-2 pb-16 px-2 text-center">
           <span>
             a drop from <a href="https://twitter.com/TheEdenDao">Eden Dao</a>,
@@ -78,5 +61,3 @@ function App() {
     </div>
   )
 }
-
-export default App

@@ -3,8 +3,6 @@ import { ContributionCard } from "src/components/ContributionCard"
 import { ContributionsContext } from "src/helpers/contexts/ContributionsContext"
 import { Contribution } from "src/types/common/server-api"
 
-import Footnote from "../components/Footnote"
-
 // TODO
 const CoreStewards = new Set([0])
 

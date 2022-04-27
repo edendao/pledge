@@ -28,12 +28,8 @@ export default function ContributionsCarousel({
   contributions: Contribution[]
   className?: string
 }) {
-  const overflowContainerRef = useRef<HTMLDivElement | null>(null)
-
-  // scroll by half the width of the container
-  // TODO: fix this
-  // const amountToScrollBy = overflowContainerRef?.current?.offsetWidth * 0.5;
-  const amountToScrollBy = 600 // TODO: don't hardcode
+  const overflowContainerRef = useRef<HTMLDivElement>(null)
+  const amountToScrollBy = 600
 
   const onLeftPress = () => {
     overflowContainerRef?.current?.scrollBy({
@@ -59,15 +55,11 @@ export default function ContributionsCarousel({
     rootMargin: "15px",
   })
 
-  // TODO: add paging here like in ContributionsPage, probably only render 10 and then load more on a see more item?
   const carouselEdgeName =
     (hideLeftControl ? "left" : "") + (hideRightControl ? "right" : "")
 
   return (
-    <div
-      style={{ position: "relative" }}
-      className={`${className ? className : ""}`}
-    >
+    <div style={{ position: "relative" }} className={className ?? ""}>
       {!hideLeftControl && (
         <>
           <div
@@ -78,7 +70,8 @@ export default function ContributionsCarousel({
         </>
       )}
       <div
-        className={`flex flex-row carouselOverflowContainer ${carouselEdgeName}`}
+        className={`flex flex-row carouselOverflowContainer ${carouselEdgeName} px-8`}
+        style={{ marginLeft: -32 }}
         ref={overflowContainerRef}
       >
         <div style={{ display: "flex" }}>
@@ -92,8 +85,6 @@ export default function ContributionsCarousel({
               <ContributionCard
                 key={contribution.id}
                 contribution={contribution}
-                hideHeader
-                isCompact
               />
             </div>
           ))}

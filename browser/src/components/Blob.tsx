@@ -2,15 +2,12 @@ import { MeshProps } from "@react-three/fiber"
 import { useMemo, useRef } from "react"
 import { IcosahedronGeometry } from "three"
 
-import fragmentShader from "../shaders/fragment.glsl"
-import vertexShader from "../shaders/vertex.glsl"
+import fragmentShader from "./shaders/fragment.glsl"
+import vertexShader from "./shaders/vertex.glsl"
 
 interface ShaderProps {
   speed: number
   color: number
-  density: number
-  strength: number
-  alpha?: number
   offset: number
 }
 
@@ -45,30 +42,23 @@ interface BlobProps extends ShaderProps {
   meshProps?: MeshProps
 }
 
-export function BlobShaderMaterial({
-  speed,
-  color,
-  density,
-  strength,
-  alpha = 1.0,
-  offset,
-}: ShaderProps) {
+export function BlobShaderMaterial({ speed, color, offset }: ShaderProps) {
   const ref = useRef()
   const data = useMemo(
     () => ({
       uniforms: {
         uTime: { value: 0 },
-        uHue: { value: 0.85 + color / 5 },
+        uHue: { value: 0.4 + color / 2 },
         uSpeed: { value: speed },
-        uNoiseDensity: { value: 0.9 },
-        uNoiseStrength: { value: 0.06 },
+        uNoiseDensity: { value: 0.5 },
+        uNoiseStrength: { value: 0.03 },
         uOffset: { value: offset },
-        uFreq: { value: 3 },
-        uAmp: { value: 4 },
-        red: { value: 0 },
-        green: { value: 0 },
-        blue: { value: 0 },
-        uAlpha: { value: 1 },
+        uFreq: { value: 0 },
+        uAmp: { value: 0 },
+        red: { value: 255 },
+        green: { value: 255 },
+        blue: { value: 255 },
+        uAlpha: { value: 0.6 },
       },
       defines: {
         PI: Math.PI,
@@ -76,12 +66,12 @@ export function BlobShaderMaterial({
       fragmentShader,
       vertexShader,
     }),
-    [color, speed, density, strength, offset, alpha],
+    [color, speed, offset],
   )
 
   return (
     <shaderMaterial
-      key={[color, speed, density, strength, offset, alpha].join(" ")}
+      key={[color, speed, offset].join(" ")}
       ref={ref}
       attach="material"
       {...data}

@@ -31,7 +31,7 @@ article {
 .footnote:hover > .footnote-content,
 .footnote.expanded > .footnote-content {
   opacity: 1;
-  user-select: text;
+  author-select: text;
   max-height: 50vh;
   -webkit-mask-image: -webkit-gradient(
     linear,
@@ -87,7 +87,7 @@ p:hover .footnote-content {
   text-transform: none;
   width: 400px;
   margin-top: -30px;
-  user-select: none;
+  author-select: none;
   text-overflow: ellipsis;
 }
 

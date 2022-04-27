@@ -6,8 +6,8 @@ import { NavLink } from "react-router-dom"
 
 export function ContributeButton() {
   return (
-    <a href="/#contribute">
-      <button className={`glass-button md:px-6 glass-button-cta`}>
+    <a href="#contribute">
+      <button className="glass-button md:px-6 glass-button-cta">
         <span className="hidden md:flex pr-2">
           <span className="pr-3 pt-1">
             <TiPencil />
@@ -27,27 +27,21 @@ export function Navbar() {
     <nav className="flex justify-between justify-end pt-8 md:mx-8 mx-2">
       <div>
         <NavLink to="/">
-          {({ isActive }) => (
-            <button
-              className={`glass-button md:px-6 ${
-                isActive ? "selectedBorder" : ""
-              }`}
-            >
-              <span className="hidden md:flex">
-                <span className="pr-3 pt-1">
-                  <FiBook />
-                </span>
-                Eden Dao
-              </span>
-              <span className="md:hidden">
+          <button className="glass-button md:px-6">
+            <span className="hidden md:flex">
+              <span className="pr-3 pt-1">
                 <FiBook />
               </span>
-            </button>
-          )}
+              Eden Dao
+            </span>
+            <span className="md:hidden">
+              <FiBook />
+            </span>
+          </button>
         </NavLink>
       </div>
-      <div className={"flex flex-row"}>
-        <div className="pr-4">
+      <div className="flex flex-row">
+        {/* <div className="pr-4">
           <NavLink to="/about">
             {({ isActive }) => (
               <button
@@ -67,28 +61,7 @@ export function Navbar() {
               </button>
             )}
           </NavLink>
-        </div>
-        <div className="pr-4">
-          <NavLink to="/contributions">
-            {({ isActive }) => (
-              <button
-                className={`glass-button md:px-6 ${
-                  isActive ? "selectedBorder" : ""
-                }`}
-              >
-                <span className="hidden md:flex">
-                  <span className="pr-3 pt-1">
-                    <BiPlanet />
-                  </span>
-                  All Contributions
-                </span>
-                <span className="md:hidden">
-                  <BiPlanet />
-                </span>
-              </button>
-            )}
-          </NavLink>
-        </div>
+        </div> */}
         <div>
           <ContributeButton />
         </div>

@@ -1,16 +1,15 @@
 import { PrismaClient } from "@prisma/client"
-import { ArweaveClient } from "ar-wrapper"
 import corsMiddleware from "cors"
 import dotenv from "dotenv"
 import express from "express"
 
+import { addAuthor } from "./api-handlers/add_author"
 import { addContribution } from "./api-handlers/add_contribution"
-import { addUser } from "./api-handlers/add_user"
+import { getAuthor } from "./api-handlers/get_author"
+import { getAuthors } from "./api-handlers/get_authors"
 import { getContribution } from "./api-handlers/get_contribution"
 import { getContributions } from "./api-handlers/get_contributions"
 import { getStats } from "./api-handlers/get_stats"
-import { getUser } from "./api-handlers/get_user"
-import { getUsers } from "./api-handlers/get_users"
 import { verify } from "./api-handlers/twitter_verify"
 
 dotenv.config()
@@ -27,21 +26,17 @@ const cors = corsMiddleware({
 const port = process.env.PORT || 3001
 
 const prisma = new PrismaClient()
-const arweave = new ArweaveClient(
-  process.env.ARWEAVE_ADDRESS,
-  process.env.ARWEAVE_KEY,
-)
-const services = { prisma, arweave }
+const services = { prisma }
 
 app.use(cors)
 
-const usersRouter = express.Router()
-usersRouter.options("/", cors)
-usersRouter.post("/", cors, addUser(services))
-usersRouter.get("/", cors, getUsers(services))
-usersRouter.options("/:id", cors)
-usersRouter.get("/:id", cors, getUser(services))
-app.use("/users", usersRouter)
+const authorsRouter = express.Router()
+authorsRouter.options("/", cors)
+authorsRouter.post("/", cors, addAuthor(services))
+authorsRouter.get("/", cors, getAuthors(services))
+authorsRouter.options("/:id", cors)
+authorsRouter.get("/:id", cors, getAuthor(services))
+app.use("/authors", authorsRouter)
 
 const contributionsRouter = express.Router()
 contributionsRouter.options("/", cors)

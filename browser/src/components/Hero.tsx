@@ -13,15 +13,11 @@ export default function Hero() {
           </a>
         </div> */}
         <h1 className="text-5xl text-center md:text-8xl m-0">
-          <em>Eden Dao</em> Pledge
-          {/* Towards a Eden Dao */}
+          The Eden Pledge
         </h1>
-        {/* <div className="text-2xl md:text-5xl py-8">
-          “regeneration as the source of wealth”
-        </div> */}
-        {/* <span className="heroAttribution opacity-70 text-xl">
-          – Zapatistas, Chiapas
-        </span> */}
+        <h2 className="text-2xl md:text-5xl py-8">
+          towards regeneration at the source of wealth
+        </h2>
       </div>
     </div>
   )

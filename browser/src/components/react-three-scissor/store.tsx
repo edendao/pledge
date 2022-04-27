@@ -1,8 +1,10 @@
-import create from "zustand"
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import produce from "immer"
 import * as THREE from "three"
-import { iScissorWindow, tScissorCallback } from "./ScissorTypes"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import create from "zustand"
+
+import { iScissorWindow, tScissorCallback } from "./ScissorTypes"
 
 interface iScissorRootState {
   windows: {

@@ -1,10 +1,9 @@
 import { Canvas, Props, useFrame, useThree } from "@react-three/fiber"
-import React, { forwardRef, Suspense } from "react"
-import store from "./store"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import { iScissorWindow, tScissorCallback } from "./ScissorTypes"
+import React, { forwardRef } from "react"
 import { CarouselGradientClassName } from "src/classNameConstants"
-import { LoadingIndicator } from "../core/LoadingIndicator"
+
+import { iScissorWindow, tScissorCallback } from "./ScissorTypes"
+import store from "./store"
 
 // https://stackoverflow.com/questions/704758/how-do-i-check-if-an-element-is-really-visible-with-javascript
 const ElementClassNamesToIgnore = [CarouselGradientClassName]
@@ -93,8 +92,10 @@ function ScissorRenderer() {
             gl.setViewport(left, positiveYUpBottom, width, height)
             gl.setScissor(left, positiveYUpBottom, width, height)
 
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             camera.aspect = rect.width / rect.height
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             camera.updateProjectionMatrix()
 

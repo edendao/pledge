@@ -2,11 +2,11 @@
 const { edit, getPaths } = require("@rescripts/utilities")
 const webpack = require("webpack")
 
-const predicate = (valueToTest) => {
+const predicate = valueToTest => {
   return valueToTest.oneOf
 }
 
-const transform = (match) => ({
+const transform = match => ({
   ...match,
   oneOf: [
     // Need to add as second-to-last to avoid being intercepted by the file-loader in CRA
@@ -21,7 +21,7 @@ const transform = (match) => ({
 })
 
 function rescriptGlslifyPlugin() {
-  return (config) => {
+  return config => {
     const matchingPaths = getPaths(predicate, config)
     return edit(transform, matchingPaths, config)
   }
@@ -29,7 +29,7 @@ function rescriptGlslifyPlugin() {
 
 module.exports = [
   [rescriptGlslifyPlugin],
-  (config) => {
+  config => {
     return {
       ...config,
       resolve: {

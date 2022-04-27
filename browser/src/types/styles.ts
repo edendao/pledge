@@ -6,4 +6,4 @@ export function ButtonClass(fields?: string) {
 }
 
 const ButtonDefaultClass =
-  "glass-button md:px-6 w-full disabled:bg-gray-700 disabled:text-gray-300 disabled:shadow-none disabled:cursor-not-allowed md:w-auto"
+  "glass-button md:px-6 w-full disabled:text-gray-300 disabled:shadow-none disabled:cursor-not-allowed md:w-auto"

@@ -12,47 +12,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Prompt {
+enum Sense {
+  FeelsLike
   LooksLike
-  WeNeed
-  Example
-  FreeForm
+  SeemsLike
 }
 
-enum Pattern {
-  EdenDao
-  Interoperability
-  Agency
-  Regeneration
-  Privacy
-  Voice
-  EngagementAndAttention
-  MaintenanceAndCare
-  Commons
+enum Prompt {
+  Children
+  ClimateJourney
+  Money
+  RegenerativeRenaissance
 }
 
-// The user should be created when they first sign the artifact.
-model User {
+model Author {
   // This should be the wallet address
-  id              String         @id
-  signature       String
-  twitterVerified Boolean        @default(false)
-  twitterUsername String?
-  name            String?
-  createdAt       DateTime       @default(now())
-  transactionId   String?
-  disagrees       Boolean        @default(false)
-  contributions   Contribution[]
+  id            String         @id
+  twitter       String         @default("")
+  country       String         @default("")
+  createdAt     DateTime       @default(now())
+  contributions Contribution[]
 }
 
 model Contribution {
-  id             Int      @id @default(autoincrement())
-  response       String
-  prompt         Prompt
-  pattern        Pattern  @default(EdenDao)
-  createdAt      DateTime @default(now())
-  authorWalletId String
-  rank           Int      @default(0)
-  author         User     @relation(fields: [authorWalletId], references: [id])
-  country        String
+  id        Int      @id @default(autoincrement())
+  authorId  String
+  author    Author   @relation(fields: [authorId], references: [id])
+  signature String   @default("")
+  createdAt DateTime @default(now())
+  sense     Sense
+  prompt    Prompt
+  response  String   @default("")
+  priority  Int      @default(0)
 }

@@ -1,5 +1,5 @@
 {
-  "name": "pluriverse-browser",
+  "name": "pledge-browser",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -24,6 +24,7 @@
     "ethers": "^5.5.2",
     "glsl-noise": "^0.0.0",
     "glsl-rotate": "^1.1.0",
+    "glslify": "^7.1.1",
     "glslify-loader": "^2.0.0",
     "gsap": "^3.9.1",
     "ipfs-http-client": "^55.0.0",
@@ -47,8 +48,8 @@
     "webpack": "^5.66.0"
   },
   "scripts": {
-    "start": "ESLINT_NO_DEV_ERRORS='true' TSC_COMPILE_ON_ERROR=true  rescripts start",
-    "build": "DISABLE_ESLINT_PLUGIN='true' TSC_COMPILE_ON_ERROR=true rescripts build",
+    "start": "GENERATE_SOURCEMAP=false ESLINT_NO_DEV_ERRORS='true' TSC_COMPILE_ON_ERROR=true  rescripts start",
+    "build": "GENERATE_SOURCEMAP=false DISABLE_ESLINT_PLUGIN='true' TSC_COMPILE_ON_ERROR=true rescripts build",
     "test": "rescripts test",
     "eject": "react-scripts eject",
     "lint": "npx eslint ./ --fix --ext .js,.jsx,.ts,.tsx"
@@ -67,6 +68,7 @@
   },
   "devDependencies": {
     "@types/react-helmet": "^6.1.5",
+    "@types/react-modal": "^3.13.1",
     "@typescript-eslint/eslint-plugin": "^5.8.1",
     "@typescript-eslint/parser": "^5.8.1",
     "autoprefixer": "^10.4.0",

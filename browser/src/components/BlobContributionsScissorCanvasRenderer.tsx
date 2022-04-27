@@ -1,14 +1,12 @@
-import {
-  ScissorCanvas, // <- R3F Canvas wrapper
-  ScissorScene, // <- The <scene> to be rendered witin a given virtual canvas
-} from "src/components/react-three-scissor"
+import { Suspense, memo, useCallback, useEffect, useMemo, useRef } from "react"
+import { ScissorCanvas, ScissorScene } from "src/components/react-three-scissor"
 import { Contribution } from "src/types/common/server-api"
-import { BlobSingle } from "./BlobSingle"
-import { useRef, memo, useCallback, useEffect, useMemo, Suspense } from "react"
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import store from "./react-three-scissor/store"
+
+import { BlobSingle } from "./BlobSingle"
 import { LoadingIndicator } from "./core/LoadingIndicator"
+import store from "./react-three-scissor/store"
 
 function BlobContributionsScissorCanvasRenderer({
   contributions,
@@ -38,9 +36,9 @@ function BlobContributionsScissorCanvasRenderer({
     camera.lookAt(pos)
   }, [])
 
-  const blobs = useMemo(() => {
-    return contributions.map(({ id, pattern, prompt, response, author }) => {
-      return (
+  const blobs = useMemo(
+    () =>
+      contributions.map(({ id, prompt, sense, response, author }) => (
         <ScissorScene uuid={`${id}`} key={id}>
           <Suspense
             fallback={
@@ -49,23 +47,23 @@ function BlobContributionsScissorCanvasRenderer({
               // <BlobSingle
               //   pattern={pattern}
               //   prompt={prompt}
-              //   walletId={author.walletId}
+              //   id={author.id}
               //   response={response}
               //   lowRes
               // />
             }
           >
             <BlobSingle
-              pattern={pattern}
-              prompt={prompt}
-              walletId={author.walletId}
+              pattern={prompt}
+              prompt={sense}
+              id={author.id}
               response={response}
             />
           </Suspense>
         </ScissorScene>
-      )
-    })
-  }, [contributionIdsAsStrings])
+      )),
+    [contributionIdsAsStrings],
+  )
 
   const addInitSubscriber = store(s => s.addInitSubscriber)
   const removeInitSubscriber = store(s => s.removeInitSubscriber)

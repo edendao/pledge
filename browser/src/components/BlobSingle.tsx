@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react"
-import { Pattern, Prompt } from "../types/common/server-api"
+
+import { Sense } from "../types/common/server-api"
 import Blob, { SizeChoice } from "./Blob"
 import { randomEuler } from "./Blobs"
 
@@ -40,30 +41,25 @@ function getMessageChunk(
   return float * range * eightCount + val_start
 }
 
-const PromptDensityStart = 0.35
-const PromptDensityIncrement = 0.4
-const PromptAlphaStart = 0.75
-const PromptAlphaIncrement = 0.07
 const PatternColorIncrement = 0.1
 
 export function BlobSingle({
-  walletId,
+  id,
   pattern,
   response,
-  prompt,
   lowRes,
 }: {
-  walletId: string
+  id: string
   pattern: string
   response: string
   prompt: string
   lowRes?: boolean
 }): React.ReactElement {
   // 64 chars long sha256 str
-  const contrib = `${walletId}: ${response}`
+  const contrib = `${id}: ${response}`
   const rotation = useMemo(() => randomEuler(), [])
 
-  const [message, setMessage] = useState<undefined | string>()
+  const [message, setMessage] = useState<string>("")
 
   useEffect(() => {
     const handler = setTimeout(async () => {
@@ -96,17 +92,7 @@ export function BlobSingle({
         lowRes={lowRes}
         meshProps={{ rotation }}
         speed={getMessageChunk(message, 0, 0.1, 0.5)}
-        color={Object.keys(Pattern).indexOf(pattern) * PatternColorIncrement}
-        alpha={
-          PromptAlphaStart +
-          Object.keys(Prompt).reverse().indexOf(prompt) * PromptAlphaIncrement
-        }
-        // density={getMessageChunk(message, 1, 0, 2)}
-        density={
-          PromptDensityStart +
-          Object.keys(Prompt).indexOf(prompt) * PromptDensityIncrement
-        }
-        strength={getMessageChunk(message, 2, 0.04, 0.2)}
+        color={Object.keys(Sense).indexOf(pattern) * PatternColorIncrement}
         offset={getMessageChunk(message, 3, 0, 2 * Math.PI)}
       />
     </>

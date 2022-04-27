@@ -1,6 +1,7 @@
 // POST /verify/:handle
 // must include signature in json body
 
+import { Author } from "@prisma/client"
 import { RequestHandler } from "express"
 import Twitter from "twitter"
 
@@ -13,80 +14,43 @@ const client = new Twitter({
   bearer_token: process.env.BEARER_TOKEN,
 })
 
+const getTweetsBy = (screen_name: string) =>
+  client.get("statuses/user_timeline", { screen_name, tweet_mode: "extended" })
+
+const extractSigFromText = (tweet: string) =>
+  tweet
+    .slice(tweet.indexOf("sig:") + 4)
+    .split(" ")[0]
+    .trim()
+
 // signature is their handle signed with their address
-export function verify({ prisma }: Services): RequestHandler {
-  return async (req, res) => {
-    const {
-      walletId,
-      twitterUsername,
-      signature: inputSig,
-    } = req.body as VerifyTwitterRequest
+export const verify =
+  ({ prisma }: Services): RequestHandler<VerifyTwitterRequest> =>
+  async (req, res) => {
+    const { authorId, contributionId, signature } = req.body
 
-    try {
-      const existingUser = await prisma.user.findFirst({
-        where: { id: walletId },
-      })
+    const { author, ...contribution } = await prisma.contribution.findFirst({
+      where: { authorId, id: contributionId },
+      include: { author: true },
+    })
 
-      if (!existingUser) {
-        throw new Error("No error found for the given wallet address.")
-      }
-
-      const { twitterVerified, signature } = existingUser
-
-      if (signature !== inputSig) {
-        res.status(401).json({ error: `Signature does not match!` })
-        return
-      }
-
-      if (twitterVerified) {
-        console.log(`already verified user: @${existingUser.twitterUsername}`)
-        res.status(200).json({ message: "already verified!" })
-        return
-      }
-
-      client.get(
-        "statuses/user_timeline",
-        {
-          screen_name: twitterUsername,
-          include_rts: false,
-          count: 25,
-          tweet_mode: "extended",
-        },
-        async (error, tweets) => {
-          if (error) {
-            console.log(error)
-            res.status(500).json({ error: "Internal Error" })
-            return
-          }
-
-          const tweetsWithSig = tweets.filter(t => t.full_text.includes("sig:"))
-
-          for (const tweet of tweetsWithSig as any) {
-            const tweetText = tweet.full_text
-            const parsedSignature = tweetText
-              .slice(tweetText.indexOf("sig:") + 4)
-              .split(" ")[0]
-            if (parsedSignature === signature) {
-              await prisma.user.update({
-                where: { id: walletId },
-                data: {
-                  twitterVerified: true,
-                  twitterUsername,
-                },
-              })
-
-              console.log(
-                `new verified user: @${twitterUsername}, ${signature}`,
-              )
-              res.status(201).json({ message: "success!" })
-              return
-            }
-          }
-          res.status(400).json({ error: "No matching Tweets found" })
-        },
-      )
-    } catch (error) {
-      res.status(400).json({ error: error.message })
+    if (contribution.signature) {
+      return res.status(200).json({ message: "Already verified!" })
     }
+
+    const signatures: string[] = (await getTweetsBy(author.twitter))
+      .map(({ full_text: t }) => t)
+      .filter((t: string) => t.includes("sig:"))
+      .map(extractSigFromText)
+
+    if (!signatures.includes(signature)) {
+      return res.status(404).json({ error: "No matching tweets found" })
+    }
+
+    await prisma.contribution.update({
+      where: { id: contributionId },
+      data: { signature },
+    })
+
+    return res.status(201).json({ message: "Verified!" })
   }
-}

@@ -9,21 +9,14 @@ export interface BlobFloatingProps {
   size: number
   speed: number
   color: number
-  density: number
-  strength: number
-  alpha?: number
   offset: number
   meshProps?: MeshProps
 }
 
 export default function BlobFloating({
   random,
-  size,
   speed,
   color,
-  density,
-  strength,
-  alpha,
   offset,
   meshProps,
 }: BlobFloatingProps) {
@@ -54,10 +47,7 @@ export default function BlobFloating({
         sizeType={SizeChoice.Small}
         speed={speed}
         color={color}
-        density={density}
-        strength={strength}
         offset={offset}
-        alpha={alpha}
         meshProps={meshProps}
       />
     </group>

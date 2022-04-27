@@ -1,15 +1,15 @@
 import {
+  AddAuthorRequest,
+  AddAuthorResponse,
   AddContributionRequest,
   AddContributionResponse,
-  AddUserRequest,
-  AddUserResponse,
   Author,
   Contribution,
+  GetAuthorRequest,
+  GetAuthorsRequest,
   GetContributionRequest,
   GetContributionsRequest,
   GetStatsResponse,
-  GetUserRequest,
-  GetUsersRequest,
   VerifyTwitterRequest,
 } from "../types/common/server-api"
 
@@ -81,45 +81,41 @@ export async function getContribution({
 
 export async function getContributions({
   offset = 0,
-  contributionId = 0,
 }: GetContributionsRequest): Promise<Contribution[]> {
   const response = await makeRequest(
     withQueryParams(`${ApiUrl}/contributions`, {
       offset: `${offset}`,
-      contributionId: `${contributionId}`,
     }),
     { method: "GET" },
   )
   return response as Contribution[]
 }
 
-export async function getUser({
-  id,
-}: GetUserRequest): Promise<Author | undefined> {
-  const response = await makeRequest(`${ApiUrl}/users/${id}`, {
+export async function getAuthor({ id }: GetAuthorRequest) {
+  const response = await makeRequest(`${ApiUrl}/authors/${id}`, {
     method: "GET",
   })
   return response as Author | undefined
 }
 
-export async function getUsers({ offset = 0 }: GetUsersRequest = {}): Promise<
-  Author[]
-> {
+export async function getAuthors({
+  offset = 0,
+}: GetAuthorsRequest = {}): Promise<Author[]> {
   const response = await makeRequest(
-    withQueryParams(`${ApiUrl}/users`, { offset: `${offset}` }),
+    withQueryParams(`${ApiUrl}/authors`, { offset: `${offset}` }),
     { method: "GET" },
   )
   return response as Author[]
 }
 
-export async function addUser(
-  request: AddUserRequest,
-): Promise<AddUserResponse> {
-  const response = await makeRequest(`${ApiUrl}/users`, {
+export async function addAuthor(
+  request: AddAuthorRequest,
+): Promise<AddAuthorResponse> {
+  const response = await makeRequest(`${ApiUrl}/authors`, {
     body: request,
     method: "POST",
   })
-  return response as AddUserResponse
+  return response as AddAuthorResponse
 }
 
 export async function verifyTwitter(

@@ -1,98 +1,83 @@
-// import type { Prompt, Pattern } from "@prisma/client";
-
-// TODO: need to handle mapping the type to an actual typescript enum...
-// see https://github.com/prisma/prisma1/issues/3429
-// export this to share types using typescript path loading
-// https://stackoverflow.com/questions/65045106/share-types-between-client-and-server/65046066#65046066
-// export { Prompt, Pattern };
-
-// TODO: these two enums can come from @server-api/types now, issue with
-// generated type enums from prisma not being actual typescript enums... need to add type workaround
-// https://github.com/prisma/prisma1/issues/3429
-
-// TODO: IF YOU CHANGE ANYTHING HERE PLEASE COPY IT INTO `server/common/server-api/index.ts`
-export enum Prompt {
-  LooksLike = "LooksLike",
-  WeNeed = "WeNeed",
-  Example = "Example",
-  FreeForm = "FreeForm",
-}
-export enum Pattern {
-  EdenDao = "EdenDao",
-  Interoperability = "Interoperability",
-  Agency = "Agency",
-  Regeneration = "Regeneration",
-  Privacy = "Privacy",
-  Voice = "Voice",
-  EngagementAndAttention = "EngagementAndAttention",
-  Commons = "Commons",
-  MaintenanceAndCare = "MaintenanceAndCare",
-}
-
-export const PatternToDisplay: Record<Pattern, string> = {
-  [Pattern.EdenDao]: "Eden Dao",
-  [Pattern.Interoperability]: "Interoperability",
-  [Pattern.Agency]: "Agency",
-  [Pattern.Regeneration]: "Regeneration",
-  [Pattern.Privacy]: "Privacy",
-  [Pattern.Voice]: "Voice",
-  [Pattern.EngagementAndAttention]: "Engagement and Attention",
-  [Pattern.Commons]: "Commons",
-  [Pattern.MaintenanceAndCare]: "Maintenance and Care",
-}
-
-export interface Author {
-  walletId: string
-  twitterVerified: boolean
-  signature: string
-  name?: string
-  twitterUsername?: string
+/**
+ * Model Author
+ *
+ */
+export type Author = {
+  id: string
+  twitter: string
+  country: string
   createdAt: Date
-  disagrees: boolean
 }
 
-export interface Contribution {
+/**
+ * Model Contribution
+ *
+ */
+export type Contribution = {
   id: number
   author: Author
-  // This should be the full text response, formatted as markdown.
-  response: string
-  prompt: Prompt
-  pattern: Pattern
-  createdAt: Date
-}
-
-export interface AddContributionRequest {
-  walletId: string
-  // This should be the full text response, formatted as markdown.
-  response: string
-  prompt: Prompt
-  pattern: Pattern
-}
-
-export type AddContributionResponse = number
-
-export interface AddUserRequest {
-  walletId: string
+  authorId: string
   signature: string
-  name?: string
-  twitterUsername?: string
-  essayTransactionId: string
-  disagrees: boolean
+  createdAt: Date
+  sense: Sense
+  prompt: Prompt
+  response: string
+  priority: number
 }
 
-export type AddUserResponse = Author
+/**
+ * Enums
+ */
 
-export interface GetUserRequest {
+// Based on
+// https://github.com/microsoft/TypeScript/issues/3192#issuecomment-261720275
+
+export const Sense = {
+  FeelsLike: "FeelsLike",
+  LooksLike: "LooksLike",
+  SeemsLike: "SeemsLike",
+}
+
+export type Sense = typeof Sense[keyof typeof Sense]
+
+export const Prompt = {
+  Children: "Children",
+  ClimateJourney: "ClimateJourney",
+  Money: "Money",
+  RegenerativeRenaissance: "RegenerativeRenaissance",
+}
+
+export type Prompt = typeof Prompt[keyof typeof Prompt]
+
+// TODO: IF YOU CHANGE ANYTHING HERE PLEASE COPY IT INTO `server/common/server-api/index.ts`
+export const Prompts: Record<Prompt, string> = {
+  Children: "the world I am proud to leave my children",
+  Money: "money in service of our world",
+  RegenerativeRenaissance: "a regenerative renaissance",
+  ClimateJourney: "my climate journey",
+} as const
+
+export type AddContributionRequest = Pick<
+  Contribution,
+  "authorId" | "response" | "sense" | "prompt"
+>
+
+export type AddContributionResponse = Contribution
+
+export type AddAuthorRequest = Pick<Author, "id" | "twitter">
+
+export type AddAuthorResponse = Author
+
+export interface GetAuthorRequest {
   id: string
 }
 
-export interface GetUsersRequest {
+export interface GetAuthorsRequest {
   offset?: number
 }
 
 export interface GetContributionsRequest {
   offset?: number
-  contributionId?: number
 }
 
 export interface GetContributionRequest {
@@ -100,8 +85,8 @@ export interface GetContributionRequest {
 }
 
 export interface VerifyTwitterRequest {
-  walletId: string
-  twitterUsername: string
+  authorId: string
+  contributionId: number
   signature: string
 }
 
@@ -110,6 +95,5 @@ export interface GetStatsResponse {
   contributionsTotal: number
 }
 
-export const ArweaveEssayDocumentName = "EdenDaoEssay"
 export const ContributionLimit = 500
 export const SignatureLimit = 500

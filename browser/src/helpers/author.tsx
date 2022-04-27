@@ -7,7 +7,7 @@ import React from "react"
 import { Author } from "src/types/common/server-api"
 import Web3Modal from "web3modal"
 
-import { getUser } from "./api"
+import { getAuthor } from "./api"
 
 const Web3ModalProviderOptions = {
   walletconnect: {
@@ -23,51 +23,63 @@ const web3Modal = new Web3Modal({
   providerOptions: Web3ModalProviderOptions,
 })
 
-export interface UserContextInfo {
-  currentUser: Author | undefined
-  setCurrentUser(user: Author | undefined): void
-  connectWallet(): Promise<void>
+export interface AuthorContextInfo {
+  currentAuthor: Author
+  setCurrentAuthor: React.Dispatch<React.SetStateAction<Author>>
+  connectWallet(): Promise<string>
   generateSignature(textToSign: string): Promise<string>
-  currentUserWalletAddress: string | undefined
+  currentAuthorWalletAddress: string | undefined
   signAndValidate(textToSign: string): Promise<string>
-  fetchUserFromWalletAddress(): Promise<void>
+  fetchAuthorFromWalletAddress(): Promise<void>
 }
 
-export const UserContext = React.createContext<UserContextInfo>({
-  currentUser: undefined,
-  setCurrentUser: () => {},
-  connectWallet: async () => {},
+const NULL_AUTHOR: Author = {
+  id: "",
+  twitter: "",
+  country: "",
+  createdAt: new Date(),
+}
+
+export const AuthorContext = React.createContext<AuthorContextInfo>({
+  currentAuthor: NULL_AUTHOR,
+  setCurrentAuthor: () => {},
+  connectWallet: async () => "",
   generateSignature: async () => "",
-  currentUserWalletAddress: undefined,
+  currentAuthorWalletAddress: undefined,
   signAndValidate: async () => "",
-  fetchUserFromWalletAddress: async () => {},
+  fetchAuthorFromWalletAddress: async () => {},
 })
 
-export function UserProvider({ children }) {
+export function AuthorProvider({ children }) {
   const [provider, setProvider] = useState(
     window.ethereum
       ? new ethers.providers.Web3Provider(window.ethereum)
       : undefined,
   )
-  const [currentUserWalletAddress, setCurrentUserWalletAddress] = useState<
-    string | undefined
-  >()
-  const [currentUser, setCurrentUser] = useState<Author | undefined>()
+  const [currentAuthorWalletAddress, setCurrentAuthorWalletAddress] =
+    useState("")
+  const [currentAuthor, setCurrentAuthor] = useState<Author>(NULL_AUTHOR)
 
-  async function fetchUserFromWalletAddress(): Promise<void> {
-    const address = await getWalletAddress()
-    if (address) {
-      const newUser = await getUser({ id: address })
-      setCurrentUser(newUser)
-      setCurrentUserWalletAddress(newUser?.walletId)
-    }
+  async function fetchAuthorFromWalletAddress() {
+    await getWalletAddress().then(async id => {
+      if (id) {
+        await getAuthor({ id }).then(author => {
+          if (author) {
+            setCurrentAuthor(author)
+            setCurrentAuthorWalletAddress(author.id)
+          }
+        })
+      }
+    })
   }
 
-  async function connectWallet(): Promise<void> {
+  async function connectWallet() {
     const instance = await web3Modal.connect()
     await instance.enable()
     const newProvider = new providers.Web3Provider(instance)
     setProvider(newProvider)
+    const address = await newProvider.getSigner().getAddress()
+    return address
   }
 
   // Utility methods for accessing a connected wallet account.
@@ -103,29 +115,29 @@ export function UserProvider({ children }) {
 
   useEffect(() => {
     if (provider) {
-      getWalletAddress()
-        .then(address =>
-          fetchUserFromWalletAddress().then(() => {
-            setCurrentUserWalletAddress(address)
-          }),
-        )
-        .catch(() => {
-          setCurrentUserWalletAddress(undefined)
-        })
+      getWalletAddress().then(
+        address => {
+          setCurrentAuthorWalletAddress(address)
+          return fetchAuthorFromWalletAddress()
+        },
+        () => setCurrentAuthorWalletAddress(""),
+      )
     }
   }, [provider])
 
-  const userContext = {
-    currentUser,
-    setCurrentUser,
+  const authorContext = {
+    currentAuthor,
+    setCurrentAuthor,
     connectWallet,
     generateSignature,
-    currentUserWalletAddress,
+    currentAuthorWalletAddress,
     signAndValidate,
-    fetchUserFromWalletAddress,
+    fetchAuthorFromWalletAddress,
   }
 
   return (
-    <UserContext.Provider value={userContext}>{children}</UserContext.Provider>
+    <AuthorContext.Provider value={authorContext}>
+      {children}
+    </AuthorContext.Provider>
   )
 }

@@ -4,7 +4,7 @@
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
-    "start": "tsc && node dist/index.js",
+    "start": "ts-node index.ts",
     "vercel-build": "npx prisma db push && tsc"
   },
   "devDependencies": {

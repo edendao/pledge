@@ -7,21 +7,23 @@ export default function useScroll() {
   )
   const [scrollY, setScrollY] = useState(bodyOffset.top)
   const [scrollX, setScrollX] = useState(bodyOffset.left)
-  const [scrollDirection, setScrollDirection] = useState()
+  const [scrollDirection, setScrollDirection] = useState<"down" | "up">()
   const [scrollPercentage, setScrollPercentage] = useState(0)
   const [isScrolling, setIsScrolling] = useState(false)
+  const [scrollingTimer, setScrollingTimer] = useState<NodeJS.Timeout>()
 
-  let isScrollingTimer = null
-
-  const listener = e => {
-    // from: https://gomakethings.com/detecting-when-a-visitor-has-stopped-scrolling-with-vanilla-javascript/
-    setIsScrolling(true)
-    if (isScrollingTimer !== null) {
-      window.clearTimeout(isScrollingTimer)
+  // from: https://gomakethings.com/detecting-when-a-visitor-has-stopped-scrolling-with-vanilla-javascript/
+  const listener = () => {
+    if (scrollingTimer) {
+      window.clearTimeout(scrollingTimer)
     }
-    isScrollingTimer = setTimeout(() => {
-      setIsScrolling(false)
-    }, 1000)
+
+    setIsScrolling(true)
+    setScrollingTimer(
+      setTimeout(() => {
+        setIsScrolling(false)
+      }, 1000),
+    )
 
     setBodyOffset(document.body.getBoundingClientRect())
     setScrollY(window.scrollY)
@@ -33,10 +35,8 @@ export default function useScroll() {
 
   useEffect(() => {
     window.addEventListener("scroll", listener)
-    return () => {
-      window.removeEventListener("scroll", listener)
-    }
-  })
+    return () => window.removeEventListener("scroll", listener)
+  }, [])
 
   return {
     scrollY,
@@ -49,7 +49,7 @@ export default function useScroll() {
 
 // from: https://stackoverflow.com/questions/2387136/cross-browser-method-to-determine-vertical-scroll-percentage-in-javascript
 function getScrollPercent() {
-  var h = document.documentElement,
+  const h = document.documentElement,
     b = document.body,
     st = "scrollTop",
     sh = "scrollHeight"

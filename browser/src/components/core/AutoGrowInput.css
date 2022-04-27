@@ -27,7 +27,7 @@
 }
 
 .grow-wrap > textarea {
-  /* You could leave this, but after a user resizes, then it ruins the auto sizing */
+  /* You could leave this, but after a author resizes, then it ruins the auto sizing */
   resize: none;
 
   /* Firefox shows scrollbar on growth, you can hide like this. */
