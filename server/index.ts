@@ -14,8 +14,6 @@ import { verify } from "./api-handlers/twitter_verify"
 
 dotenv.config()
 
-// import contributions from "./api/contributions";
-
 const app = express()
 app.use(express.json())
 
