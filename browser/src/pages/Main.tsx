@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from "react"
-import useGsap from "src/hooks/useGsap"
 
 import { ContributionSection } from "../components/ContributionSection"
 import ContributionsWall from "../components/ContributionsWall"
 import EssayContent from "../components/EssayContent"
 import Hero from "../components/Hero"
+import useGsap from "../hooks/useGsap"
 
 export function Main() {
   const gsap = useGsap()
@@ -17,15 +17,10 @@ export function Main() {
   useEffect(() => {
     gsap.fromTo(
       ".fadeInOnTermsOnContributionSection",
-      {
-        opacity: fixedOpacity,
-      },
+      { opacity: fixedOpacity },
       {
         opacity: 0.2,
-        scrollTrigger: {
-          trigger: "#contributionSection",
-          scrub: true,
-        },
+        scrollTrigger: { trigger: "#contributionSection", scrub: true },
       },
     )
   }, [])
@@ -33,14 +28,12 @@ export function Main() {
   useEffect(() => {
     gsap.fromTo(
       ".fadeOutOnScroll",
-      {
-        opacity: 1,
-      },
+      { opacity: 1 },
       {
         opacity: fixedOpacity,
         scrollTrigger: {
           trigger: essayContentRef.current,
-          start: 0,
+          start: 100,
           end: " top top",
           scrub: true,
         },
@@ -51,9 +44,7 @@ export function Main() {
   useEffect(() => {
     gsap.fromTo(
       essayContentRef.current,
-      {
-        opacity: fixedOpacity,
-      },
+      { opacity: fixedOpacity },
       {
         opacity: 1,
         scrollTrigger: {
@@ -77,7 +68,7 @@ export function Main() {
         </div>
         <div
           id="contributionSection"
-          className="container w-full md:max-w-4xl mx-auto mt-16"
+          className="container w-full md:max-w-4xl mx-auto my-64"
         >
           <ContributionSection />
         </div>

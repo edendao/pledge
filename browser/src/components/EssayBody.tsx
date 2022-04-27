@@ -39,9 +39,11 @@ export function EssayBody() {
       </p>
       <p className="py-8 text-3xl">
         <strong>
-          I pledge here, today, to follow{" "}
-          <em className="shimmer">The Eden Dao</em> and its journey towards
-          reconnection, regeneration, harmony, and flourishing.
+          I believe in a way forward towards{" "}
+          <strong className="shimmer">
+            reconnection, regeneration, harmony, and flourishing
+          </strong>
+          , and that this is true wealth.
         </strong>
       </p>
     </>

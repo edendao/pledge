@@ -17,12 +17,12 @@ Modal.setAppElement("#root")
 ReactDOM.render(
   <React.StrictMode>
     <Helmet>
-      <title>Towards a Eden Dao</title>
+      <title>The Way and Virtue of Eden Dao</title>
 
       {/* <!-- Social media tags --> */}
       <meta property="og:type" content="article" />
 
-      <meta property="og:title" content="Towards a Eden Dao" />
+      <meta property="og:title" content="The Way and Virtue of Eden Dao" />
 
       <meta
         property="og:description"
@@ -31,7 +31,7 @@ ReactDOM.render(
 
       <meta property="og:site_name" content="Eden Dao" />
 
-      <meta name="twitter:title" content="Towards a Eden Dao" />
+      <meta name="twitter:title" content="The Way and Virtue of Eden Dao" />
 
       <meta
         name="twitter:description"

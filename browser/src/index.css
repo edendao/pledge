@@ -8,6 +8,12 @@
   }
 }
 
+@font-face {
+  font-family: "Cosplay";
+  src: local("Cosplay"), url(./fonts/CosplayRegular-Web.woff) format("woff"),
+    local("Cosplay"), url(./fonts/CosplayRegular-Web.woff2) format("woff2");
+}
+
 * {
   box-sizing: border-box;
 }
@@ -37,7 +43,7 @@
   --font-size-default: 16px;
   --font-size-small: 14px;
   --font-size-xsmall: 12px;
-  --font-family-primary: "EB Garamamond", serif;
+  --font-family-primary: "Newsreader", serif;
   --font-family-secondary: source-code-pro, Menlo, Monaco, Consolas,
     "Courier New", monospace;
 
@@ -73,7 +79,7 @@ main,
 
 body {
   margin: 0;
-  font-family: "EB Garamond", serif;
+  font-family: var(--font-family-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
