@@ -2,13 +2,12 @@ import { OrbitControls, Stars } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { useEffect } from "react"
 
-import useGsap from "../hooks/useGsap"
+import { gsap } from "../helpers/gsap"
 import Blobs from "./Blobs"
 import BlobsPostProcessing from "./BlobsPostProcessing"
 
 export default function UniverseScene() {
   const { camera } = useThree()
-  const gsap = useGsap()
 
   useEffect(() => {
     gsap.fromTo(
@@ -20,7 +19,7 @@ export default function UniverseScene() {
 
   useEffect(() => {
     const scrollTrigger = {
-      trigger: "#essay-content",
+      trigger: "#pledge-content",
       start: 0,
       end: "top top",
       scrub: true,

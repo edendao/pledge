@@ -114,19 +114,17 @@ export function ContributionSection() {
       case Page.Welcome:
         return (
           <div className="welcome">
-            <div className="flex mb-6">
-              <h2 className="text-4xl font-bold shimmer">
-                Hello, fellow human.
-              </h2>
-            </div>
+            <h2 className="text-4xl font-bold shimmer text-center mt-16">
+              Hello, fellow human.
+            </h2>
 
-            <p className="text-2xl">
-              Join our movement by sharing your vision for a regenerative future
+            <p className="text-2xl text-center">
+              Join our movement by searing your vision for a regenerative future
               and get <strong className="shimmer">greenlisted</strong> for
               future Eden Dao drops.
             </p>
             {stats && (
-              <p className="text-2xl">
+              <p className="text-2xl text-center">
                 Somehow, amidst all the noise in the world,{" "}
                 <strong className="shimmer">
                   {stats.contributionsTotal} voices have come together
@@ -224,12 +222,9 @@ export function ContributionSection() {
         return (
           <div>
             <div className="signContainer">
-              <div className="flex">
-                <h2 className="text-2xl font-bold">
-                  Share your vision to get{" "}
-                  <em className="shimmer">greenlisted</em>
-                </h2>
-              </div>
+              <h2 className="text-2xl font-bold text-center shimmer">
+                Share your vision and get greenlisted
+              </h2>
               <div className="ShareContainer md:grid contributionContainer flex flex-col items-stretch justify-center">
                 <PreviewCard
                   className="ml-auto mr-12"
@@ -244,7 +239,7 @@ export function ContributionSection() {
                     className="text-xl"
                     style={{ opacity: step === "sign" ? 1 : 0.3 }}
                   >
-                    <li>Connect your wallet and gaslessly sign your vision!</li>
+                    <li>Connect your wallet to sign your vision!</li>
                     <button
                       disabled={step !== "sign" || isStepLoading.sign}
                       className={ButtonClass("mt-3")}
@@ -279,7 +274,7 @@ export function ContributionSection() {
                   </p>
                   <p
                     className="text-xl"
-                    style={{ opacity: step === "tweet" ? 1 : 0.4 }}
+                    style={{ opacity: step === "tweet" ? 1 : 0.3 }}
                   >
                     <li>Tweet to verify your contribution!</li>
                     <button
@@ -443,7 +438,7 @@ export function ContributionSection() {
         {renderPage()}
         {error && (
           <div className="errorContainer text-red-500 flex items-center gap-1 justify-center text-xl ml-4">
-            <BiErrorCircle /> <em>{error}</em>
+            <BiErrorCircle /> <span className="shimmer">{error}</span>
           </div>
         )}
         {nextPage && (
@@ -460,7 +455,10 @@ export function ContributionSection() {
                 }}
               >
                 Next
-                <MdArrowForward />
+                <MdArrowForward
+                  className="ml-1"
+                  style={{ marginTop: -4, marginRight: -4 }}
+                />
               </button>
             )}
           </div>

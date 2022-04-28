@@ -208,21 +208,21 @@ main {
 }
 
 .shimmer {
+  font-family: "Cosplay", serif;
+  text-shadow: none;
   background: linear-gradient(
       90deg,
-      rgba(0, 0, 219, 0.1) 30%,
+      rgba(0, 0, 219, 0.05) 42%,
       rgba(0, 0, 219, 0.3) 50%,
-      rgba(0, 0, 219, 0.1) 70%
+      rgba(0, 0, 219, 0.05) 58%
     )
     white;
-  color: white;
   background-size: 200% auto;
   background-clip: text;
   text-fill-color: transparent;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-
-  animation: shine reverse 2s linear infinite;
+  animation: shine reverse 3s linear infinite;
 }
 
 @keyframes shine {
@@ -250,21 +250,25 @@ blockquote:before {
 }
 
 .glass-button {
-  font-family: "Roboto Mono";
+  font-family: "Cosplay";
   display: inline-block;
-  padding: 10px 15px;
+  padding: 15px 15px 10px;
   text-decoration: none;
   border-radius: 60px;
   background-color: var(--background-default);
-  border: 1px solid var(--outline-default);
   backdrop-filter: blur(5px);
   color: rgba(255, 255, 255, 0.8);
-  font-size: 16px;
+  font-size: 20px;
+  line-height: 1;
   cursor: pointer;
   transition: 0.5s;
   position: relative;
   /* min-height: 46px; */
   white-space: nowrap;
+}
+
+button:disabled {
+  opacity: 0.5;
 }
 
 .contributionNavigation .glass-button svg {

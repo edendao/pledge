@@ -1,8 +1,8 @@
-import "./EssayBody.css"
+import "./PledgeBody.css"
 
 // import Footnote from "./Footnote"
 
-export function EssayBody() {
+export function PledgeBody() {
   return (
     <>
       <p>
