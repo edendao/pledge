@@ -13,6 +13,7 @@ export default function ContributionsWall() {
       <h2
         id="contributions"
         className="font-title text-6xl font-bold text-center"
+        style={{ fontFamily: "Cosplay" }}
       >
         Visions of a Regenerative Future
       </h2>
