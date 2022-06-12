@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import "./ContributionSection.css"
 
 import React, { useContext, useEffect, useState } from "react"
@@ -9,6 +10,7 @@ import { AuthorContext } from "src/helpers/author"
 import { ContributionsContext } from "src/helpers/contexts/ContributionsContext"
 import { StatsContext } from "src/helpers/contexts/StatsContext"
 import { ButtonClass } from "src/types/styles"
+import { MintNFTS } from "./MintNFTS"
 
 import {
   Contribution,
@@ -226,14 +228,7 @@ export function ContributionSection() {
                 Share your vision and get greenlisted
               </h2>
               <div className="ShareContainer md:grid contributionContainer flex flex-col items-stretch justify-center">
-                <PreviewCard
-                  className="ml-auto mr-12"
-                  signature={contribution?.signature ?? ""}
-                  author={currentAuthor}
-                  prompt={selectedPrompt}
-                  response={`When I imagine ${Prompts[selectedPrompt]}, it ${SensePrompts[selectedSense]} ${promptResponse}`}
-                  sense={selectedSense}
-                />
+                <MintNFTS size={256} />
                 <ol className="list-decimal list-inside mt-2">
                   <p
                     className="text-xl"
@@ -267,8 +262,7 @@ export function ContributionSection() {
                       {isStepLoading.sign
                         ? "Signing "
                         : signature
-                        ? "Signed "
-                        : "Sign "}
+                          ? "Signed " : "Sign "}
                       with Ethereum
                     </button>
                   </p>
@@ -321,8 +315,8 @@ export function ContributionSection() {
                       {step === "verify"
                         ? "ed"
                         : isStepLoading.tweet
-                        ? "ing"
-                        : "e"}{" "}
+                          ? "ing"
+                          : "e"}{" "}
                       on Twitter
                     </button>
                   </p>
@@ -378,8 +372,8 @@ export function ContributionSection() {
                       {contribution?.signature
                         ? "Verified!"
                         : isStepLoading.verify
-                        ? "Verifying"
-                        : "Verify"}
+                          ? "Verifying"
+                          : "Verify"}
                     </button>
                   </p>
                 </ol>
@@ -429,9 +423,8 @@ export function ContributionSection() {
           {PAGES.map(p => (
             <div
               key={p}
-              className={`pageProgress ${
-                page === p ? "selectedPageProgress" : ""
-              }`}
+              className={`pageProgress ${page === p ? "selectedPageProgress" : ""
+                }`}
             />
           ))}
         </div>
