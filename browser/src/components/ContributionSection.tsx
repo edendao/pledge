@@ -64,14 +64,6 @@ const NFTCardPreview: React.FC<
 > = ({ className = "", response = "...", ...contribution }) => (
   <NFTCard
     className={`preview-card !w-auto md:!w-full flex align-bottom ${className}`}
-    contribution={{
-      ...contribution,
-      response,
-      id: 0,
-      authorId: "",
-      priority: 0,
-      createdAt: new Date(),
-    }}
   />
 )
 
