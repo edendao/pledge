@@ -5,7 +5,7 @@
 }
 
 /* remove bg when its in a modal. */
-.compactContributionCardContainer.full {
+.compactContributionNFTCardContainer.full {
   background: none;
   border: none;
   padding: 0;
@@ -13,7 +13,7 @@
   box-shadow: none;
 }
 
-.compactContributionCardContainer.preview-card {
+.compactContributionNFTCardContainer.preview-card {
   margin-top: .1rem;
   cursor: default;
 }
@@ -89,14 +89,14 @@
  * COMPACT CONTRIBUTION STYLES
  */
 
-.compactContributionCardContainer {
-  width: 300px;
-  max-width: 300px;
+.compactContributionNFTCardContainer {
+  /* width: 500px; */
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  /* flex-direction: column; */
   padding: var(--space-16);
-  height: 360px;
-  position: relative;
+  /* height: 600px; */
+  /* position: relative; */
   /* From https://css.glass */
   background: var(--background-default);
   border-radius: var(--border-radius-16);
@@ -106,19 +106,19 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.compactContributionCardContainer:not(.full):not(.preview-card):hover {
+.compactContributionNFTCardContainer:not(.full):not(.preview-card):hover {
   background: var(--background-higher);
 }
 
-.compactContributionCardContainer:not(.full):not(.preview-card).highlight {
+.compactContributionNFTCardContainer:not(.full):not(.preview-card).highlight {
   background: var(--background-higher-higher);
 }
 
-.compactContributionCardContainer ::-webkit-scrollbar {
+.compactContributionNFTCardContainer ::-webkit-scrollbar {
   width: 5px;
 }
 
-.compactContributionCardContainer ::-webkit-scrollbar-thumb {
+.compactContributionNFTCardContainer ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 5px;
@@ -126,11 +126,11 @@
 }
 
 /* Handle on hover */
-.compactContributionCardContainer ::-webkit-scrollbar-thumb:hover {
+.compactContributionNFTCardContainer ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
-.compactContributionCardContainer .response {
+.compactContributionNFTCardContainer .response {
   z-index: 10;
   text-shadow: var(--text-shadow-default);
   /* overflow-y:clip;
@@ -142,16 +142,16 @@
   /* -webkit-line-clamp: 8; */
 }
 
-.compactContributionCardContainer > h2 {
+.compactContributionNFTCardContainer > h2 {
   margin-bottom: 12px;
 }
 
-.compactContributionCardContainer p {
+.compactContributionNFTCardContainer p {
   font-size: 1rem;
   padding-top: 0px;
 }
 
-.compactContributionCardContainer canvas {
+.compactContributionNFTCardContainer canvas {
   height: 60px;
 }
 

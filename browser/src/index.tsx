@@ -6,7 +6,7 @@ import React from "react"
 import ReactDOM from "react-dom"
 import { Helmet } from "react-helmet"
 import Modal from "react-modal"
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom"
+import { BrowserRouter as Router } from "react-router-dom"
 
 import App from "./App"
 import reportWebVitals from "./reportWebVitals"
@@ -43,10 +43,7 @@ ReactDOM.render(
       <meta name="twitter:creator" content="@verses_xyz" />
     </Helmet>
     <Router>
-      {/* routes */}
-      <Routes>
-        <Route path="/*" element={<App />} />
-      </Routes>
+      <App />
     </Router>
   </React.StrictMode>,
   document.getElementById("root"),

@@ -165,7 +165,7 @@ export const MintNFT: React.FC<{ size: number }> = props => {
           )}
         </Stage>
       )}
-      <div className="mt-2" >
+      <div className="mt-5 flex justify-center" >
         <button
           onClick={capture}
           className="bg-white opacity-40 m-1	 hover:opacity-75 text-gray-800 font-semibold py-2 px-2 border border-gray-400 rounded-2xl shadow"

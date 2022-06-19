@@ -53,8 +53,8 @@
     "use-image": "^1.0.12"
   },
   "scripts": {
-    "start": "set GENERATE_SOURCEMAP=false && set ESLINT_NO_DEV_ERRORS='true' && set TSC_COMPILE_ON_ERROR=true  &&  rescripts start",
     "build": "GENERATE_SOURCEMAP=false DISABLE_ESLINT_PLUGIN='true' TSC_COMPILE_ON_ERROR=true rescripts build",
+    "start": "GENERATE_SOURCEMAP=false  ESLINT_NO_DEV_ERRORS='true'  TSC_COMPILE_ON_ERROR=true   rescripts start",
     "test": "rescripts test",
     "eject": "react-scripts eject",
     "lint": "npx eslint ./ --fix --ext .js,.jsx,.ts,.tsx"

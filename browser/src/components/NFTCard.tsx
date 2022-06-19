@@ -1,4 +1,4 @@
-import "./ContributionCard.css"
+import "./NFTCard.css"
 
 import { MintNFT } from "./MintNFT"
 
@@ -8,9 +8,9 @@ interface Props {
 
 export function NFTCard({ className = "" }: Props) {
   return (
-    <div className={`compactContributionCardContainer ${className}`}>
+    <div className={`compactContributionNFTCardContainer ${className}`}>
       <div className="w-full attribution">
-        <MintNFT size={256} />
+        <MintNFT size={450} />
       </div>
     </div>
   )

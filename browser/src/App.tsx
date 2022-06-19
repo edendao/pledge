@@ -10,6 +10,7 @@ import UniverseScene from "./components/UniverseScene"
 import { AuthorProvider } from "./helpers/author"
 import { ContributionsProvider } from "./helpers/contexts/ContributionsContext"
 import { StatsProvider } from "./helpers/contexts/StatsContext"
+import { Claim } from "./pages/Claim"
 import { Main } from "./pages/Main"
 
 export default function App() {
@@ -23,7 +24,8 @@ export default function App() {
             <BlobContributionsScissorCanvasRendererWithContributions />
             <StatsProvider>
               <Routes>
-                <Route index={true} element={<Main />} />
+                <Route path="/" element={<Main />} />
+                <Route path="/claim" element={<Claim />} />
               </Routes>
             </StatsProvider>
           </ContributionsProvider>
