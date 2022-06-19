@@ -9,6 +9,7 @@ import { AuthorContext } from "src/helpers/author"
 import { ContributionsContext } from "src/helpers/contexts/ContributionsContext"
 import { StatsContext } from "src/helpers/contexts/StatsContext"
 import { ButtonClass } from "src/types/styles"
+import { NFTCard } from "./NFTCard"
 
 import {
   Contribution,
@@ -56,9 +57,27 @@ const PreviewCard: React.FC<
   />
 )
 
+const NFTCardPreview: React.FC<
+  Omit<Contribution, "id" | "authorId" | "createdAt" | "priority"> & {
+    className?: string
+  }
+> = ({ className = "", response = "...", ...contribution }) => (
+  <NFTCard
+    className={`preview-card !w-auto md:!w-full flex align-bottom ${className}`}
+    contribution={{
+      ...contribution,
+      response,
+      id: 0,
+      authorId: "",
+      priority: 0,
+      createdAt: new Date(),
+    }}
+  />
+)
+
 export function ContributionSection() {
   const [page, setPage] = useState(Page.Welcome)
-
+  const [showNFTCard, setShowNFTCard] = useState(true)
   const { currentAuthor, setCurrentAuthor, connectWallet, signAndValidate } =
     useContext(AuthorContext)
   const { getContribution, getContributions, setContributions } =
@@ -66,6 +85,7 @@ export function ContributionSection() {
   const { stats, fetchStats } = useContext(StatsContext)
 
   const [signature, setSignature] = useState("")
+  const [mint, setMint] = useState("")
   const [selectedSense, setSelectedSense] = useState<Sense>(Sense.LooksLike)
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt>("Children")
   const [promptResponse, setPromptResponse] = useState(() => "serendipity")
@@ -92,17 +112,26 @@ export function ContributionSection() {
   )
 
   const [step, setStep] = useState<
-    "welcome" | "sign" | "tweet" | "verify" | "complete"
+    "welcome" | "sign" | "tweet" | "nft" | "verify" | "complete"
   >("welcome")
   const [isStepLoading, setStepLoading] = useState({
     sign: false,
     tweet: false,
+    nft: false,
     verify: false,
   })
   const [error, setError] = useState<string>()
   const handleErr = (err: Error) => setError(err.message)
 
   const [contribution, setContribution] = useState<Contribution>()
+
+  useEffect(() => {
+    if (step === "nft") {
+      setShowNFTCard(true)
+    } else {
+      setShowNFTCard(false)
+    }
+  }, [step])
 
   const findOrCreateAuthor = async (id: string, twitter = "") =>
     currentAuthor.id === id
@@ -226,14 +255,26 @@ export function ContributionSection() {
                 Share your vision and get greenlisted
               </h2>
               <div className="ShareContainer md:grid contributionContainer flex flex-col items-stretch justify-center">
-                <PreviewCard
-                  className="ml-auto mr-12"
-                  signature={contribution?.signature ?? ""}
-                  author={currentAuthor}
-                  prompt={selectedPrompt}
-                  response={`When I imagine ${Prompts[selectedPrompt]}, it ${SensePrompts[selectedSense]} ${promptResponse}`}
-                  sense={selectedSense}
-                />
+                {showNFTCard ? (
+                  <NFTCardPreview
+                    className="ml-auto mr-12"
+                    signature={contribution?.signature ?? ""}
+                    author={currentAuthor}
+                    prompt={selectedPrompt}
+                    response={`When I imagine ${Prompts[selectedPrompt]}, it ${SensePrompts[selectedSense]} ${promptResponse}`}
+                    sense={selectedSense}
+                  />
+                ) : (
+                  <PreviewCard
+                    className="ml-auto mr-12"
+                    signature={contribution?.signature ?? ""}
+                    author={currentAuthor}
+                    prompt={selectedPrompt}
+                    response={`When I imagine ${Prompts[selectedPrompt]}, it ${SensePrompts[selectedSense]} ${promptResponse}`}
+                    sense={selectedSense}
+                  />
+                )}
+
                 <ol className="list-decimal list-inside mt-2">
                   <p
                     className="text-xl"
@@ -310,7 +351,8 @@ export function ContributionSection() {
                           setContribution(cc)
                           setContributions([cc, ...cs])
 
-                          setStep("verify")
+                          setStep("nft")
+                          setShowNFTCard(true)
                         } catch (error) {
                           handleErr(error as Error)
                         } finally {
@@ -325,6 +367,44 @@ export function ContributionSection() {
                         ? "ing"
                         : "e"}{" "}
                       on Twitter
+                    </button>
+                  </p>
+                  <p
+                    className="text-xl"
+                    style={{ opacity: step === "nft" ? 1 : 0.3 }}
+                  >
+                    <li>Mint your NFT</li>
+                    <button
+                      disabled={step !== "sign" || isStepLoading.nft}
+                      className={ButtonClass("mt-3")}
+                      onClick={async () => {
+                        setStepLoading(s => ({ ...s, nft: true }))
+                        const { twitter } = currentAuthor
+                        const walletAddress = await connectWallet()
+                        await Promise.all([
+                          signAndValidate(response).then(setMint),
+                          findOrCreateAuthor(walletAddress, twitter).then(
+                            setCurrentAuthor,
+                          ),
+                        ]).then(
+                          () => {
+                            setStepLoading(s => ({ ...s, nft: false }))
+                            setStep("verify")
+                            setShowNFTCard(false)
+                          },
+                          err => {
+                            setStep("nft")
+                            handleErr(err)
+                          },
+                        )
+                      }}
+                    >
+                      {isStepLoading.sign
+                        ? "Minting "
+                        : signature
+                        ? "Mint "
+                        : "Mint "}
+                      with Ethereum
                     </button>
                   </p>
                   <p
