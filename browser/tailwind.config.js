@@ -2,10 +2,10 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    fontFamily: {
-      mono: ["Roboto Mono", "monospace"],
-    },
     extend: {
+      fontFamily: {
+        mono: ["Roboto Mono", "monospace"],
+      },
       screens: {
         "3xl": "1800px",
       },
@@ -15,4 +15,4 @@ module.exports = {
   variants: {
     extend: { backgroundColor: ["disabled"] },
   },
-};
+}

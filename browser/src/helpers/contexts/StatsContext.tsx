@@ -1,25 +1,29 @@
-import React, { useEffect, useState } from "react";
-import { GetStatsResponse } from "src/types/common/server-api";
-import { getStats } from "../api";
+import React, { useCallback, useEffect, useState } from "react"
+import { GetStatsResponse } from "src/types/common/server-api"
+
+import { getStats } from "../api"
 
 export interface StatsContextInfo {
-  stats?: GetStatsResponse;
+  stats?: GetStatsResponse
+  fetchStats(): Promise<void>
 }
 
 export const StatsContext = React.createContext<StatsContextInfo>({
   stats: undefined,
-});
+  fetchStats: () => Promise.resolve(),
+})
 
 export function StatsProvider({ children }) {
-  const [stats, setStats] = useState<GetStatsResponse | undefined>(undefined);
-  useEffect(() => {
-    getStats().then((res) => setStats(res));
-  }, []);
+  const [stats, setStats] = useState<GetStatsResponse>()
+  const fetchStats = useCallback(() => getStats().then(setStats), [setStats])
 
-  const statsContext = { stats };
+  useEffect(() => {
+    fetchStats()
+  }, [fetchStats])
+
   return (
-    <StatsContext.Provider value={statsContext}>
+    <StatsContext.Provider value={{ stats, fetchStats }}>
       {children}
     </StatsContext.Provider>
-  );
+  )
 }

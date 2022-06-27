@@ -6,5 +6,5 @@ export default function SectionDivider() {
         style={{ height: "1px", background: "var(--outline-default)" }}
       />
     </div>
-  );
+  )
 }

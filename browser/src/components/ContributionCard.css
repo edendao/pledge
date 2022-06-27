@@ -1,26 +1,7 @@
-/*.contributionCardContainer {*/
-/*  min-width: 300px;*/
-/*  max-width: 400px;*/
-/*  display: flex;*/
-/*  flex-direction: column;*/
-/*  padding: 20px;*/
-/*  min-height: 260px;*/
-/*  !* From https://css.glass *!*/
-/*  background: rgba(255, 255, 255, 0.05);*/
-/*  border-radius: 16px;*/
-/*  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
-/*  !* TODO: add blur back after playing fixing z-index issue where blob contributions canvas is getting rendered behind *!*/
-/*  !* backdrop-filter: blur(5px);*!*/
-/*  !* -webkit-backdrop-filter: blur(5px); *!*/
-/*  border: 1px solid rgba(255, 255, 255, 0.3);*/
-/*  height: 400px;*/
-/*  cursor:pointer;*/
-/*}*/
-
 .full.full {
   width: 100%;
-  min-height:360px;
-  max-width:none;
+  min-height: 360px;
+  max-width: none;
 }
 
 /* remove bg when its in a modal. */
@@ -101,7 +82,7 @@
   font-size: var(--font-size-small) !important;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-left: .25rem;
+  margin-left: 0.25rem;
 }
 
 /**
@@ -123,11 +104,14 @@
   /* backdrop-filter: blur(5px); */
   /* -webkit-backdrop-filter: blur(5px); */
   border: 1px solid rgba(255, 255, 255, 0.3);
-  cursor: pointer;
 }
 
 .compactContributionCardContainer:not(.full):not(.preview-card):hover {
   background: var(--background-higher);
+}
+
+.compactContributionCardContainer:not(.full):not(.preview-card).highlight {
+  background: var(--background-higher-higher);
 }
 
 .compactContributionCardContainer ::-webkit-scrollbar {
@@ -172,5 +156,5 @@
 }
 
 .authorButton:hover {
-  opacity: .85;
+  opacity: 0.85;
 }

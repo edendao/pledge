@@ -1,54 +1,40 @@
-import { Canvas } from "@react-three/fiber";
-import UniverseScene from "./components/UniverseScene";
-import { DevelopmentBanner } from "./components/DevelopmentBanner";
-import { Routes, Route } from "react-router-dom";
-import { About } from "./pages/About";
-import { ContributionsPage } from "./pages/ContributionsPage";
-import { Navbar } from "./components/Navbar";
-import { Main } from "./pages/Main";
-import { UserProvider } from "./helpers/user";
-import { ArweaveProvider } from "./helpers/contexts/ArweaveContext";
-import { ModalProvider } from "./helpers/contexts/ModalContext";
-import { ContributionsProvider } from "./helpers/contexts/ContributionsContext";
-import BlobContributionsScissorCanvasRendererWithContributions from "./components/BlobContributionsScissorCanvasRendererWithContributions";
-import { StatsProvider } from "./helpers/contexts/StatsContext";
-import { LoadingIndicator } from "./components/core/LoadingIndicator";
-import { Suspense } from "react";
+import { Canvas } from "@react-three/fiber"
+import { Suspense } from "react"
+import { Route, Routes } from "react-router-dom"
 
-function App() {
+import BlobContributionsScissorCanvasRendererWithContributions from "./components/BlobContributionsScissorCanvasRendererWithContributions"
+import { LoadingIndicator } from "./components/core/LoadingIndicator"
+import { DevelopmentBanner } from "./components/DevelopmentBanner"
+import { Navbar } from "./components/Navbar"
+import UniverseScene from "./components/UniverseScene"
+import { AuthorProvider } from "./helpers/author"
+import { ContributionsProvider } from "./helpers/contexts/ContributionsContext"
+import { StatsProvider } from "./helpers/contexts/StatsContext"
+import { Claim } from "./pages/Claim"
+import { Main } from "./pages/Main"
+
+export default function App() {
   return (
     <div className="mainContainer">
       <main>
-        {/*<DevelopmentBanner />*/}
+        {/* <DevelopmentBanner /> */}
         <Navbar />
-        <UserProvider>
-          <ArweaveProvider>
-            <ContributionsProvider>
-              <BlobContributionsScissorCanvasRendererWithContributions />
-              <ModalProvider>
-                <StatsProvider>
-                  <Routes>
-                    <Route index={true} element={<Main />} />
-                    <Route path="about" element={<About />} />
-                    <Route
-                      path="contributions"
-                      element={<ContributionsPage />}
-                    />
-                    <Route
-                      path="contributions/:contributionId"
-                      element={<ContributionsPage />}
-                    />
-                  </Routes>
-                </StatsProvider>
-              </ModalProvider>
-            </ContributionsProvider>
-          </ArweaveProvider>
-        </UserProvider>
+        <AuthorProvider>
+          <ContributionsProvider>
+            <BlobContributionsScissorCanvasRendererWithContributions />
+            <StatsProvider>
+              <Routes>
+                <Route path="/" element={<Main />} />
+                <Route path="/claim" element={<Claim />} />
+              </Routes>
+            </StatsProvider>
+          </ContributionsProvider>
+        </AuthorProvider>
         <footer className="pt-2 pb-16 px-2 text-center">
           <span>
-            a drop from <a href="https://verses.xyz">Verses</a>, which is
-            supported with 💜 by <a href="https://gitcoin.co">Gitcoin</a> and{" "}
-            <a href="https://fil.org/">Filecoin Foundation</a>
+            a drop from <a href="https://twitter.com/TheEdenDao">Eden Dao</a>,
+            which is grateful to <a href="https://verses.xyz">Verses</a> for
+            their <a href="https://pluriverse.world">Pluriverse</a> 💜
           </span>
         </footer>
       </main>
@@ -71,11 +57,9 @@ function App() {
           }
         />
         <Route path="about" />
-        <Route path="contributions*" />
+        <Route path="contributions/*" />
       </Routes>
       <div className="universe-gradient" />
     </div>
-  );
+  )
 }
-
-export default App;

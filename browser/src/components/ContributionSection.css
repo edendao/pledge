@@ -17,7 +17,7 @@
   margin: 2em auto;
 }
 
-.terms > p {
+.welcome > p {
   line-height: 1.4;
   padding: 0.5rem 0;
 }
@@ -57,7 +57,6 @@ input:hover,
 }
 
 textarea {
-  font-family: "Roboto Mono";
   /* display: inline-block; */
   background-color: var(--background-default);
   border: 1px solid var(--outline-default);
@@ -79,12 +78,6 @@ input::placeholder {
     top: 45px;
     right: 0px;
 } */
-
-.actionsContainer {
-  display: flex;
-  margin-top: 24px;
-  justify-content: center;
-}
 
 .actionsContainer svg {
   display: inline;
@@ -176,9 +169,3 @@ ul > li:not(:first-child) {
 .selectedPageProgress {
   background: #ffffff;
 }
-
-.twitterSteps {
-  grid-template-columns: auto auto;
-  grid-gap: 8px;
-}
-

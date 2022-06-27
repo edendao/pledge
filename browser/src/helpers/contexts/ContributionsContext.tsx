@@ -1,67 +1,35 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Contribution } from "src/types/common/server-api";
-import getMockContributions from "src/utils/getMockContributions";
-import { UseMock } from "src/utils/mock";
-import { getContributions, getContribution } from "../api";
+import React, { useEffect, useState } from "react"
+import { Contribution } from "src/types/common/server-api"
+
+import { getContribution, getContributions } from "../api"
 
 interface ContributionsContextInfo {
-  contributions: Contribution[];
-  fetchContributions(): void;
-  fetchContribution(id: number): Promise<Contribution>;
+  contributions: Contribution[]
+  setContributions: React.Dispatch<React.SetStateAction<Contribution[]>>
+  getContributions: typeof getContributions
+  getContribution: typeof getContribution
 }
 
 export const ContributionsContext =
-  React.createContext<ContributionsContextInfo>({
-    contributions: [],
-    fetchContributions: () => {},
-    fetchContribution: () => Promise.resolve(undefined),
-  });
+  React.createContext<ContributionsContextInfo>({} as any)
 
 export function ContributionsProvider({ children }) {
-  const [contributions, setContributions] = useState<Contribution[]>([]);
-  const contributionIdsSet = useRef(new Set<number>());
+  const [contributions, setContributions] = useState<Contribution[]>([])
 
   useEffect(() => {
-    void fetchContributions();
-  }, []);
-
-  async function fetchContributions(highlightedContributionId?: number) {
-    let newContributions: Contribution[];
-    if (UseMock) {
-      newContributions = getMockContributions();
-    } else {
-      newContributions = await getContributions({
-        contributionId: highlightedContributionId,
-      });
-      for (const { id } of newContributions) {
-        contributionIdsSet.current.add(id);
-      }
-    }
-    // TODO: this is overriding highlighted contribution, fix
-    setContributions(newContributions);
-  }
-
-  async function fetchContribution(id: number) {
-    const contribution = await getContribution({ id });
-    if (!contributionIdsSet.current.has(id)) {
-      contributionIdsSet.current.add(id);
-      console.log("setting contributions");
-      const newContributions = [...contributions, contribution];
-      console.log(newContributions);
-      setContributions(newContributions);
-    }
-    return contribution;
-  }
+    getContributions({ offset: 0 }).then(setContributions)
+  }, [])
 
   const contributionsContext = {
     contributions,
-    fetchContributions,
-    fetchContribution,
-  };
+    setContributions,
+    getContributions,
+    getContribution,
+  }
 
   return (
     <ContributionsContext.Provider value={contributionsContext}>
       {children}
     </ContributionsContext.Provider>
-  );
+  )
 }

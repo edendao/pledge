@@ -1,7 +1,7 @@
-import * as React from "react";
-import useToggle from "src/hook/useToggle";
-import useOnClickOutside from "src/hook/useOnClickOutside";
-import { IoMdClose } from "react-icons/io";
+import React from "react"
+import { IoMdClose } from "react-icons/io"
+import useOnClickOutside from "src/hooks/useOnClickOutside"
+import useToggle from "src/hooks/useToggle"
 
 export default function Footnote({
   children,
@@ -9,26 +9,25 @@ export default function Footnote({
   left,
   topOffset,
 }: {
-  children: any;
-  data: any;
-  left?: boolean;
-  topOffset?: number;
+  children: React.ReactChildren
+  data: any
+  left?: boolean
+  topOffset?: number
 }) {
-  const [expanded, toggle] = useToggle();
-  const ref = React.useRef(null);
+  const [isExpanded, toggle] = useToggle()
+  const ref = React.useRef(null)
 
   useOnClickOutside(ref, () => {
-    if (expanded) {
-      toggle();
+    if (isExpanded) {
+      toggle()
     }
-  });
+  })
 
   return (
     <span
-      // only toggle if it's not mobile
-      onClick={!expanded && toggle}
       ref={ref}
-      className={`footnote ${expanded ? "expanded" : ""}`}
+      onClick={() => !isExpanded && toggle()}
+      className={`footnote ${isExpanded ? "expanded" : ""}`}
     >
       <span className="footnote-text">{children}</span>
       <div
@@ -39,7 +38,7 @@ export default function Footnote({
       >
         {data}
       </div>
-      {expanded && (
+      {isExpanded && (
         <div className={`footnote-content-mobile`}>
           <button
             className="absolute"
@@ -52,5 +51,5 @@ export default function Footnote({
         </div>
       )}
     </span>
-  );
+  )
 }

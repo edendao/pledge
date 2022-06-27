@@ -13,5 +13,5 @@ export function Checkmark() {
         clipRule="evenodd"
       />
     </svg>
-  );
+  )
 }

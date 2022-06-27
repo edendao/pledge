@@ -1,17 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import { ArweaveClient } from "ar-wrapper";
+import { PrismaClient } from "@prisma/client"
+
 export interface Services {
-  prisma: PrismaClient;
-  arweave: ArweaveClient;
-}
-
-export enum DocType {
-  Essay = "essay",
-  Signature = "signature",
-}
-
-export interface ArweaveSignatureTags {
-  docType: DocType;
-  essayTransactionId: string;
-  walletId: string;
+  prisma: PrismaClient
 }

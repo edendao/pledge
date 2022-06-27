@@ -1,16 +1,16 @@
-import { ButtonHTMLAttributes, useState } from "react";
-import { ButtonClass } from "src/types/styles";
+import { ButtonHTMLAttributes, useState } from "react"
+import { ButtonClass } from "src/types/styles"
 
 interface BaseProps {
-  children?: React.ReactNode;
-  onError: (error: Error) => void;
-  onSubmit(): Promise<void>;
+  children?: React.ReactNode
+  onError: (error: Error) => void
+  onSubmit(): Promise<void>
 }
 type Props = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   "onError" | "onSubmit"
 > &
-  BaseProps;
+  BaseProps
 
 export function AsyncButton({
   onError,
@@ -19,17 +19,17 @@ export function AsyncButton({
   children,
   ...buttonProps
 }: Props) {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false)
 
   async function onClick() {
-    setLoading(true);
+    setLoading(true)
     try {
-      await onSubmit();
+      await onSubmit()
     } catch (err: unknown) {
-      console.log(err);
-      onError(err as Error);
+      console.log(err)
+      onError(err as Error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -42,5 +42,5 @@ export function AsyncButton({
     >
       {loading ? "Connecting..." : children}
     </button>
-  );
+  )
 }

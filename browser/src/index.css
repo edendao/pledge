@@ -8,6 +8,12 @@
   }
 }
 
+@font-face {
+  font-family: "Cosplay";
+  src: local("Cosplay"), url(./fonts/CosplayRegular-Web.woff) format("woff"),
+    local("Cosplay"), url(./fonts/CosplayRegular-Web.woff2) format("woff2");
+}
+
 * {
   box-sizing: border-box;
 }
@@ -16,7 +22,7 @@
 :root {
   /* Color */
   --background-root: rgb(7, 7, 16, 1);
-  --background-lower: rgba(7,7,16, 0.4);
+  --background-lower: rgba(7, 7, 16, 0.4);
   --background-default: rgba(255, 255, 255, 0.05);
   --background-higher: rgba(255, 255, 255, 0.1);
   --background-higher-higher: rgba(255, 255, 255, 0.2);
@@ -29,15 +35,15 @@
   --outline-dimmer: rgba(255, 255, 255, 0.15);
   --outline-dimmest: rgba(255, 255, 255, 0.05);
 
-  --accent-default: rgb(198, 142, 255);
-  --accent-dimmer: rgba(198, 142, 255, .85);
-  --accent-dimmest: rgba(198, 142, 255, 0.3);
+  --accent-default: rgba(0, 0, 219, 1);
+  --accent-dimmer: rgba(0, 0, 219, 0.85);
+  --accent-dimmest: rgba(0, 0, 219, 0.3);
 
   /* Typography */
   --font-size-default: 16px;
   --font-size-small: 14px;
   --font-size-xsmall: 12px;
-  --font-family-primary: "EB Garamamond", serif;
+  --font-family-primary: "Newsreader", serif;
   --font-family-secondary: source-code-pro, Menlo, Monaco, Consolas,
     "Courier New", monospace;
 
@@ -48,7 +54,7 @@
   --border-radius-16: 16px;
 
   --shadow-default: 0 4px 30px rgba(0, 0, 0, 0.05);
-  --text-shadow-default: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --text-shadow-default: 0 6px 12px rgba(0, 0, 0, 0.6);
 
   /* Spacing */
   --space-default: var(--space-8);
@@ -62,7 +68,6 @@ html,
 body,
 main,
 #root {
-  /* TODO: move this to a different component that only gets rendered once */
   counter-reset: footnote-content;
 
   margin: 0;
@@ -74,20 +79,20 @@ main,
 
 body {
   margin: 0;
-  font-family: "EB Garamond", serif;
+  font-family: var(--font-family-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 /* Links */
 a {
-  color: var(--accent-default);
+  color: white;
   text-decoration: underline;
 }
 
 p {
-  font-size: 1.25rem;
-  padding: var(--space-default) 0;
+  font-size: 1.5rem;
+  padding: calc(var(--space-default) * 2) 0;
   color: var(--foreground-dimmer);
 }
 
@@ -108,20 +113,20 @@ span {
 
 h1,
 h2,
-h3 {
+h3,
+.text-shadow {
   text-shadow: var(--text-shadow-default);
 }
 
 h1 + p::first-letter {
   float: left;
   font-size: 4rem;
-  line-height: 0.8;
+  line-height: 1.1;
   margin: 0 0.1em 0 0;
 }
 
 h1 + p {
   text-indent: 0;
-  margin-bottom: 1em;
 }
 
 .subhead {
@@ -169,11 +174,11 @@ main {
   /*  ),*/
   /*  url(https://grainy-gradients.vercel.app/noise.svg);*/
   background: radial-gradient(
-      at 50% 100%,
-      #673787 0%,
-      #272730 40%,
-      #171720 80%,
-      #070710 100%
+      at 0% 100%,
+      #e0c38e 0%,
+      #464cc9 40%,
+      #0000d9 60%,
+      #54b0a2 100%
     )
     fixed;
 }
@@ -191,33 +196,33 @@ main {
     /*min-height: -webkit-fill-available;*/
     width: 100vw;
     position: fixed;
-    background: radial-gradient(at 50% 100%,
-        #673787 0%,
-        #272730 55%,
-        #171720 80%,
-        #070710 100%) fixed;
+    background: radial-gradient(
+        at 0% 100%,
+        #e0c38e 0%,
+        #464cc9 40%,
+        #0000d9 60%,
+        #54b0a2 100%
+      )
+      fixed;
   }
 }
 
 .shimmer {
-  text-align: center;
-
+  font-family: "Cosplay", serif;
+  text-shadow: none;
   background: linear-gradient(
       90deg,
-      #0000 33%,
-      rgba(255, 255, 255, 0.5) 50%,
-      #0000 66%
+      rgba(0, 0, 219, 0.05) 42%,
+      rgba(0, 0, 219, 0.3) 50%,
+      rgba(0, 0, 219, 0.05) 58%
     )
-    var(--accent-default);
+    white;
   background-size: 200% auto;
-
-  color: #000;
   background-clip: text;
   text-fill-color: transparent;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-
-  animation: shine 2s linear infinite;
+  animation: shine reverse 3s linear infinite;
 }
 
 @keyframes shine {
@@ -245,21 +250,25 @@ blockquote:before {
 }
 
 .glass-button {
-  font-family: "Roboto Mono";
+  font-family: "Cosplay";
   display: inline-block;
-  padding: 10px 15px;
+  padding: 15px 15px 10px;
   text-decoration: none;
   border-radius: 60px;
   background-color: var(--background-default);
-  border: 1px solid var(--outline-default);
   backdrop-filter: blur(5px);
   color: rgba(255, 255, 255, 0.8);
-  font-size: 16px;
+  font-size: 20px;
+  line-height: 1;
   cursor: pointer;
   transition: 0.5s;
   position: relative;
   /* min-height: 46px; */
   white-space: nowrap;
+}
+
+button:disabled {
+  opacity: 0.5;
 }
 
 .contributionNavigation .glass-button svg {
@@ -290,10 +299,8 @@ blockquote:before {
   opacity: 1;
 }
 
-.mainContent {
-  /* TODO: background blur is terrible for perf by design */
-  /* have to either blur the blobs individually or not care */
-  /* backdrop-filter: blur(3px); */
+.backgroundBlur {
+  backdrop-filter: blur(3px);
 }
 
 .mainContainer {
@@ -302,11 +309,6 @@ blockquote:before {
 
 .selectedBorder {
   border: 1px solid var(--accent-default);
-}
-
-nav {
-  /* position: fixed;
-right: 0px; */
 }
 
 footer {
@@ -380,7 +382,6 @@ footer {
 }
 
 .authorButton {
-  color: var(--accent-default);
   overflow: hidden;
   white-space: nowrap;
   display: block;

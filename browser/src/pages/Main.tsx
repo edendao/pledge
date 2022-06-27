@@ -1,158 +1,107 @@
-import { Ref, useContext, useEffect, useRef, useState } from "react";
-import EssayContent from "../components/EssayContent";
-import PatternsContent from "../components/PatternsContent";
-import Hero from "../components/Hero";
-import { ContributionSection } from "../components/ContributionSection";
-import { SignatureContent } from "../components/SignatureContent";
-import { NavLink } from "react-router-dom";
-import { Author } from "src/types/common/server-api";
-import React from "react";
-import { getUsers } from "src/helpers/api";
-import useGsap from "src/hook/useGsap";
-import { StatsContext } from "src/helpers/contexts/StatsContext";
-import getMockSignatures, { UseMock } from "src/utils/mock";
+import React, { useContext, useEffect, useRef } from "react"
+import { ContributionCard } from "src/components/ContributionCard"
 
-export interface SignaturesContextInfo {
-  signatures: Author[];
-  fetchSignatures(newSignature?: Author): void;
-}
+import { ContributionSection } from "../components/ContributionSection"
+import Hero from "../components/Hero"
+import { PledgeBody } from "../components/PledgeBody"
+import { ContributionsContext } from "../helpers/contexts/ContributionsContext"
+import { gsap } from "../helpers/gsap"
 
-export const SignaturesContext = React.createContext<SignaturesContextInfo>({
-  signatures: [],
-  fetchSignatures: () => {},
-});
-
-function SignaturesProvider({ children }) {
-  const [authors, setAuthors] = useState<Author[]>([]);
-  useEffect(async () => {
-    await fetchSignatures();
-  }, []);
-
-  async function fetchSignatures(newSignature?: Author) {
-    let users: Author[];
-    if (UseMock) {
-      users = getMockSignatures();
-    } else {
-      users = await getUsers();
-    }
-    setAuthors([...(newSignature ? [newSignature] : []), ...users]);
-  }
-
-  const signaturesContext = {
-    signatures: authors,
-    fetchSignatures,
-  };
-
-  return (
-    <SignaturesContext.Provider value={signaturesContext}>
-      {children}
-    </SignaturesContext.Provider>
-  );
-}
-
-export function Main() {
-  const gsap = useGsap();
-
-  const essayContentRef = useRef<any>();
-  const patternsContentRef = useRef<any>();
-
-  const { stats } = useContext(StatsContext);
-  const fixedOpacity = 0.05;
-
-  useEffect(() => {
-    gsap.fromTo(
-      ".fadeInOnTermsOnContributionSection",
-      {
-        opacity: fixedOpacity,
-      },
-      {
-        opacity: 0.2,
-        scrollTrigger: {
-          trigger: "#contributionSection",
-          scrub: true,
-        },
-      }
-    );
-  }, []);
-
-  useEffect(() => {
-    gsap.fromTo(
-      ".fadeOutOnScroll",
-      {
-        opacity: 1,
-      },
-      {
-        opacity: fixedOpacity,
-        scrollTrigger: {
-          trigger: essayContentRef.current,
-          start: 0,
-          end: " top top",
-          scrub: true,
-        },
-      }
-    );
-  }, []);
-
-  useEffect(() => {
-    gsap.fromTo(
-      essayContentRef.current,
-      {
-        opacity: fixedOpacity,
-      },
-      {
-        opacity: 1,
-        scrollTrigger: {
-          trigger: essayContentRef.current,
-          start: 0,
-          end: "top top",
-          scrub: true,
-        },
-      }
-    );
-  }, []);
+export const Main: React.FC = () => {
+  const { pledgeContentRef, contributionsContentRef } = useGsapEffects()
+  const { contributions } = useContext(ContributionsContext)
 
   return (
     <>
       <div className="fadeOutOnScroll">
         <Hero />
       </div>
-      <SignaturesProvider>
-        <div className="mainContent px-4 md:px-8">
-          <div id="essay-content" ref={essayContentRef}>
-            <EssayContent />
-          </div>
-          <div ref={patternsContentRef}>
-            <PatternsContent />
-          </div>
-          {stats && (
-            <div className="mb-16 text-center mx-auto px-4">
-              <p className="mb-4">
-                <b>{stats.authorsTotal}</b> members of the{" "}
-                <b className="shimmer">Pluriverse</b> community have signed, and{" "}
-                <b>{stats.contributionsTotal}</b> contributions have been
-                submitted.
-              </p>
-              <div className="mt-4">
-                <NavLink to="/contributions">
-                  <button className={`glass-button md:px-6`}>
-                    Browse all contributions
-                  </button>
-                </NavLink>
+      <div className="mainContent px-4 md:px-8">
+        <div id="pledge-content" ref={pledgeContentRef}>
+          <article className="container w-full px-2 md:px-0 md:max-w-2xl mx-auto">
+            <PledgeBody />
+          </article>
+        </div>
+        <div
+          id="contributionSection"
+          className="container w-full md:max-w-4xl mx-auto my-64"
+        >
+          <ContributionSection />
+        </div>
+        <div id="contributions" ref={contributionsContentRef}>
+          <div className="container w-full mx-auto my-32">
+            <h2
+              id="contributions"
+              className="font-title text-6xl font-bold text-center shimmer"
+            >
+              Visions of a Regenerative Future
+            </h2>
+            {contributions?.length ? (
+              <div className="my-16 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12">
+                {contributions.map((contribution, index) => (
+                  <ContributionCard
+                    key={contribution.id}
+                    contribution={contribution}
+                    className={`mx-auto ${index === 0 ? "highlight" : ""}`}
+                  />
+                ))}
               </div>
-            </div>
-          )}
-          <div
-            id="contributionSection"
-            className="container w-full md:max-w-4xl mx-auto mt-16"
-          >
-            <ContributionSection />
-          </div>
-          <br />
-          <div className="container w-full md:max-w-4xl mx-auto pb-20 px-4">
-            <SignatureContent />
+            ) : null}
           </div>
         </div>
-      </SignaturesProvider>
+      </div>
     </>
-  );
+  )
+}
+
+const useGsapEffects = () => {
+  const pledgeContentRef = useRef<HTMLDivElement>(null)
+  const contributionsContentRef = useRef<HTMLDivElement>(null)
+
+  const fixedOpacity = 0.05
+
+  useEffect(() => {
+    gsap.fromTo(
+      ".fadeInOnTermsOnContributionSection",
+      { opacity: fixedOpacity },
+      {
+        opacity: 0.2,
+        scrollTrigger: { trigger: "#contributionSection", scrub: true },
+      },
+    )
+  }, [])
+
+  useEffect(() => {
+    gsap.fromTo(
+      ".fadeOutOnScroll",
+      { opacity: 1 },
+      {
+        opacity: fixedOpacity,
+        scrollTrigger: {
+          trigger: pledgeContentRef.current,
+          start: 100,
+          end: " top top",
+          scrub: true,
+        },
+      },
+    )
+  }, [])
+
+  useEffect(() => {
+    gsap.fromTo(
+      pledgeContentRef.current,
+      { opacity: fixedOpacity },
+      {
+        opacity: 1,
+        scrollTrigger: {
+          trigger: pledgeContentRef.current,
+          start: 0,
+          end: "top top",
+          scrub: true,
+        },
+      },
+    )
+  }, [])
+
+  return { pledgeContentRef, contributionsContentRef }
 }

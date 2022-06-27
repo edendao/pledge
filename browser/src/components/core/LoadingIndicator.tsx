@@ -1,5 +1,4 @@
-import "./LoadingIndicator.css";
-
+import "./LoadingIndicator.css"
 
 export function LoadingIndicator(props) {
   return (
@@ -7,5 +6,5 @@ export function LoadingIndicator(props) {
       <div className="bg-gray-100 dot1"></div>
       <div className="bg-gray-100 dot2"></div>
     </span>
-  );
+  )
 }
