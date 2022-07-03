@@ -3,7 +3,7 @@
 import { Prisma } from "@prisma/client"
 import { RequestHandler } from "express"
 
-import { Contribution, ContributionLimit } from "../common/server-api"
+import { ContributionLimit } from "../common/server-api"
 import { Services } from "../types"
 
 // Optional fields in body: content

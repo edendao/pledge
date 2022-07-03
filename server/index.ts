@@ -9,6 +9,7 @@ import { getAuthor } from "./api-handlers/get_author"
 import { getAuthors } from "./api-handlers/get_authors"
 import { getContribution } from "./api-handlers/get_contribution"
 import { getContributions } from "./api-handlers/get_contributions"
+import { getGreenlistStatus } from "./api-handlers/get_greenlist_status"
 import { getStats } from "./api-handlers/get_stats"
 import { verify } from "./api-handlers/twitter_verify"
 
@@ -27,6 +28,9 @@ const prisma = new PrismaClient()
 const services = { prisma }
 
 app.use(cors)
+
+app.options("/greenlistStatus/:address", cors)
+app.get("/greenlistStatus/:address", cors, getGreenlistStatus(services))
 
 const authorsRouter = express.Router()
 authorsRouter.options("/", cors)
