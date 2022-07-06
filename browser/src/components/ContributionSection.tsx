@@ -8,7 +8,7 @@ import { getAuthor } from "src/helpers/api"
 import { AuthorContext } from "src/helpers/author"
 import { ContributionsContext } from "src/helpers/contexts/ContributionsContext"
 import { StatsContext } from "src/helpers/contexts/StatsContext"
-import { ButtonClass } from "src/types/styles"
+import { buttonClass } from "src/types/styles"
 
 import {
   Contribution,
@@ -144,21 +144,6 @@ export function ContributionSection() {
               <div className="contributionContainer md:grid flex flex-col items-stretch justify-center">
                 <div className="selects pr-4">
                   <div className="responseContainer w-full pl-16">
-                    <label className="block">
-                      <p className="text-lg">What is your Twitter username?</p>
-                      <input
-                        value={`@${currentAuthor.twitter}`}
-                        onChange={evt => {
-                          setCurrentAuthor(author => ({
-                            ...author,
-                            twitter: evt.target.value.replaceAll("@", ""),
-                          }))
-                        }}
-                        maxLength={15}
-                        className="w-full py-2 px-4 mt-1"
-                      />
-                    </label>
-
                     <div className="flex mt-4">
                       <p className="text-lg pb-2">
                         What does <span className="shimmer">Eden Dao</span> mean
@@ -218,7 +203,93 @@ export function ContributionSection() {
           </div>
         )
 
-      case Page.Share:
+      case Page.Share: {
+        const verifyTweet = async () => {
+          try {
+            if (!contribution) {
+              throw new Error("Missing contribution")
+            }
+
+            setStepLoading(s => ({ ...s, verify: true }))
+            const { id, authorId } = contribution
+            await Promise.all([
+              verifyTwitter({
+                contributionId: id,
+                authorId,
+                signature,
+              }),
+              fetchStats(),
+            ])
+            const [cc, cs] = await Promise.all([
+              getContribution({ id }),
+              getContributions({ offset: 0 }).then(cs =>
+                cs.flatMap(c => (c.id === id ? [] : [c])),
+              ),
+            ])
+            setContribution(cc)
+            setContributions([cc, ...cs])
+            setStep("complete")
+          } catch (error) {
+            handleErr(error as Error)
+          } finally {
+            setStepLoading(s => ({ ...s, verify: false }))
+          }
+        }
+
+        const tweetContribution = async () => {
+          try {
+            setStepLoading(s => ({ ...s, tweet: true }))
+
+            const created = addContribution({
+              authorId: currentAuthor.id,
+              prompt: selectedPrompt,
+              sense: selectedSense,
+              response,
+            })
+
+            const tweetTextParam = encodeURI(
+              `When I imagine @TheEdenDao, it ${SensePrompts[selectedSense]} ${promptResponse} sig:${signature}`,
+            )
+            window.open(
+              `https://twitter.com/intent/tweet?text=${tweetTextParam}`,
+              "_blank",
+            )
+
+            const [cc] = await Promise.all([created, fetchStats()])
+            const cs = await getContributions({ offset: 0 }).then(cs =>
+              cs.flatMap(c => (c.id === cc.id ? [] : [c])),
+            )
+            setContribution(cc)
+            setContributions([cc, ...cs])
+
+            setStep("verify")
+          } catch (error) {
+            handleErr(error as Error)
+          } finally {
+            setStepLoading(s => ({ ...s, tweet: false }))
+          }
+        }
+
+        const signMessage = async () => {
+          setStepLoading(s => ({ ...s, sign: true }))
+          const { twitter } = currentAuthor
+          const walletAddress = await connectWallet()
+          await new Promise(resolve => setTimeout(resolve, 750))
+          await Promise.all([
+            signAndValidate(response).then(setSignature),
+            findOrCreateAuthor(walletAddress, twitter).then(setCurrentAuthor),
+          ]).then(
+            () => {
+              setStepLoading(s => ({ ...s, sign: false }))
+              setStep("tweet")
+            },
+            err => {
+              setStep("sign")
+              handleErr(err)
+            },
+          )
+        }
+
         return (
           <div>
             <div className="signContainer">
@@ -242,28 +313,8 @@ export function ContributionSection() {
                     <li>Connect your wallet to sign your vision!</li>
                     <button
                       disabled={step !== "sign" || isStepLoading.sign}
-                      className={ButtonClass("mt-3")}
-                      onClick={async () => {
-                        setStepLoading(s => ({ ...s, sign: true }))
-                        const { twitter } = currentAuthor
-                        const walletAddress = await connectWallet()
-                        await new Promise(resolve => setTimeout(resolve, 750))
-                        await Promise.all([
-                          signAndValidate(response).then(setSignature),
-                          findOrCreateAuthor(walletAddress, twitter).then(
-                            setCurrentAuthor,
-                          ),
-                        ]).then(
-                          () => {
-                            setStepLoading(s => ({ ...s, sign: false }))
-                            setStep("tweet")
-                          },
-                          err => {
-                            setStep("sign")
-                            handleErr(err)
-                          },
-                        )
-                      }}
+                      className={buttonClass("mt-3")}
+                      onClick={signMessage}
                     >
                       {isStepLoading.sign
                         ? "Signing "
@@ -280,43 +331,8 @@ export function ContributionSection() {
                     <li>Tweet to verify your contribution!</li>
                     <button
                       disabled={step === "sign" || isStepLoading.tweet}
-                      className={ButtonClass("mt-2")}
-                      onClick={async () => {
-                        try {
-                          setStepLoading(s => ({ ...s, tweet: true }))
-
-                          const created = addContribution({
-                            authorId: currentAuthor.id,
-                            prompt: selectedPrompt,
-                            sense: selectedSense,
-                            response,
-                          })
-
-                          const tweetTextParam = encodeURI(
-                            `When I imagine @TheEdenDao, it ${SensePrompts[selectedSense]} ${promptResponse} sig:${signature}`,
-                          )
-                          window.open(
-                            `https://twitter.com/intent/tweet?text=${tweetTextParam}`,
-                            "_blank",
-                          )
-
-                          const [cc] = await Promise.all([
-                            created,
-                            fetchStats(),
-                          ])
-                          const cs = await getContributions({ offset: 0 }).then(
-                            cs => cs.flatMap(c => (c.id === cc.id ? [] : [c])),
-                          )
-                          setContribution(cc)
-                          setContributions([cc, ...cs])
-
-                          setStep("verify")
-                        } catch (error) {
-                          handleErr(error as Error)
-                        } finally {
-                          setStepLoading(s => ({ ...s, tweet: false }))
-                        }
-                      }}
+                      className={buttonClass("mt-2")}
+                      onClick={tweetContribution}
                     >
                       Announc
                       {step === "verify"
@@ -332,63 +348,47 @@ export function ContributionSection() {
                     style={{ opacity: step === "verify" ? 1 : 0.3 }}
                   >
                     <li>
-                      Get verified
+                      What is your Twitter username?
                       <span style={{ position: "relative", top: -2, left: 4 }}>
                         <Checkmark />
                       </span>
                     </li>
-                    <button
-                      className={ButtonClass("mt-2")}
-                      disabled={
-                        step === "sign" ||
-                        !!contribution?.signature ||
-                        isStepLoading.verify
-                      }
-                      onClick={async () => {
-                        try {
-                          if (!contribution) {
-                            throw new Error("Missing contribution")
-                          }
-
-                          setStepLoading(s => ({ ...s, verify: true }))
-                          const { id, authorId } = contribution
-                          await Promise.all([
-                            verifyTwitter({
-                              contributionId: id,
-                              authorId,
-                              signature,
-                            }),
-                            fetchStats(),
-                          ])
-                          const [cc, cs] = await Promise.all([
-                            getContribution({ id }),
-                            getContributions({ offset: 0 }).then(cs =>
-                              cs.flatMap(c => (c.id === id ? [] : [c])),
-                            ),
-                          ])
-                          setContribution(cc)
-                          setContributions([cc, ...cs])
-                          setStep("complete")
-                        } catch (error) {
-                          handleErr(error as Error)
-                        } finally {
-                          setStepLoading(s => ({ ...s, verify: false }))
+                    <div className="flex mt-1">
+                      <input
+                        value={`@${currentAuthor.twitter}`}
+                        onChange={evt => {
+                          setCurrentAuthor(author => ({
+                            ...author,
+                            twitter: evt.target.value.replaceAll("@", ""),
+                          }))
+                        }}
+                        maxLength={24}
+                        className="pb-2 px-4 mr-2 rounded-full"
+                      />
+                      <button
+                        onClick={verifyTweet}
+                        disabled={
+                          step === "sign" ||
+                          !!contribution?.signature ||
+                          isStepLoading.verify
                         }
-                      }}
-                    >
-                      {contribution?.signature
-                        ? "Verified!"
-                        : isStepLoading.verify
-                        ? "Verifying"
-                        : "Verify"}
-                    </button>
+                        className={buttonClass()}
+                        style={{ paddingBottom: 15 }}
+                      >
+                        {contribution?.signature
+                          ? "Verified!"
+                          : isStepLoading.verify
+                          ? "Verifying"
+                          : "Verify"}
+                      </button>
+                    </div>
                   </p>
                 </ol>
               </div>
             </div>
           </div>
         )
-
+      }
       case Page.Complete:
         return (
           <div className="welcome">
@@ -413,7 +413,6 @@ export function ContributionSection() {
             )}
           </div>
         )
-
       default:
         throw Error("unreachable")
     }
@@ -446,7 +445,7 @@ export function ContributionSection() {
           <div className="flex flex-col md:flex-row mt-8 contributionNavigation mb-4">
             {nextPage && (
               <button
-                className={`${ButtonClass()} md:ml-auto bg-gray-600 rounded-full inline-flex gap-1 items-center mt-2 md:mt-0`}
+                className={`${buttonClass()} md:ml-auto bg-gray-600 rounded-full inline-flex gap-1 items-center mt-2 md:mt-0`}
                 disabled={page === Page.Share && !contribution?.signature}
                 onClick={() => {
                   setPage(nextPage)

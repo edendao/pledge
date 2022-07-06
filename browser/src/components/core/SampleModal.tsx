@@ -1,8 +1,8 @@
+import "./SampleModal.css"
+
 import React, { useState } from "react"
 import Modal from "react-modal"
-
-import { ButtonClass } from "src/types/styles"
-import "./SampleModal.css"
+import { buttonClass } from "src/types/styles"
 
 interface Props {
   value?: string

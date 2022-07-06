@@ -1,9 +1,9 @@
-export function ButtonClass(fields?: string) {
+export function buttonClass(fields?: string) {
   if (fields?.includes("wide")) {
-    return `${ButtonDefaultClass} md:!w-1/2`
+    return `${defaultClass} md:!w-1/2`
   }
-  return `${ButtonDefaultClass} ${fields}`
+  return `${defaultClass} ${fields}`
 }
 
-const ButtonDefaultClass =
+const defaultClass =
   "glass-button md:px-6 w-full disabled:text-gray-300 disabled:shadow-none disabled:cursor-not-allowed md:w-auto"
