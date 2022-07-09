@@ -29,7 +29,7 @@
 
   --foreground-default: #fff;
   --foreground-dimmer: rgba(255, 255, 255, 0.9);
-  --foreground-dimmest: rgba(255, 255, 255, 0.75);
+  --foreground-dimmest: rgba(255, 255, 255, 0.6);
 
   --outline-default: rgba(255, 255, 255, 0.25);
   --outline-dimmer: rgba(255, 255, 255, 0.15);
@@ -88,6 +88,8 @@ body {
 a {
   color: white;
   text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
 }
 
 p {

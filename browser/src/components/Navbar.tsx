@@ -32,7 +32,7 @@ export const Navbar: React.FC = () => (
         </div> */}
       <div>
         <a href="#contribute">
-          <button className="glass-button md:px-6">Contribute</button>
+          <button className="glass-button md:px-6">Sign the Pledge</button>
         </a>
       </div>
     </div>

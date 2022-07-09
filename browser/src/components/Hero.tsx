@@ -16,7 +16,7 @@ export default function Hero() {
           className="text-3xl text-center md:text-8xl m-0"
           style={{ fontFamily: "Cosplay" }}
         >
-          dao de eden
+          Dao De Eden
         </h1>
         <h2
           className="text-5xl text-center md:text-5xl py-4"

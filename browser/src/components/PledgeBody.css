@@ -7,7 +7,7 @@ article {
 }
 
 .footnote-text {
-  text-decoration: underline dotted var(--accent-dimmer) 2px;
+  text-decoration: underline dotted var(--foreground-dimmest) 2px;
 }
 
 .footnote::after {
@@ -16,9 +16,9 @@ article {
   font-size: var(--font-size-default);
   display: inline-block;
   position: relative;
-  top: -9px;
+  top: -8px;
   right: -2px;
-  color: var(--accent-default);
+  color: var(--foreground-dimmer);
   box-sizing: border-box;
   background-color: rgba(198, 142, 255, 0);
   border: 1px solid rgba(198, 142, 255, 0);
@@ -42,12 +42,6 @@ article {
   );
 }
 
-.footnote:hover::after,
-.footnote:hover .footnote-content::before {
-  background-color: var(--accent-dimmest);
-  border: 1px solid var(--accent-default);
-}
-
 p:hover .footnote-content {
   opacity: 0.5;
   max-height: 50vh;
@@ -68,8 +62,7 @@ p:hover .footnote-content {
   position: absolute;
   color: white;
   -webkit-mask-image: -webkit-gradient(
-    linear,
-    left 50%,
+    linear8 left 50%,
     left bottom,
     from(rgba(0, 0, 0, 1)),
     to(rgba(0, 0, 0, 0))
@@ -112,16 +105,15 @@ p:hover .footnote-content {
   font-size: 1rem;
   display: inline-block;
   position: relative;
-  top: -6px;
+  top: -4px;
   right: 5px;
-  color: rgb(198, 142, 255);
+  color: var(--foreground-dimmer);
   box-sizing: border-box;
-  background-color: rgba(198, 142, 255, 0);
-  border: 1px solid rgba(198, 142, 255, 0);
   border-radius: 2px;
   transition: all 0.4s ease;
   line-height: 0.9rem;
   padding: 0.05rem 0.1rem;
+  font-weight: bold;
 }
 
 .footnote-content-mobile {

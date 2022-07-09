@@ -3,17 +3,12 @@ import { IoMdClose } from "react-icons/io"
 import useOnClickOutside from "src/hooks/useOnClickOutside"
 import useToggle from "src/hooks/useToggle"
 
-export default function Footnote({
-  children,
-  data,
-  left,
-  topOffset,
-}: {
-  children: React.ReactChildren
+export const Footnote: React.FC<{
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any
   left?: boolean
   topOffset?: number
-}) {
+}> = ({ children, data, left, topOffset }) => {
   const [isExpanded, toggle] = useToggle()
   const ref = React.useRef(null)
 
