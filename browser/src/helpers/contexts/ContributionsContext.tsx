@@ -11,7 +11,7 @@ interface ContributionsContextInfo {
 }
 
 export const ContributionsContext =
-  React.createContext<ContributionsContextInfo>({} as any)
+  React.createContext<ContributionsContextInfo>({} as never)
 
 export function ContributionsProvider({ children }) {
   const [contributions, setContributions] = useState<Contribution[]>([])
