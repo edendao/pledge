@@ -4,7 +4,6 @@ import { Route, Routes } from "react-router-dom"
 
 import BlobContributionsScissorCanvasRendererWithContributions from "./components/BlobContributionsScissorCanvasRendererWithContributions"
 import { LoadingIndicator } from "./components/core/LoadingIndicator"
-import { DevelopmentBanner } from "./components/DevelopmentBanner"
 import { Navbar } from "./components/Navbar"
 import UniverseScene from "./components/UniverseScene"
 import { AuthorProvider } from "./helpers/author"
@@ -32,7 +31,7 @@ export default function App() {
           <span>
             a drop from <a href="https://twitter.com/TheEdenDao">Eden Dao</a>,
             which is grateful to <a href="https://verses.xyz">Verses</a> for
-            their <a href="https://pluriverse.world">Pluriverse</a> 💜
+            their <a href="https://pluriverse.world">Pluriverse</a>
           </span>
         </footer>
       </main>

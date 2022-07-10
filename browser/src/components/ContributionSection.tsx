@@ -88,6 +88,10 @@ export function ContributionSection() {
   type Page = "contribute" | "share" | "complete"
   const [page, setPage] = useState<Page>("contribute")
 
+  const pageIndex = PAGES.indexOf(page)
+  const nextPage =
+    pageIndex + 1 < PAGES.length && (PAGES[pageIndex + 1] as Page)
+
   type State = "sign" | "tweet" | "verify" | "complete"
   const [step, setStep] = useState<State>("sign")
 
@@ -105,10 +109,6 @@ export function ContributionSection() {
     currentAuthor.id === id
       ? currentAuthor
       : (await getAuthor({ id })) ?? (await addAuthor({ id, twitter }))
-
-  const pageIndex = PAGES.indexOf(page)
-  const nextPage =
-    pageIndex + 1 < PAGES.length && (PAGES[pageIndex + 1] as Page)
 
   return (
     <>
@@ -218,24 +218,15 @@ export function ContributionSection() {
                       className={buttonClass("mt-3")}
                       onClick={async () => {
                         setStepLoading(s => ({ ...s, sign: true }))
-                        const { twitter } = currentAuthor
-                        const walletAddress = await connectWallet()
                         await new Promise(resolve => setTimeout(resolve, 1000))
-                        await Promise.all([
-                          signAndValidate(response).then(setSignature),
-                          findOrCreateAuthor(walletAddress, twitter).then(
-                            setCurrentAuthor,
-                          ),
-                        ]).then(
-                          () => {
-                            setStepLoading(s => ({ ...s, sign: false }))
-                            setStep("tweet")
-                          },
-                          err => {
-                            setStep("sign")
-                            handleErr(err)
-                          },
-                        )
+                        try {
+                          await signAndValidate(response).then(setSignature)
+                          setStepLoading(s => ({ ...s, sign: false }))
+                          setStep("tweet")
+                        } catch (error) {
+                          setStep("sign")
+                          handleErr(error as Error)
+                        }
                       }}
                     >
                       {isStepLoading.sign
@@ -331,21 +322,30 @@ export function ContributionSection() {
                             }
 
                             setStepLoading(s => ({ ...s, verify: true }))
-                            const { id, authorId } = contribution
+
+                            await findOrCreateAuthor(
+                              currentAuthor.id,
+                              currentAuthor.twitter,
+                            ).then(setCurrentAuthor)
+
                             await Promise.all([
+                              fetchStats(),
                               verifyTwitter({
-                                contributionId: id,
-                                authorId,
+                                contributionId: contribution.id,
+                                authorId: currentAuthor.id,
                                 signature,
                               }),
-                              fetchStats(),
                             ])
+
                             const [cc, cs] = await Promise.all([
-                              getContribution({ id }),
+                              getContribution({ id: contribution.id }),
                               getContributions({ offset: 0 }).then(cs =>
-                                cs.flatMap(c => (c.id === id ? [] : [c])),
+                                cs.flatMap(c =>
+                                  c.id === contribution.id ? [] : [c],
+                                ),
                               ),
                             ])
+
                             setContribution(cc)
                             setContributions([cc, ...cs])
                             setStep("complete")
