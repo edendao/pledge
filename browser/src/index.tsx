@@ -6,7 +6,6 @@ import React from "react"
 import ReactDOM from "react-dom"
 import { Helmet } from "react-helmet"
 import Modal from "react-modal"
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom"
 
 import App from "./App"
 import reportWebVitals from "./reportWebVitals"
@@ -17,37 +16,32 @@ Modal.setAppElement("#root")
 ReactDOM.render(
   <React.StrictMode>
     <Helmet>
-      <title>The Way and Virtue of Eden Dao</title>
+      <title>Pledge | eden dao</title>
 
       {/* <!-- Social media tags --> */}
       <meta property="og:type" content="article" />
 
-      <meta property="og:title" content="The Way and Virtue of Eden Dao" />
+      <meta property="og:title" content="Pledge | eden dao" />
 
       <meta
         property="og:description"
-        content="Introducing the pluriverse as a banner for new, communal futures and a Pattern Language for a world where many worlds may fit"
+        content="Towards a regenerative renaissance, come friend to resonate with the eden dao and sign our pledge."
       />
 
       <meta property="og:site_name" content="Eden Dao" />
 
-      <meta name="twitter:title" content="The Way and Virtue of Eden Dao" />
+      <meta name="twitter:title" content="Pledge | eden dao" />
 
       <meta
         name="twitter:description"
-        content="Introducing the pluriverse as a banner for new, communal futures and a Pattern Language for a world where many worlds may fit"
+        content="Towards a regenerative renaissance, come friend to resonate with the eden dao and sign our pledge."
       />
 
-      <meta name="twitter:site" content="@verses_xyz" />
+      <meta name="twitter:site" content="@TheEdenDao" />
 
-      <meta name="twitter:creator" content="@verses_xyz" />
+      <meta name="twitter:creator" content="@TheEdenDao" />
     </Helmet>
-    <Router>
-      {/* routes */}
-      <Routes>
-        <Route path="/*" element={<App />} />
-      </Routes>
-    </Router>
+    <App />
   </React.StrictMode>,
   document.getElementById("root"),
 )

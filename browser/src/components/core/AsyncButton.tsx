@@ -1,3 +1,4 @@
+import classNames from "classnames"
 import { ButtonHTMLAttributes, useState } from "react"
 import { buttonClass } from "src/types/styles"
 
@@ -35,7 +36,7 @@ export function AsyncButton({
 
   return (
     <button
-      className={`${buttonClass("wide")} ${className ? className : ""}`}
+      className={classNames(buttonClass("wide"), className)}
       onClick={onClick}
       disabled={loading}
       {...buttonProps}

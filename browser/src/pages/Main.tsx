@@ -1,3 +1,4 @@
+import classNames from "classnames"
 import React, { useContext, useEffect, useRef } from "react"
 import { ContributionCard } from "src/components/ContributionCard"
 
@@ -42,7 +43,10 @@ export const Main: React.FC = () => {
                   <ContributionCard
                     key={contribution.id}
                     contribution={contribution}
-                    className={`mx-auto ${index === 0 ? "highlight" : ""}`}
+                    className={classNames(
+                      "mx-auto",
+                      index === 0 && "highlight",
+                    )}
                   />
                 ))}
               </div>

@@ -1,5 +1,6 @@
 import "./AutoGrowInput.css"
 
+import classNames from "classnames"
 import { InputHTMLAttributes } from "react"
 
 interface Props {
@@ -15,7 +16,7 @@ export const AutoGrowInput: React.FC<Props> = ({
   className,
   extraProps = {},
 }) => (
-  <div className={`grow-wrap ${className ? className : ""}`}>
+  <div className={classNames("grow-wrap", className)}>
     <textarea
       {...extraProps}
       className="form-textarea block w-full"

@@ -1,5 +1,6 @@
 import "./ContributionSection.css"
 
+import classNames from "classnames"
 import sample from "lodash/sample"
 import React, { useContext, useEffect, useState } from "react"
 import { BiErrorCircle } from "react-icons/bi"
@@ -36,7 +37,7 @@ const PreviewCard: React.FC<
   }
 > = ({ className = "", response = "...", ...contribution }) => (
   <ContributionCard
-    className={`preview-card !w-auto md:!w-full ${className}`}
+    className={classNames(`preview-card !w-auto md:!w-full`, className)}
     contribution={{
       ...contribution,
       response,
@@ -51,7 +52,7 @@ const PreviewCard: React.FC<
 const PAGES = ["contribute", "share", "complete"] as const
 
 export function ContributionSection() {
-  const { currentAuthor, setCurrentAuthor, connectWallet, signAndValidate } =
+  const { currentAuthor, setCurrentAuthor, signAndValidate } =
     useContext(AuthorContext)
   const { getContribution, getContributions, setContributions } =
     useContext(ContributionsContext)
@@ -117,261 +118,251 @@ export function ContributionSection() {
           {PAGES.map(p => (
             <div
               key={p}
-              className={`pageProgress ${
-                page === p ? "selectedPageProgress" : ""
-              }`}
+              className={classNames(
+                "pageProgress",
+                page == p && "selectedPageProgress",
+              )}
             />
           ))}
         </div>
         {page === "contribute" ? (
-          <div>
-            <div className="signContainer">
-              <div className="contributionContainer md:grid flex flex-col items-stretch justify-center">
-                <div className="selects pr-4">
-                  <div className="responseContainer w-full pl-16">
-                    <p className="text-lg">
-                      This vision board is a participatory art piece, where you,
-                      pledge, must shares your visions of the
-                      <span className="shimmer">Eden Dao</span>.
+          <div className="signContainer">
+            <div className="contributionContainer md:grid flex flex-col items-stretch justify-center">
+              <div className="selects pr-4">
+                <div className="responseContainer w-full pl-16">
+                  <p className="text-lg">
+                    This vision board is a participatory art piece, where you,
+                    pledge, must shares your visions of the
+                    <span className="shimmer">Eden Dao</span>.
+                  </p>
+                  <div className="flex">
+                    <p className="text-lg pb-2">
+                      What does <span className="shimmer">Eden Dao</span> mean
+                      to you?
                     </p>
-                    <div className="flex">
-                      <p className="text-lg pb-2">
-                        What does <span className="shimmer">Eden Dao</span> mean
-                        to you?
-                      </p>
-                      <span className="flex-grow" />
-                      <p className="text-lg opacity-50 mb-0 pb-2">
-                        {promptResponse?.length || 0} / {ResponseCharacterLimit}
-                      </p>
-                    </div>
-
-                    <label className="block">
-                      <Dropdown
-                        items={PromptItems}
-                        className="patternSelect w-full"
-                        selectedItemName={
-                          selectedPrompt && Prompts[selectedPrompt]
-                        }
-                      />
-                    </label>
-
-                    <label className="block">
-                      <Dropdown
-                        items={SenseItems}
-                        className="patternSelect w-full"
-                        selectedItemName={
-                          selectedSense && SensePrompts[selectedSense]
-                        }
-                      />
-                    </label>
-
-                    <label>
-                      <AutoGrowInput
-                        value={promptResponse}
-                        onChange={setPromptResponse}
-                        className="responseInput"
-                        extraProps={{
-                          placeholder: "",
-                          maxLength: ResponseCharacterLimit,
-                        }}
-                      />
-                    </label>
+                    <span className="flex-grow" />
+                    <p className="text-lg opacity-50 mb-0 pb-2">
+                      {promptResponse?.length || 0} / {ResponseCharacterLimit}
+                    </p>
                   </div>
+
+                  <label className="block">
+                    <Dropdown
+                      items={PromptItems}
+                      className="patternSelect w-full"
+                      selectedItemName={Prompts[selectedPrompt]}
+                    />
+                  </label>
+
+                  <label className="block">
+                    <Dropdown
+                      items={SenseItems}
+                      className="patternSelect w-full"
+                      selectedItemName={SensePrompts[selectedSense]}
+                    />
+                  </label>
+
+                  <label>
+                    <AutoGrowInput
+                      value={promptResponse}
+                      onChange={setPromptResponse}
+                      className="responseInput"
+                      extraProps={{
+                        placeholder: "",
+                        maxLength: ResponseCharacterLimit,
+                      }}
+                    />
+                  </label>
                 </div>
-                {currentAuthor && (
-                  <PreviewCard
-                    className="ml-12 mr-auto"
-                    signature={signature}
-                    author={currentAuthor}
-                    prompt={selectedPrompt}
-                    response={response}
-                    sense={selectedSense}
-                  />
-                )}
               </div>
+              {currentAuthor && (
+                <PreviewCard
+                  className="ml-12 mr-auto"
+                  signature={signature}
+                  author={currentAuthor}
+                  prompt={selectedPrompt}
+                  response={response}
+                  sense={selectedSense}
+                />
+              )}
             </div>
           </div>
         ) : page === "share" ? (
-          <div>
-            <div className="signContainer">
-              <h2 className="text-2xl font-bold text-center shimmer">
-                Share your vision and get greenlisted
-              </h2>
-              <div className="ShareContainer md:grid contributionContainer flex flex-col items-stretch justify-center">
-                <PreviewCard
-                  className="ml-auto mr-12"
-                  signature={contribution?.signature ?? ""}
-                  author={currentAuthor}
-                  prompt={selectedPrompt}
-                  response={`When I imagine ${Prompts[selectedPrompt]}, it ${SensePrompts[selectedSense]} ${promptResponse}`}
-                  sense={selectedSense}
-                />
-                <ol className="list-decimal list-inside mt-2">
-                  <p
-                    className="text-xl"
-                    style={{ opacity: step === "sign" ? 1 : 0.3 }}
+          <div className="signContainer">
+            <h2 className="text-2xl font-bold text-center shimmer">
+              Share your vision and get greenlisted
+            </h2>
+            <div className="ShareContainer md:grid contributionContainer flex flex-col items-stretch justify-center">
+              <PreviewCard
+                className="ml-auto mr-12"
+                signature={contribution?.signature ?? ""}
+                author={currentAuthor}
+                prompt={selectedPrompt}
+                response={`When I imagine ${Prompts[selectedPrompt]}, it ${SensePrompts[selectedSense]} ${promptResponse}`}
+                sense={selectedSense}
+              />
+              <ol className="list-decimal list-inside mt-2">
+                <p
+                  className="text-xl"
+                  style={{ opacity: step === "sign" ? 1 : 0.3 }}
+                >
+                  <li>Connect your wallet to sign your vision!</li>
+                  <button
+                    disabled={step !== "sign" || isStepLoading.sign}
+                    className={buttonClass("mt-3")}
+                    onClick={async () => {
+                      setStepLoading(s => ({ ...s, sign: true }))
+                      await new Promise(resolve => setTimeout(resolve, 1000))
+                      try {
+                        await signAndValidate(response).then(setSignature)
+                        setStepLoading(s => ({ ...s, sign: false }))
+                        setStep("tweet")
+                      } catch (error) {
+                        setStep("sign")
+                        handleErr(error as Error)
+                      }
+                    }}
                   >
-                    <li>Connect your wallet to sign your vision!</li>
-                    <button
-                      disabled={step !== "sign" || isStepLoading.sign}
-                      className={buttonClass("mt-3")}
-                      onClick={async () => {
-                        setStepLoading(s => ({ ...s, sign: true }))
-                        await new Promise(resolve => setTimeout(resolve, 1000))
-                        try {
-                          await signAndValidate(response).then(setSignature)
-                          setStepLoading(s => ({ ...s, sign: false }))
-                          setStep("tweet")
-                        } catch (error) {
-                          setStep("sign")
-                          handleErr(error as Error)
-                        }
+                    {isStepLoading.sign
+                      ? "Signing "
+                      : signature
+                      ? "Signed "
+                      : "Sign "}
+                    with Ethereum
+                  </button>
+                </p>
+                <p
+                  className="text-xl"
+                  style={{ opacity: step === "tweet" ? 1 : 0.3 }}
+                >
+                  <li>Tweet to verify your contribution!</li>
+                  <button
+                    disabled={step === "sign" || isStepLoading.tweet}
+                    className={buttonClass("mt-2")}
+                    onClick={async () => {
+                      try {
+                        setStepLoading(s => ({ ...s, tweet: true }))
+
+                        const created = addContribution({
+                          authorId: currentAuthor.id,
+                          prompt: selectedPrompt,
+                          sense: selectedSense,
+                          response,
+                        })
+
+                        const tweetTextParam = encodeURIComponent(
+                          `When I imagine @TheEdenDao, it ${SensePrompts[selectedSense]} ${promptResponse} sig:${signature}`,
+                        )
+                        window.open(
+                          `https://twitter.com/intent/tweet?text=${tweetTextParam}`,
+                          "_blank",
+                        )
+
+                        const [cc] = await Promise.all([created, fetchStats()])
+                        const cs = await getContributions({ offset: 0 }).then(
+                          cs => cs.flatMap(c => (c.id === cc.id ? [] : [c])),
+                        )
+                        setContribution(cc)
+                        setContributions([cc, ...cs])
+
+                        setStep("verify")
+                      } catch (error) {
+                        handleErr(error as Error)
+                      } finally {
+                        setStepLoading(s => ({ ...s, tweet: false }))
+                      }
+                    }}
+                  >
+                    Announc
+                    {step === "verify"
+                      ? "ed "
+                      : isStepLoading.tweet
+                      ? "ing "
+                      : "e "}
+                    on Twitter
+                  </button>
+                </p>
+                <p
+                  className="text-xl"
+                  style={{ opacity: step === "verify" ? 1 : 0.3 }}
+                >
+                  <li>
+                    What is your Twitter username?
+                    <span style={{ position: "relative", top: -2, left: 4 }}>
+                      <Checkmark />
+                    </span>
+                  </li>
+                  <div className="flex mt-1">
+                    <input
+                      className="pb-2 px-4 mr-2 rounded-full"
+                      disabled={step !== "verify"}
+                      maxLength={24}
+                      value={`@${currentAuthor.twitter}`}
+                      onChange={event => {
+                        setCurrentAuthor(author => ({
+                          ...author,
+                          twitter: event.target.value.replaceAll("@", ""),
+                        }))
                       }}
-                    >
-                      {isStepLoading.sign
-                        ? "Signing "
-                        : signature
-                        ? "Signed "
-                        : "Sign "}
-                      with Ethereum
-                    </button>
-                  </p>
-                  <p
-                    className="text-xl"
-                    style={{ opacity: step === "tweet" ? 1 : 0.3 }}
-                  >
-                    <li>Tweet to verify your contribution!</li>
+                    />
                     <button
-                      disabled={step === "sign" || isStepLoading.tweet}
-                      className={buttonClass("mt-2")}
                       onClick={async () => {
                         try {
-                          setStepLoading(s => ({ ...s, tweet: true }))
+                          if (!contribution) {
+                            throw new Error("Missing contribution")
+                          }
 
-                          const created = addContribution({
-                            authorId: currentAuthor.id,
-                            prompt: selectedPrompt,
-                            sense: selectedSense,
-                            response,
-                          })
+                          setStepLoading(s => ({ ...s, verify: true }))
 
-                          const tweetTextParam = encodeURIComponent(
-                            `When I imagine @TheEdenDao, it ${SensePrompts[selectedSense]} ${promptResponse} sig:${signature}`,
-                          )
-                          window.open(
-                            `https://twitter.com/intent/tweet?text=${tweetTextParam}`,
-                            "_blank",
-                          )
+                          await findOrCreateAuthor(
+                            currentAuthor.id,
+                            currentAuthor.twitter,
+                          ).then(setCurrentAuthor)
 
-                          const [cc] = await Promise.all([
-                            created,
+                          await Promise.all([
                             fetchStats(),
+                            verifyTwitter({
+                              contributionId: contribution.id,
+                              authorId: currentAuthor.id,
+                              signature,
+                            }),
                           ])
-                          const cs = await getContributions({ offset: 0 }).then(
-                            cs => cs.flatMap(c => (c.id === cc.id ? [] : [c])),
-                          )
+
+                          const [cc, cs] = await Promise.all([
+                            getContribution({ id: contribution.id }),
+                            getContributions({ offset: 0 }).then(cs =>
+                              cs.flatMap(c =>
+                                c.id === contribution.id ? [] : [c],
+                              ),
+                            ),
+                          ])
+
                           setContribution(cc)
                           setContributions([cc, ...cs])
-
-                          setStep("verify")
+                          setStep("complete")
                         } catch (error) {
                           handleErr(error as Error)
                         } finally {
-                          setStepLoading(s => ({ ...s, tweet: false }))
+                          setStepLoading(s => ({ ...s, verify: false }))
                         }
                       }}
+                      disabled={
+                        step === "sign" ||
+                        !!contribution?.signature ||
+                        isStepLoading.verify
+                      }
+                      className={buttonClass()}
+                      style={{ paddingBottom: 15 }}
                     >
-                      Announc
-                      {step === "verify"
-                        ? "ed"
-                        : isStepLoading.tweet
-                        ? "ing"
-                        : "e"}{" "}
-                      on Twitter
+                      {contribution?.signature
+                        ? "Verified!"
+                        : isStepLoading.verify
+                        ? "Verifying"
+                        : "Verify"}
                     </button>
-                  </p>
-                  <p
-                    className="text-xl"
-                    style={{ opacity: step === "verify" ? 1 : 0.3 }}
-                  >
-                    <li>
-                      What is your Twitter username?
-                      <span style={{ position: "relative", top: -2, left: 4 }}>
-                        <Checkmark />
-                      </span>
-                    </li>
-                    <div className="flex mt-1">
-                      <input
-                        disabled={step !== "verify"}
-                        value={`@${currentAuthor.twitter}`}
-                        onChange={evt => {
-                          setCurrentAuthor(author => ({
-                            ...author,
-                            twitter: evt.target.value.replaceAll("@", ""),
-                          }))
-                        }}
-                        maxLength={24}
-                        className="pb-2 px-4 mr-2 rounded-full"
-                      />
-                      <button
-                        onClick={async () => {
-                          try {
-                            if (!contribution) {
-                              throw new Error("Missing contribution")
-                            }
-
-                            setStepLoading(s => ({ ...s, verify: true }))
-
-                            await findOrCreateAuthor(
-                              currentAuthor.id,
-                              currentAuthor.twitter,
-                            ).then(setCurrentAuthor)
-
-                            await Promise.all([
-                              fetchStats(),
-                              verifyTwitter({
-                                contributionId: contribution.id,
-                                authorId: currentAuthor.id,
-                                signature,
-                              }),
-                            ])
-
-                            const [cc, cs] = await Promise.all([
-                              getContribution({ id: contribution.id }),
-                              getContributions({ offset: 0 }).then(cs =>
-                                cs.flatMap(c =>
-                                  c.id === contribution.id ? [] : [c],
-                                ),
-                              ),
-                            ])
-
-                            setContribution(cc)
-                            setContributions([cc, ...cs])
-                            setStep("complete")
-                          } catch (error) {
-                            handleErr(error as Error)
-                          } finally {
-                            setStepLoading(s => ({ ...s, verify: false }))
-                          }
-                        }}
-                        disabled={
-                          step === "sign" ||
-                          !!contribution?.signature ||
-                          isStepLoading.verify
-                        }
-                        className={buttonClass()}
-                        style={{ paddingBottom: 15 }}
-                      >
-                        {contribution?.signature
-                          ? "Verified!"
-                          : isStepLoading.verify
-                          ? "Verifying"
-                          : "Verify"}
-                      </button>
-                    </div>
-                  </p>
-                </ol>
-              </div>
+                  </div>
+                </p>
+              </ol>
             </div>
           </div>
         ) : page === "complete" ? (
@@ -399,18 +390,18 @@ export function ContributionSection() {
         ) : null}
         {error && (
           <div className="errorContainer text-red-500 flex items-center gap-1 justify-center text-xl ml-4">
-            <BiErrorCircle /> <span className="shimmer">{error}</span>
+            <BiErrorCircle /> {error}
           </div>
         )}
         {nextPage && (
           <div className="flex flex-col md:flex-row mt-8 contributionNavigation mb-4">
             {nextPage && (
               <button
-                className={`${buttonClass()} md:ml-auto bg-gray-600 rounded-full inline-flex gap-1 items-center mt-2 md:mt-0`}
+                className={buttonClass(
+                  `md:ml-auto bg-gray-600 rounded-full inline-flex gap-1 items-center mt-2 md:mt-0`,
+                )}
                 disabled={page === "share" && !contribution?.signature}
-                onClick={() => {
-                  setPage(nextPage)
-                }}
+                onClick={() => setPage(nextPage)}
               >
                 Next
                 <MdArrowForward

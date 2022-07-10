@@ -1,5 +1,6 @@
 import { Menu, Transition } from "@headlessui/react"
 import { ChevronDownIcon } from "@heroicons/react/solid"
+import classNames from "classnames"
 import { Fragment } from "react"
 
 export interface DropdownItem {
@@ -15,10 +16,6 @@ interface Props {
   className?: string
 }
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ")
-}
-
 export const Dropdown: React.FC<Props> = ({
   items,
   selectedItemName,
@@ -27,7 +24,7 @@ export const Dropdown: React.FC<Props> = ({
 }) => (
   <Menu
     as="div"
-    className={`relative inline-block text-left ${className ? className : ""}`}
+    className={classNames(`relative inline-block text-left`, className)}
   >
     <div>
       <Menu.Button className="input inline-flex justify-center w-full px-4 py-2">
@@ -51,10 +48,7 @@ export const Dropdown: React.FC<Props> = ({
           {items.map(item => (
             <Menu.Item key={item.name}>
               {({ active }) => (
-                <button
-                  className={classNames(active ? "active" : "")}
-                  onClick={item.onClick}
-                >
+                <button className={classNames(active)} onClick={item.onClick}>
                   {item.displayName ?? item.name}
                 </button>
               )}
