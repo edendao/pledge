@@ -130,10 +130,9 @@ export function ContributionSection() {
                 <div className="selects pr-4">
                   <div className="responseContainer w-full pl-16">
                     <p className="text-lg">
-                      <span className="shimmer">Eden Dao</span> can take many
-                      forms. As a headless brand, it can mean a regenerative
-                      renaissance, or it can mean the future we would be proud
-                      to leave our children. It&rsquo;s up to you!
+                      This vision board is a participatory art piece, where you,
+                      pledge, must shares your visions of the
+                      <span className="shimmer">Eden Dao</span>.
                     </p>
                     <div className="flex">
                       <p className="text-lg pb-2">
