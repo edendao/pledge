@@ -11,10 +11,10 @@ export const getGreenlistStatus =
     try {
       const contribution = await prisma.contribution.findFirst({
         where: { authorId: req.params.address },
-        select: { authorId: true },
+        select: { authorId: true, signature: true },
       })
 
-      res.status(200).json({ greenlisted: Boolean(contribution) })
+      res.status(200).json({ greenlisted: Boolean(contribution?.signature) })
     } catch (error) {
       console.error(error)
 

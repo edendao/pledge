@@ -1,7 +1,6 @@
 // POST /verify/:handle
 // must include signature in json body
 
-import { Author } from "@prisma/client"
 import { RequestHandler } from "express"
 import Twitter from "twitter"
 
