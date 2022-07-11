@@ -221,6 +221,7 @@ export function ContributionSection() {
                         await signAndValidate(response).then(setSignature)
                         setStepLoading(s => ({ ...s, sign: false }))
                         setStep("tweet")
+                        setError(undefined)
                       } catch (error) {
                         setStep("sign")
                         handleErr(error as Error)
@@ -270,6 +271,7 @@ export function ContributionSection() {
                         setContributions([cc, ...cs])
 
                         setStep("verify")
+                        setError(undefined)
                       } catch (error) {
                         setStep("tweet")
                         handleErr(error as Error)
@@ -345,6 +347,7 @@ export function ContributionSection() {
                           setContribution(cc)
                           setContributions([cc, ...cs])
                           setStep("complete")
+                          setError(undefined)
                         } catch (error) {
                           setStep("verify")
                           handleErr(error as Error)
