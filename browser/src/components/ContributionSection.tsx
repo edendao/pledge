@@ -214,8 +214,10 @@ export function ContributionSection() {
                       try {
                         setStepLoading(s => ({ ...s, sign: true }))
                         const address = await connectWallet()
-                        setCurrentAuthor(a => ({ ...a, id: address }))
-                        await new Promise(resolve => setTimeout(resolve, 1000))
+                        await Promise.all([
+                          new Promise(resolve => setTimeout(resolve, 1000)),
+                          findOrCreateAuthor(address).then(setCurrentAuthor),
+                        ])
                         await signAndValidate(response).then(setSignature)
                         setStepLoading(s => ({ ...s, sign: false }))
                         setStep("tweet")
