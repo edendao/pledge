@@ -1,3 +1,4 @@
+import { addAsync } from "@awaitjs/express"
 import { PrismaClient } from "@prisma/client"
 import cors from "cors"
 import dotenv from "dotenv"
@@ -16,7 +17,7 @@ import { verify } from "./api-handlers/twitter_verify"
 
 dotenv.config()
 
-const app = express()
+const app = addAsync(express())
 app.use(express.json())
 
 const origin = process.env.ORIGIN || "http://localhost:3000"
@@ -26,34 +27,28 @@ const prisma = new PrismaClient()
 const services = { prisma }
 
 app.options("/greenlist/:address", cors())
-app.get("/greenlist/:address", cors(), getGreenlistStatus(services))
+app.getAsync("/greenlist/:address", cors(), getGreenlistStatus(services))
 
-const authorsRouter = express.Router()
-authorsRouter.options("/", pledgeCORS)
-authorsRouter.post("/", pledgeCORS, addAuthor(services))
-authorsRouter.get("/", pledgeCORS, getAuthors(services))
-authorsRouter.options("/:id", pledgeCORS)
-authorsRouter.get("/:id", pledgeCORS, getAuthor(services))
-app.use("/authors", authorsRouter)
+app.options("/authors/", pledgeCORS)
+app.postAsync("/authors/", pledgeCORS, addAuthor(services))
+app.getAsync("/authors/", pledgeCORS, getAuthors(services))
+app.options("/authors/:id", pledgeCORS)
+app.getAsync("/authors/:id", pledgeCORS, getAuthor(services))
 
-const contributionsRouter = express.Router()
-contributionsRouter.options("/", pledgeCORS)
-contributionsRouter.get("/", pledgeCORS, getContributions(services))
-contributionsRouter.options("/:id", pledgeCORS)
-contributionsRouter.get("/:id", pledgeCORS, getContribution(services))
-contributionsRouter.post("/", pledgeCORS, addContribution(services))
-app.use("/contributions", contributionsRouter)
+app.options("/contributions/", pledgeCORS)
+app.getAsync("/contributions/", pledgeCORS, getContributions(services))
+app.options("/contributions/:id", pledgeCORS)
+app.getAsync("/contributions/:id", pledgeCORS, getContribution(services))
+app.postAsync("/contributions/", pledgeCORS, addContribution(services))
 
 app.options("/twitter/verify", pledgeCORS)
-app.post("/twitter/verify", pledgeCORS, verify(services))
+app.postAsync("/twitter/verify", pledgeCORS, verify(services))
 
 app.options("/stats", pledgeCORS)
-app.get("/stats", pledgeCORS, getStats(services))
+app.getAsync("/stats", pledgeCORS, getStats(services))
 
 // Health Check
 app.get("/ping", (_, res) => res.status(200).send("PONG"))
-
-app.use(ApiErrorsMiddleware)
 
 const port = process.env.PORT || 3001
 app.listen(port, () => console.log(`Express is listening at ${port}`))

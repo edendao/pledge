@@ -1,17 +1,17 @@
 // GET /stats
 
 import { GetStatsResponse } from "@common/server-api"
-import { RequestHandler } from "express"
+import { Request, Response } from "express"
 
 import { Services } from "../types"
 
-export function getStats({ prisma }: Services): RequestHandler {
-  return async (_req, res) => {
+export const getStats =
+  ({ prisma }: Services) =>
+  async (_: Request, res: Response<GetStatsResponse>) => {
     const [authorsTotal, contributionsTotal] = await Promise.all([
       prisma.author.count(),
       prisma.contribution.count(),
     ])
 
-    res.json({ authorsTotal, contributionsTotal } as GetStatsResponse)
+    res.json({ authorsTotal, contributionsTotal })
   }
-}

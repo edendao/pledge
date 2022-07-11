@@ -1,6 +1,6 @@
 // POST /contributions
 
-import { RequestHandler } from "express"
+import { Request, Response } from "express"
 
 import {
   AddContributionRequest,
@@ -9,22 +9,18 @@ import {
 import { Services } from "../types"
 
 export const addContribution =
-  ({
-    prisma,
-  }: Services): RequestHandler<
-    AddContributionRequest,
-    AddContributionResponse
-  > =>
-  async (req, res) => {
+  ({ prisma }: Services) =>
+  async (
+    req: Request<AddContributionRequest>,
+    res: Response<AddContributionResponse>,
+  ) => {
     const { authorId, response, sense, prompt } = req.body
 
-    const data = { authorId, prompt, sense, response }
-    const contribution =
-      (await prisma.contribution.findFirst({
-        where: data,
-        include: { author: true },
-      })) ??
-      (await prisma.contribution.create({ data, include: { author: true } }))
+    const lookup = { authorId, prompt, sense, response }
+    const include = { author: true }
 
-    res.json(contribution)
+    res.json(
+      (await prisma.contribution.findFirst({ where: lookup, include })) ??
+        (await prisma.contribution.create({ data: lookup, include })),
+    )
   }

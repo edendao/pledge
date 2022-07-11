@@ -15,6 +15,7 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
+    "@awaitjs/express": "^0.9.0",
     "@prisma/client": "^3.12.0",
     "ar-wrapper": "^1.1.1",
     "cors": "^2.8.5",

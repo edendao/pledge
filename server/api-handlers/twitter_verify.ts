@@ -1,10 +1,9 @@
 // POST /verify/:handle
 // must include signature in json body
 
-import { RequestHandler } from "express"
+import { Request, Response } from "express"
 import Twitter from "twitter"
 
-import { VerifyTwitterRequest } from "../common/server-api"
 import { Services } from "../types"
 
 const client = new Twitter({
@@ -13,19 +12,16 @@ const client = new Twitter({
   bearer_token: process.env.BEARER_TOKEN,
 })
 
-const getTweetsBy = (screen_name: string) =>
-  client.get("statuses/user_timeline", { screen_name, tweet_mode: "extended" })
-
-const extractSigFromText = (tweet: string) =>
-  tweet
-    .slice(tweet.indexOf("sig:") + 4)
-    .split(" ")[0]
-    .trim()
+const getTweetsBy = async (username: string) =>
+  await client.get("statuses/user_timeline", {
+    screen_name: username,
+    tweet_mode: "extended",
+  })
 
 // signature is their handle signed with their address
 export const verify =
-  ({ prisma }: Services): RequestHandler<VerifyTwitterRequest> =>
-  async (req, res) => {
+  ({ prisma }: Services) =>
+  async (req: Request, res: Response) => {
     const { authorId, contributionId, signature } = req.body
 
     const { author, ...contribution } = await prisma.contribution.findFirst({
@@ -34,21 +30,30 @@ export const verify =
     })
 
     if (Boolean(contribution.signature)) {
-      return res.status(200).json({ message: "Already verified!" })
+      res.status(200).json({ message: "Already verified!" })
+      return
     }
 
-    const signatures: string[] = (await getTweetsBy(author.twitter)).flatMap(
-      ({ full_text: t }) => (t.includes("sig:") ? [extractSigFromText(t)] : []),
-    )
+    const tweets = (await getTweetsBy(author.twitter)) as any[]
+    for (const { full_text: text } of tweets) {
+      const index = text.indexOf("sig:")
+      if (
+        index !== -1 &&
+        signature ===
+          text
+            .slice(index + 4)
+            .split(" ")[0]
+            .trim()
+      ) {
+        await prisma.contribution.update({
+          where: { id: contributionId },
+          data: { signature },
+        })
 
-    if (!signatures.includes(signature)) {
-      return res.status(404).json({ error: "No matching tweets found" })
+        res.status(201).json({ message: "Verified!" })
+        return
+      }
     }
 
-    await prisma.contribution.update({
-      where: { id: contributionId },
-      data: { signature },
-    })
-
-    return res.status(201).json({ message: "Verified!" })
+    res.status(404).json({ error: "No matching tweets found" })
   }

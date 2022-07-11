@@ -1,13 +1,13 @@
 // GET /users
 
-import { RequestHandler } from "express"
+import { Request, Response } from "express"
 
 import { Author, GetAuthorsRequest, SignatureLimit } from "../common/server-api"
 import { Services } from "../types"
 
 export const getAuthors =
-  ({ prisma }: Services): RequestHandler<GetAuthorsRequest, Author[]> =>
-  async (req, res) => {
+  ({ prisma }: Services) =>
+  async (req: Request<GetAuthorsRequest>, res: Response<Author[]>) => {
     const { offset = "0" } = req.query
 
     const authors = await prisma.author.findMany({

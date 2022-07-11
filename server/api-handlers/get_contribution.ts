@@ -1,12 +1,12 @@
 // GET /contribution/:id
 
-import { RequestHandler } from "express"
+import { Request, Response } from "express"
 
 import { Services } from "../types"
 
 export const getContribution =
-  ({ prisma }: Services): RequestHandler =>
-  async (req, res) => {
+  ({ prisma }: Services) =>
+  async (req: Request, res: Response) => {
     const { id } = req.params
 
     const contribution = await prisma.contribution.findFirst({
