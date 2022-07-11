@@ -1,5 +1,5 @@
 {
-  "name": "pluriverse-server",
+  "name": "pledge-server",
   "version": "1.0.0",
   "license": "MIT",
   "main": "dist/index.js",
