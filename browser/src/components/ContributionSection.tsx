@@ -132,8 +132,7 @@ export function ContributionSection() {
                 <div className="responseContainer w-full pl-16">
                   <p className="text-lg">
                     This vision board is a participatory art piece, where you,
-                    pledge, share what <span className="shimmer">Eden Dao</span>{" "}
-                    means to you.
+                    pledge, become a part of our whole.
                   </p>
                   <div className="flex">
                     <p className="text-lg pb-2">
