@@ -9,10 +9,8 @@ import Modal from "react-modal"
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom"
 
 import App from "./App"
+import { tracker } from "./helpers/openreplay"
 import reportWebVitals from "./reportWebVitals"
-
-dayjs.extend(utc)
-Modal.setAppElement("#root")
 
 ReactDOM.render(
   <React.StrictMode>
@@ -50,6 +48,10 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById("root"),
 )
+
+tracker.start()
+dayjs.extend(utc)
+Modal.setAppElement("#root")
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

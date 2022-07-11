@@ -37,10 +37,9 @@ export const verify =
       return res.status(200).json({ message: "Already verified!" })
     }
 
-    const signatures: string[] = (await getTweetsBy(author.twitter))
-      .map(({ full_text: t }) => t)
-      .filter((t: string) => t.includes("sig:"))
-      .map(extractSigFromText)
+    const signatures: string[] = (await getTweetsBy(author.twitter)).flatMap(
+      ({ full_text: t }) => (t.includes("sig:") ? [extractSigFromText(t)] : []),
+    )
 
     if (!signatures.includes(signature)) {
       return res.status(404).json({ error: "No matching tweets found" })

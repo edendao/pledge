@@ -8,6 +8,7 @@ import { Author } from "src/types/common/server-api"
 import Web3Modal from "web3modal"
 
 import { getAuthor } from "./api"
+import { tracker } from "./openreplay"
 
 const Web3ModalProviderOptions = {
   walletconnect: {
@@ -79,6 +80,7 @@ export function AuthorProvider({ children }) {
     const newProvider = new providers.Web3Provider(instance)
     setProvider(newProvider)
     const address = await newProvider.getSigner().getAddress()
+    tracker.setUserID(address)
     return address
   }
 
