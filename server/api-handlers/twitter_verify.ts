@@ -27,10 +27,9 @@ export const verify =
     }
 
     console.time("twitter")
-    const twitterUser = await client.readOnly.v2.userByUsername(author.twitter)
-    const { tweets } = await client.readOnly.v2.userTimeline(
-      twitterUser.data.id,
-    )
+    const { tweets } = await client.readOnly.v2
+      .userByUsername(author.twitter)
+      .then(({ data: user }) => client.readOnly.v2.userTimeline(user.id))
     console.timeEnd("twitter")
 
     for (const { text } of tweets) {
