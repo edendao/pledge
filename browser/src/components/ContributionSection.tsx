@@ -52,7 +52,7 @@ const PreviewCard: React.FC<
 const PAGES = ["contribute", "share", "complete"] as const
 
 export function ContributionSection() {
-  const { currentAuthor, setCurrentAuthor, signAndValidate } =
+  const { currentAuthor, setCurrentAuthor, connectWallet, signAndValidate } =
     useContext(AuthorContext)
   const { getContribution, getContributions, setContributions } =
     useContext(ContributionsContext)
@@ -211,9 +211,11 @@ export function ContributionSection() {
                     disabled={step !== "sign" || isStepLoading.sign}
                     className={buttonClass("mt-3")}
                     onClick={async () => {
-                      setStepLoading(s => ({ ...s, sign: true }))
-                      await new Promise(resolve => setTimeout(resolve, 1000))
                       try {
+                        setStepLoading(s => ({ ...s, sign: true }))
+                        const address = await connectWallet()
+                        setCurrentAuthor(a => ({ ...a, id: address }))
+                        await new Promise(resolve => setTimeout(resolve, 1000))
                         await signAndValidate(response).then(setSignature)
                         setStepLoading(s => ({ ...s, sign: false }))
                         setStep("tweet")
