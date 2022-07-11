@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client"
 import cors from "cors"
 import dotenv from "dotenv"
 import express from "express"
+import { ApiErrorsMiddleware } from "express-error-middleware"
 
 import { addAuthor } from "./api-handlers/add_author"
 import { addContribution } from "./api-handlers/add_contribution"
@@ -52,6 +53,8 @@ app.use("/twitter", twitterRouter)
 
 app.options("/stats", pledgeCORS)
 app.get("/stats", pledgeCORS, getStats(services))
+
+app.use(ApiErrorsMiddleware)
 
 app.listen(port, () => {
   console.log(`Express is listening at ${port}`)
