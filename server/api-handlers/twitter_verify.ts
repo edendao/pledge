@@ -33,7 +33,7 @@ export const verify =
       include: { author: true },
     })
 
-    if (contribution.signature) {
+    if (Boolean(contribution.signature)) {
       return res.status(200).json({ message: "Already verified!" })
     }
 

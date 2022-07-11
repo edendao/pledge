@@ -19,10 +19,8 @@ dotenv.config()
 const app = express()
 app.use(express.json())
 
-const pledgeCORS = cors({
-  origin: process.env.ORIGIN || "http://localhost:3000",
-})
-const port = process.env.PORT || 3001
+const origin = process.env.ORIGIN || "http://localhost:3000"
+const pledgeCORS = cors({ origin })
 
 const prisma = new PrismaClient()
 const services = { prisma }
@@ -46,16 +44,16 @@ contributionsRouter.get("/:id", pledgeCORS, getContribution(services))
 contributionsRouter.post("/", pledgeCORS, addContribution(services))
 app.use("/contributions", contributionsRouter)
 
-const twitterRouter = express.Router()
-twitterRouter.options("/verify", pledgeCORS)
-twitterRouter.post("/verify", verify(services))
-app.use("/twitter", twitterRouter)
+app.options("/twitter/verify", pledgeCORS)
+app.post("/twitter/verify", pledgeCORS, verify(services))
 
 app.options("/stats", pledgeCORS)
 app.get("/stats", pledgeCORS, getStats(services))
 
+// Health Check
+app.get("/ping", (_, res) => res.status(200).send("PONG"))
+
 app.use(ApiErrorsMiddleware)
 
-app.listen(port, () => {
-  console.log(`Express is listening at ${port}`)
-})
+const port = process.env.PORT || 3001
+app.listen(port, () => console.log(`Express is listening at ${port}`))
