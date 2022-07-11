@@ -269,6 +269,7 @@ export function ContributionSection() {
 
                         setStep("verify")
                       } catch (error) {
+                        setStep("tweet")
                         handleErr(error as Error)
                       } finally {
                         setStepLoading(s => ({ ...s, tweet: false }))
@@ -343,6 +344,7 @@ export function ContributionSection() {
                           setContributions([cc, ...cs])
                           setStep("complete")
                         } catch (error) {
+                          setStep("verify")
                           handleErr(error as Error)
                         } finally {
                           setStepLoading(s => ({ ...s, verify: false }))
