@@ -13,7 +13,7 @@ import { getContribution } from "./api-handlers/get_contribution"
 import { getContributions } from "./api-handlers/get_contributions"
 import { getGreenlistStatus } from "./api-handlers/get_greenlist_status"
 import { getStats } from "./api-handlers/get_stats"
-import { verify } from "./api-handlers/twitter_verify"
+import { twitterVerify } from "./api-handlers/twitter_verify"
 
 dotenv.config()
 
@@ -42,7 +42,7 @@ app.getAsync("/contributions/:id", pledgeCORS, getContribution(services))
 app.postAsync("/contributions/", pledgeCORS, addContribution(services))
 
 app.options("/twitter/verify", pledgeCORS)
-app.postAsync("/twitter/verify", pledgeCORS, verify(services))
+app.postAsync("/twitter/verify", pledgeCORS, twitterVerify(services))
 
 app.options("/stats", pledgeCORS)
 app.getAsync("/stats", pledgeCORS, getStats(services))
