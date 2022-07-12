@@ -52,152 +52,55 @@ async function makeRequest<T>(
   })
   const text = await response.text()
   const jsonResponse = text.length ? JSON.parse(text) : undefined
-  if (!response.ok) {
+  if (!response.ok || jsonResponse?.error) {
     throw new Error(jsonResponse?.error || response.statusText)
   }
   return jsonResponse
 }
 
-// TODO: maybe enrich with location data?
-// http://ipinfo.io
-export async function addContribution(
-  request: AddContributionRequest,
-): Promise<AddContributionResponse> {
-  const response = await makeRequest(`${ApiUrl}/contributions`, {
+export const addContribution = async (request: AddContributionRequest) =>
+  await makeRequest<AddContributionResponse>(`${ApiUrl}/contributions`, {
     body: request,
     method: "POST",
   })
-  return response as AddContributionResponse
-}
 
-export async function getContribution({
-  id,
-}: GetContributionRequest): Promise<Contribution> {
-  const response = await makeRequest(`${ApiUrl}/contributions/${id}`, {
+export const getContribution = async ({ id }: GetContributionRequest) =>
+  await makeRequest<Contribution>(`${ApiUrl}/contributions/${id}`, {
     method: "GET",
   })
-  return response as Contribution
-}
 
-export async function getContributions({
+export const getContributions = async ({
   offset = 0,
-}: GetContributionsRequest): Promise<Contribution[]> {
-  const response = await makeRequest(
+}: GetContributionsRequest) =>
+  await makeRequest<Contribution[]>(
     withQueryParams(`${ApiUrl}/contributions`, {
       offset: `${offset}`,
     }),
     { method: "GET" },
   )
-  return response as Contribution[]
-}
 
-export async function getAuthor({ id }: GetAuthorRequest) {
-  const response = await makeRequest(`${ApiUrl}/authors/${id}`, {
+export const getAuthor = async ({ id }: GetAuthorRequest) =>
+  await makeRequest<Author | undefined>(`${ApiUrl}/authors/${id}`, {
     method: "GET",
   })
-  return response as Author | undefined
-}
 
-export async function getAuthors({
-  offset = 0,
-}: GetAuthorsRequest = {}): Promise<Author[]> {
-  const response = await makeRequest(
+export const getAuthors = async ({ offset = 0 }: GetAuthorsRequest = {}) =>
+  await makeRequest<Author[]>(
     withQueryParams(`${ApiUrl}/authors`, { offset: `${offset}` }),
     { method: "GET" },
   )
-  return response as Author[]
-}
 
-export async function addAuthor(
-  request: AddAuthorRequest,
-): Promise<AddAuthorResponse> {
-  const response = await makeRequest(`${ApiUrl}/authors`, {
+export const addAuthor = async (request: AddAuthorRequest) =>
+  await makeRequest<AddAuthorResponse>(`${ApiUrl}/authors`, {
     body: request,
     method: "POST",
   })
-  return response as AddAuthorResponse
-}
 
-export async function verifyTwitter(
-  request: VerifyTwitterRequest,
-): Promise<void> {
+export const verifyTwitter = async (request: VerifyTwitterRequest) =>
   await makeRequest(`${ApiUrl}/twitter/verify`, {
     body: request,
     method: "POST",
   })
-}
 
-export async function getStats(): Promise<GetStatsResponse> {
-  return makeRequest(`${ApiUrl}/stats`, { method: "GET" })
-}
-
-// FOR ARWEAVE //
-
-interface Tag {
-  name: string
-  value: string
-}
-
-interface Edge {
-  node: {
-    id: string
-    tags: {
-      find: (fn: (t: Tag) => boolean) => Tag
-    }
-  }
-}
-
-export interface ArweaveEssayTransaction {
-  transactionId: string
-  version: number
-}
-
-function getVersionForArweaveTransaction(edge: Edge): number {
-  return (
-    parseInt(
-      edge.node.tags.find((tag: Tag) => tag.name === "DOC_VERSION").value,
-    ) || 0
-  )
-}
-
-export async function fetchLatestArweaveEssay(): Promise<ArweaveEssayTransaction> {
-  const req = await fetch("https://arweave.net/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify({
-      query: `
-      query {
-        transactions(
-          tags: [
-            {
-              name: "DOC_NAME",
-              values: ["pluriverse:browser/src/components/EssayBody.tsx"]
-            }
-          ],
-          owners: ["aek33fcNH1qbb-SsDEqBF1KDWb8R1mxX6u4QGoo3tAs"],
-        ) {
-          edges {
-            node {
-              id
-              tags {
-                name
-                value
-              }
-            }
-          }
-        }
-      }
-      `,
-    }),
-  })
-  const edges = (await req.json()).data.transactions.edges as Edge[]
-  const txns = edges.map(e => ({
-    transactionId: e.node.id,
-    version: getVersionForArweaveTransaction(e),
-  }))
-  // Latest transaction by version
-  return txns.sort((a, b) => b.version - a.version)[0]
-}
+export const getStats = async () =>
+  makeRequest<GetStatsResponse>(`${ApiUrl}/stats`, { method: "GET" })

@@ -7,17 +7,21 @@ export const twitterVerify =
   ({ prisma }: Services) =>
   async (req: Request, res: Response) => {
     const { authorId, contributionId: id, signature } = req.body
+    if (!authorId || !id || !signature) {
+      throw new Error("INVALID_PARAMS")
+    }
+
     const [author, contribution] = await useContribution(prisma, authorId, id)
 
     if (Boolean(contribution.signature)) {
       res.status(200).json({ message: "Already verified!" })
-    } else if (await findTweetWithSignature(author.twitter, signature)) {
+    } else if (await tweetWithSignature(author.twitter, signature)) {
       try {
         console.time("prisma.update")
         await prisma.contribution.update({ where: { id }, data: { signature } })
         res.status(201).json({ message: "Verified!" })
       } catch (error) {
-        res.status(500).json({ message: error.message })
+        res.status(500).json({ message: (error as Error).message })
       } finally {
         console.timeEnd("prisma.update")
       }
@@ -43,13 +47,14 @@ const useContribution = async (
   }
 }
 
-const findTweetWithSignature = async (username: string, signature: string) => {
+const twitter = new TwitterApi(process.env.BEARER_TOKEN).readOnly.v2
+
+const tweetWithSignature = async (username: string, signature: string) => {
   try {
     console.time("twitter")
 
-    const client = new TwitterApi(process.env.BEARER_TOKEN)
-    const { data: user } = await client.readOnly.v2.userByUsername(username)
-    const { tweets } = await client.readOnly.v2.userTimeline(user.id)
+    const { data: user } = await twitter.userByUsername(username)
+    const { tweets } = await twitter.userTimeline(user.id)
 
     return tweets.find(({ text }) => {
       const index = text.indexOf("sig:")
