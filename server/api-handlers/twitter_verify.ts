@@ -6,55 +6,35 @@ import { Services } from "../types"
 export const twitterVerify =
   ({ prisma }: Services) =>
   async (req: Request, res: Response) => {
-    const { authorId, contributionId, signature } = req.body
-    const [author, contribution] = await useContribution(
-      prisma,
-      authorId,
-      contributionId,
-    )
+    const { authorId, contributionId: id, signature } = req.body
+    const [author, contribution] = await useContribution(prisma, authorId, id)
 
     if (Boolean(contribution.signature)) {
       res.status(200).json({ message: "Already verified!" })
-      return
-    }
-
-    for (const { text } of await tweetsByUsername(author.twitter)) {
-      const index = text.indexOf("sig:")
-      if (index === -1) continue
-
-      const found = text
-        .slice(index + 4)
-        .split(" ")[0]
-        .trim()
-      if (signature !== found) continue
-
+    } else if (await findTweetWithSignature(author.twitter, signature)) {
       try {
         console.time("prisma.update")
-        await prisma.contribution.update({
-          where: { id: contributionId },
-          data: { signature },
-        })
+        await prisma.contribution.update({ where: { id }, data: { signature } })
         res.status(201).json({ message: "Verified!" })
       } catch (error) {
         res.status(500).json({ message: error.message })
       } finally {
         console.timeEnd("prisma.update")
-        return
       }
+    } else {
+      res.status(404).json({ error: "No matching tweets found" })
     }
-
-    res.status(404).json({ error: "No matching tweets found" })
   }
 
 const useContribution = async (
   prisma: Services["prisma"],
   authorId: string,
-  contributionId: number,
+  id: number,
 ) => {
   try {
     console.time("prisma.findFirst")
     const { author, ...contribution } = await prisma.contribution.findFirst({
-      where: { authorId, id: contributionId },
+      where: { authorId, id },
       include: { author: true },
     })
     return [author, contribution] as const
@@ -63,16 +43,27 @@ const useContribution = async (
   }
 }
 
-const tweetsByUsername = async (username: string) => {
+const findTweetWithSignature = async (username: string, signature: string) => {
   try {
     console.time("twitter")
+
     const client = new TwitterApi(process.env.BEARER_TOKEN)
     const { data: user } = await client.readOnly.v2.userByUsername(username)
     const { tweets } = await client.readOnly.v2.userTimeline(user.id)
-    return tweets
+
+    return tweets.find(({ text }) => {
+      const index = text.indexOf("sig:")
+      return (
+        index !== -1 &&
+        text
+          .slice(index + 4)
+          .split(" ")[0]
+          .trim() === signature
+      )
+    })
   } catch (error) {
     console.error(error)
-    return []
+    return null
   } finally {
     console.timeEnd("twitter")
   }
