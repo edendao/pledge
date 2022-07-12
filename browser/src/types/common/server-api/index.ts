@@ -85,9 +85,9 @@ export interface GetContributionRequest {
 }
 
 export interface VerifyTwitterRequest {
-  authorId: string
   contributionId: number
   signature: string
+  twitter: string
 }
 
 export interface GetStatsResponse {

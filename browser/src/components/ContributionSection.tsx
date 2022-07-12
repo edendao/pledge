@@ -320,16 +320,11 @@ export function ContributionSection() {
 
                           setStepLoading(s => ({ ...s, verify: true }))
 
-                          await findOrCreateAuthor(
-                            currentAuthor.id,
-                            currentAuthor.twitter,
-                          ).then(setCurrentAuthor)
-
                           await Promise.all([
                             fetchStats(),
                             verifyTwitter({
                               contributionId: contribution.id,
-                              authorId: currentAuthor.id,
+                              twitter: currentAuthor.twitter,
                               signature,
                             }),
                           ])

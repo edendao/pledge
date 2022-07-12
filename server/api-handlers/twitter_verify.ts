@@ -6,19 +6,22 @@ import { Services } from "../types"
 export const twitterVerify =
   ({ prisma }: Services) =>
   async (req: Request, res: Response) => {
-    const { authorId, contributionId: id, signature } = req.body
-    if (!authorId || !id || !signature) {
+    const { contributionId: id, signature, twitter } = req.body
+    const contribution = await prisma.contribution.findFirst({ where: { id } })
+    if (!id || !signature || !twitter || !contribution) {
       throw new Error("INVALID_PARAMS")
     }
 
-    const [author, contribution] = await useContribution(prisma, authorId, id)
-
     if (Boolean(contribution.signature)) {
       res.status(200).json({ message: "Already verified!" })
-    } else if (await tweetWithSignature(author.twitter, signature)) {
+    } else if (await tweetWithSignature(twitter, signature)) {
       try {
         console.time("prisma.update")
-        await prisma.contribution.update({ where: { id }, data: { signature } })
+        const { authorId } = contribution
+        await prisma.$transaction([
+          prisma.author.update({ where: { id: authorId }, data: { twitter } }),
+          prisma.contribution.update({ where: { id }, data: { signature } }),
+        ])
         res.status(201).json({ message: "Verified!" })
       } catch (error) {
         res.status(500).json({ message: (error as Error).message })
@@ -53,8 +56,16 @@ const tweetWithSignature = async (username: string, signature: string) => {
   try {
     console.time("twitter")
 
-    const { data: user } = await twitter.userByUsername(username)
-    const { tweets } = await twitter.userTimeline(user.id)
+    const { data: user } = await twitter
+      .userByUsername(username)
+      .catch(error => {
+        console.error(`Failed to load user ${username}`, error.toJSON())
+        throw error
+      })
+    const { tweets } = await twitter.userTimeline(user.id).catch(error => {
+      console.error(`Failed to load tweets ${user.id}`, error.toJSON())
+      throw error
+    })
 
     return tweets.find(({ text }) => {
       const index = text.indexOf("sig:")
@@ -67,7 +78,6 @@ const tweetWithSignature = async (username: string, signature: string) => {
       )
     })
   } catch (error) {
-    console.error(error)
     return null
   } finally {
     console.timeEnd("twitter")
