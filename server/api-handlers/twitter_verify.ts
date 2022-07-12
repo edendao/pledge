@@ -7,7 +7,9 @@ export const twitterVerify =
   ({ prisma }: Services) =>
   async (req: Request, res: Response) => {
     const { contributionId: id, signature, twitter } = req.body
+    console.time("prisma.findFirst")
     const contribution = await prisma.contribution.findFirst({ where: { id } })
+    console.timeEnd("prisma.findFirst")
     if (!id || !signature || !twitter || !contribution) {
       throw new Error("INVALID_PARAMS")
     }
@@ -33,23 +35,6 @@ export const twitterVerify =
     }
   }
 
-const useContribution = async (
-  prisma: Services["prisma"],
-  authorId: string,
-  id: number,
-) => {
-  try {
-    console.time("prisma.findFirst")
-    const { author, ...contribution } = await prisma.contribution.findFirst({
-      where: { authorId, id },
-      include: { author: true },
-    })
-    return [author, contribution] as const
-  } finally {
-    console.timeEnd("prisma.findFirst")
-  }
-}
-
 const twitter = new TwitterApi(process.env.BEARER_TOKEN).readOnly.v2
 
 const tweetWithSignature = async (username: string, signature: string) => {
@@ -59,11 +44,11 @@ const tweetWithSignature = async (username: string, signature: string) => {
     const { data: user } = await twitter
       .userByUsername(username)
       .catch(error => {
-        console.error(`Failed to load user ${username}`, error.toJSON())
+        console.error(`Failed to load user ${username}`)
         throw error
       })
     const { tweets } = await twitter.userTimeline(user.id).catch(error => {
-      console.error(`Failed to load tweets ${user.id}`, error.toJSON())
+      console.error(`Failed to load tweets ${user.id}`)
       throw error
     })
 
@@ -78,6 +63,7 @@ const tweetWithSignature = async (username: string, signature: string) => {
       )
     })
   } catch (error) {
+    console.error(error.toJSON ? error.toJSON() : error.toString())
     return null
   } finally {
     console.timeEnd("twitter")
